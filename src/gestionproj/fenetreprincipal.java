@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package gestionproj;
 
 import design.AjoutProj;
@@ -12,7 +8,9 @@ import action.cell.TableActionCellRender;
 import action.cell.TableActionCellRenderTotal;
 import design.ScrollBarCustom;
 import design.View;
+import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
@@ -28,6 +26,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -56,18 +55,6 @@ public class fenetreprincipal extends javax.swing.JFrame {
     /**
      * Creates new form fenetreprincipal
      */
-    public class NonEditableTableModel extends DefaultTableModel {
-
-        public NonEditableTableModel(Object[][] data, Object[] columnNames) {
-            super(data, columnNames);
-        }
-
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            return false; // Rend toutes les cellules non modifiables
-        }
-    }
-
     //fermer la fentrer
     public void close() {
         WindowEvent closeWindow = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
@@ -87,14 +74,13 @@ public class fenetreprincipal extends javax.swing.JFrame {
     }
 
     public fenetreprincipal() {
-        //
+        //Chemin d'accès
         this.filePath = "/Users/joseph/Desktop/GestionProj/src/gestionproj/gestion.csv";
         this.filePathAll = "/Users/joseph/Desktop/GestionProj/src/gestionproj/AllProjects.csv";
         this.filePathRC = "/Users/joseph/Desktop/GestionProj/src/gestionproj/ChefProject.csv";
         initComponents();
         populateTable();
         jScrollPane1.setVerticalScrollBar(new ScrollBarCustom());
-
         //tableau unique des noms de chef
         //String[] uniqueChefNoms = CP.getUniqueChefNoms("/Users/joseph/Desktop/GestionProj/src/gestionproj/AllProjects.csv",);
         //System.out.println("Noms uniques des chefs de projets : " + Arrays.toString(uniqueChefNoms));
@@ -243,7 +229,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
 
             @Override
             public void onView(int row) {
-                Idview(row,filePathAll);
+                Idview(row, filePathAll);
             }
         };
         jTable2.getColumnModel().getColumn(3).setCellRenderer(new TableActionCellRenderTotal());
@@ -254,41 +240,41 @@ public class fenetreprincipal extends javax.swing.JFrame {
         close();
         View view = new View(this, id);
         view.setVisible(true);
-        
+
     }
-    
-    private void Idview(int row, String filePath){
+
+    private void Idview(int row, String filePath) {
         String id = "";
-                try {
-                    try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-                        String line;
-                        int currentRow = 0;
+        try {
+            try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+                String line;
+                int currentRow = 0;
 
-                        // Parcourir le fichier CSV
-                        while ((line = br.readLine()) != null) {
-                            // Vérifier si c'est la ligne recherchée
-                            if (currentRow == row+1) {
-                                // Diviser la ligne en colonnes (supposant une virgule comme séparateur)
-                                String[] columns = line.split(",");
+                // Parcourir le fichier CSV
+                while ((line = br.readLine()) != null) {
+                    // Vérifier si c'est la ligne recherchée
+                    if (currentRow == row + 1) {
+                        // Diviser la ligne en colonnes (supposant une virgule comme séparateur)
+                        String[] columns = line.split(",");
 
-                                // Assurez-vous que la ligne a suffisamment d'éléments
-                                if (columns.length > 0) {
-                                    // Récupérer l'ID à partir de la première colonne (index 0)
-                                    id = columns[0];
-                                    System.out.println("Edit row : " + (row+1) + ", ID : " + id);
-                                } else {
-                                    System.out.println("La ligne ne contient pas assez d'éléments.");
-                                }
-                                break; // Sortir de la boucle une fois que la ligne est trouvée
-                            }
-
-                            currentRow++; // Déplacer cette ligne après la vérification
+                        // Assurez-vous que la ligne a suffisamment d'éléments
+                        if (columns.length > 0) {
+                            // Récupérer l'ID à partir de la première colonne (index 0)
+                            id = columns[0];
+                            System.out.println("Edit row : " + (row + 1) + ", ID : " + id);
+                        } else {
+                            System.out.println("La ligne ne contient pas assez d'éléments.");
                         }
+                        break; // Sortir de la boucle une fois que la ligne est trouvée
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+
+                    currentRow++; // Déplacer cette ligne après la vérification
                 }
-                view(id);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        view(id);
     }
 
     //Population de la table
@@ -584,6 +570,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(204, 255, 255));
 
+        jScrollPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jScrollPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
