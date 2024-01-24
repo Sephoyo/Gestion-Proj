@@ -533,13 +533,13 @@ public class fenetreprincipal extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
         carLayout1 = new design.CarLayout();
-        ajouts = new javax.swing.JButton();
-        rechercher = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
         jCheckBox1 = new design.JCheckBoxCustom();
         jCheckBox2 = new design.JCheckBoxCustom();
         jCheckBox3 = new design.JCheckBoxCustom();
         Demande = new design.TextField();
+        rechercher = new design.Button();
+        ajouts = new design.Button();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(204, 255, 255));
@@ -565,21 +565,6 @@ public class fenetreprincipal extends javax.swing.JFrame {
         jTable2.getColumnModel().getColumn(0).setPreferredWidth(5);
     }
 
-    ajouts.setText("Ajouter un projet");
-    ajouts.setBorderPainted(false);
-    ajouts.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            ajoutsActionPerformed(evt);
-        }
-    });
-
-    rechercher.setText("Rechercher");
-    rechercher.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            rechercherActionPerformed(evt);
-        }
-    });
-
     jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Rechercher dans projet actif", "Recherche dans archive" }));
     jComboBox1.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -597,6 +582,24 @@ public class fenetreprincipal extends javax.swing.JFrame {
 
     Demande.setShadowColor(new java.awt.Color(255, 0, 0));
 
+    rechercher.setText("Rechercher");
+    rechercher.setBorderColor(new java.awt.Color(102, 102, 255));
+    rechercher.setBorderPainted(false);
+    rechercher.setColorClick(new java.awt.Color(153, 153, 255));
+    rechercher.setColorOver(new java.awt.Color(102, 102, 255));
+    rechercher.setRadius(17);
+    rechercher.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            rechercherActionPerformed(evt);
+        }
+    });
+
+    ajouts.setText("Nouveau projet");
+    ajouts.setBorderColor(new java.awt.Color(255, 255, 255));
+    ajouts.setColorClick(new java.awt.Color(0, 153, 255));
+    ajouts.setColorOver(new java.awt.Color(153, 204, 255));
+    ajouts.setRadius(17);
+
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
@@ -608,23 +611,23 @@ public class fenetreprincipal extends javax.swing.JFrame {
                     .addComponent(carLayout1, javax.swing.GroupLayout.PREFERRED_SIZE, 1258, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(0, 0, Short.MAX_VALUE))
                 .addGroup(layout.createSequentialGroup()
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jScrollPane1)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(Demande, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(jCheckBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jCheckBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(24, 24, 24)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(rechercher)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(ajouts)))
-                    .addGap(20, 20, 20))))
+                    .addComponent(jScrollPane1)
+                    .addGap(20, 20, 20))
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addComponent(Demande, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(18, 18, 18)
+                    .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(18, 18, 18)
+                    .addComponent(jCheckBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jCheckBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(24, 24, 24)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(18, 18, 18)
+                    .addComponent(rechercher, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(ajouts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(28, 28, 28))))
     );
     layout.setVerticalGroup(
         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -638,8 +641,8 @@ public class fenetreprincipal extends javax.swing.JFrame {
                 .addComponent(jCheckBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(jCheckBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(rechercher)
-                .addComponent(ajouts))
+                .addComponent(rechercher, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(ajouts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 412, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addContainerGap())
@@ -648,12 +651,6 @@ public class fenetreprincipal extends javax.swing.JFrame {
     pack();
     setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void ajoutsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ajoutsActionPerformed
-        close();
-        AjoutProj aj = new AjoutProj(this);
-        aj.setVisible(true);
-    }//GEN-LAST:event_ajoutsActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         // TODO add your handling code here:
@@ -669,6 +666,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void rechercherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rechercherActionPerformed
+        // TODO add your handling code here:
         //Verifie si le champs est vide et si au moins un checkbox est valide
         String demandeText = Demande.getText().trim();
         if (!jCheckBox1.isSelected() && !jCheckBox2.isSelected() && !jCheckBox3.isSelected()) {
@@ -741,7 +739,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private design.TextField Demande;
-    private javax.swing.JButton ajouts;
+    private design.Button ajouts;
     private static design.CarLayout carLayout1;
     private design.JCheckBoxCustom jCheckBox1;
     private design.JCheckBoxCustom jCheckBox2;
@@ -749,6 +747,6 @@ public class fenetreprincipal extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable2;
-    private javax.swing.JButton rechercher;
+    private design.Button rechercher;
     // End of variables declaration//GEN-END:variables
 }

@@ -1,6 +1,7 @@
 package design;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -9,6 +10,8 @@ import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 
 public class Button extends JButton {
+
+    private Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
 
     public boolean isOver() {
         return over;
@@ -71,34 +74,39 @@ public class Button extends JButton {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent me) {
+                setCursor(handCursor);
                 setBackground(colorOver);
                 over = true;
             }
 
             @Override
             public void mouseExited(MouseEvent me) {
+                setCursor(Cursor.getDefaultCursor());
                 setBackground(color);
                 over = false;
-
             }
 
             @Override
             public void mousePressed(MouseEvent me) {
+                setCursor(Cursor.getDefaultCursor());
                 setBackground(colorClick);
             }
 
             @Override
             public void mouseReleased(MouseEvent me) {
                 if (over) {
+                    setCursor(handCursor);
                     setBackground(colorOver);
                 } else {
+                    setCursor(Cursor.getDefaultCursor());
                     setBackground(color);
                 }
             }
         });
-    }
 
-    private boolean over;
+}
+
+private boolean over;
     private Color color;
     private Color colorOver;
     private Color colorClick;
@@ -106,7 +114,7 @@ public class Button extends JButton {
     private int radius = 0;
 
     @Override
-    protected void paintComponent(Graphics grphcs) {
+protected void paintComponent(Graphics grphcs) {
         Graphics2D g2 = (Graphics2D) grphcs;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         //  Paint Border
