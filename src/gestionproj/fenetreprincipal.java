@@ -11,6 +11,7 @@ import action.cell.TableActionCellEditorTotal;
 import action.cell.TableActionCellRender;
 import action.cell.TableActionCellRenderTotal;
 import design.ScrollBarCustom;
+import design.View;
 import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
@@ -55,19 +56,18 @@ public class fenetreprincipal extends javax.swing.JFrame {
     /**
      * Creates new form fenetreprincipal
      */
-    
     public class NonEditableTableModel extends DefaultTableModel {
-    
-    public NonEditableTableModel(Object[][] data, Object[] columnNames) {
-        super(data, columnNames);
+
+        public NonEditableTableModel(Object[][] data, Object[] columnNames) {
+            super(data, columnNames);
+        }
+
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false; // Rend toutes les cellules non modifiables
+        }
     }
 
-    @Override
-    public boolean isCellEditable(int row, int column) {
-        return false; // Rend toutes les cellules non modifiables
-    }
-}
-    
     //fermer la fentrer
     public void close() {
         WindowEvent closeWindow = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
@@ -86,7 +86,6 @@ public class fenetreprincipal extends javax.swing.JFrame {
         revalidate();
     }
 
-    
     public fenetreprincipal() {
         //
         this.filePath = "/Users/joseph/Desktop/GestionProj/src/gestionproj/gestion.csv";
@@ -180,7 +179,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
                 String dataAdd = "";
                 for (int i = 0; i < model.getColumnCount(); i++) {
                     rowData[i] = model.getValueAt(row, i);
-                    dataAdd+=","+rowData[i];
+                    dataAdd += "," + rowData[i];
                 }
                 dataAdd = dataAdd.replaceFirst(",", "");
                 int i = JOptionPane.showConfirmDialog(null, "Le projet vas être archiver. Êtes-vous sûr de vouloir continuer?",
@@ -189,7 +188,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
                 if (i == 0) {
                     ///l'utilisateur a dit oui
                     // Ajouter la ligne au fichier CSV
-                    appendLineToCSV(filePathAll,dataAdd);
+                    appendLineToCSV(filePathAll, dataAdd);
                     deleteLineFromCsv(filePath, row + 1);
                     model.removeRow(row);
                     NbrPA = NbrPA - 1;
@@ -217,7 +216,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
         TableActionEvent event = new TableActionEvent() {
             @Override
             public void onEdit(int row) {
-                System.out.println("Edit row : " + row);
+
             }
 
             @Override
@@ -244,11 +243,52 @@ public class fenetreprincipal extends javax.swing.JFrame {
 
             @Override
             public void onView(int row) {
-                System.out.println("View row : " + row);
+                Idview(row,filePathAll);
             }
         };
         jTable2.getColumnModel().getColumn(3).setCellRenderer(new TableActionCellRenderTotal());
         jTable2.getColumnModel().getColumn(3).setCellEditor(new TableActionCellEditorTotal(event));
+    }
+
+    private void view(String id) {
+        close();
+        View view = new View(this, id);
+        view.setVisible(true);
+        
+    }
+    
+    private void Idview(int row, String filePath){
+        String id = "";
+                try {
+                    try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+                        String line;
+                        int currentRow = 0;
+
+                        // Parcourir le fichier CSV
+                        while ((line = br.readLine()) != null) {
+                            // Vérifier si c'est la ligne recherchée
+                            if (currentRow == row+1) {
+                                // Diviser la ligne en colonnes (supposant une virgule comme séparateur)
+                                String[] columns = line.split(",");
+
+                                // Assurez-vous que la ligne a suffisamment d'éléments
+                                if (columns.length > 0) {
+                                    // Récupérer l'ID à partir de la première colonne (index 0)
+                                    id = columns[0];
+                                    System.out.println("Edit row : " + (row+1) + ", ID : " + id);
+                                } else {
+                                    System.out.println("La ligne ne contient pas assez d'éléments.");
+                                }
+                                break; // Sortir de la boucle une fois que la ligne est trouvée
+                            }
+
+                            currentRow++; // Déplacer cette ligne après la vérification
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                view(id);
     }
 
     //Population de la table
@@ -596,9 +636,15 @@ public class fenetreprincipal extends javax.swing.JFrame {
 
     ajouts.setText("Nouveau projet");
     ajouts.setBorderColor(new java.awt.Color(255, 255, 255));
+    ajouts.setBorderPainted(false);
     ajouts.setColorClick(new java.awt.Color(0, 153, 255));
     ajouts.setColorOver(new java.awt.Color(153, 204, 255));
     ajouts.setRadius(17);
+    ajouts.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            ajoutsActionPerformed(evt);
+        }
+    });
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
@@ -686,6 +732,13 @@ public class fenetreprincipal extends javax.swing.JFrame {
             RechercheArchive(demandeText);
         }
     }//GEN-LAST:event_rechercherActionPerformed
+
+    private void ajoutsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ajoutsActionPerformed
+        // TODO add your handling code here:
+        close();
+        AjoutProj aj = new AjoutProj(this);
+        aj.setVisible(true);
+    }//GEN-LAST:event_ajoutsActionPerformed
 
     /**
      * @param args the command line arguments
