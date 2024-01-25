@@ -56,20 +56,10 @@
                           <Component id="SuppLab" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Component id="SuppN" min="-2" pref="144" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
-                              <Component id="SuppC" min="-2" pref="144" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
-                                  <Component id="ChefN" min="-2" pref="144" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
-                                  <Component id="ChefP" min="-2" pref="144" max="-2" attributes="0"/>
-                              </Group>
-                              <Component id="jScrollPane2" alignment="0" min="-2" pref="201" max="-2" attributes="0"/>
-                          </Group>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="Supp" min="-2" pref="144" max="-2" attributes="0"/>
+                          <Component id="Chef" min="-2" pref="144" max="-2" attributes="0"/>
+                          <Component id="jScrollPane2" alignment="0" min="-2" pref="201" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -87,20 +77,16 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="ChefLab" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="ChefP" alignment="3" min="-2" pref="42" max="-2" attributes="0"/>
-                  <Component id="ChefN" alignment="3" min="-2" pref="42" max="-2" attributes="0"/>
+                  <Component id="Chef" alignment="3" min="-2" pref="42" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="SuppLab" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="SuppN" alignment="3" min="-2" pref="42" max="-2" attributes="0"/>
-                  </Group>
-                  <Component id="SuppC" min="-2" pref="42" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="SuppLab" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="Supp" alignment="3" min="-2" pref="42" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jScrollPane2" min="-2" pref="100" max="-2" attributes="0"/>
-              <EmptySpace pref="104" max="32767" attributes="0"/>
+              <EmptySpace pref="92" max="32767" attributes="0"/>
               <Component id="DescrLab" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jScrollPane1" min="-2" pref="177" max="-2" attributes="0"/>
@@ -129,7 +115,6 @@
       <SubComponents>
         <Component class="javax.swing.JTextArea" name="Descr">
           <Properties>
-            <Property name="editable" type="boolean" value="false"/>
             <Property name="columns" type="int" value="20"/>
             <Property name="rows" type="int" value="5"/>
           </Properties>
@@ -142,9 +127,6 @@
       </Properties>
     </Component>
     <Component class="design.TextField" name="Titre">
-      <Properties>
-        <Property name="editable" type="boolean" value="false"/>
-      </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="TitreLab">
       <Properties>
@@ -161,15 +143,9 @@
         <Property name="text" type="java.lang.String" value="Suppl&#xe9;ant"/>
       </Properties>
     </Component>
-    <Component class="design.TextField" name="SuppC">
-      <Properties>
-        <Property name="editable" type="boolean" value="false"/>
-      </Properties>
+    <Component class="design.TextField" name="Supp">
     </Component>
-    <Component class="design.TextField" name="ChefP">
-      <Properties>
-        <Property name="editable" type="boolean" value="false"/>
-      </Properties>
+    <Component class="design.TextField" name="Chef">
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane2">
       <Properties>
@@ -180,15 +156,5 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
     </Container>
-    <Component class="design.TextField" name="ChefN">
-      <Properties>
-        <Property name="editable" type="boolean" value="false"/>
-      </Properties>
-    </Component>
-    <Component class="design.TextField" name="SuppN">
-      <Properties>
-        <Property name="editable" type="boolean" value="false"/>
-      </Properties>
-    </Component>
   </SubComponents>
 </Form>

@@ -54,7 +54,7 @@ public class AjoutProj extends javax.swing.JFrame {
         String line = "id,Projet,Chef de projet,Suppléant,";
 
         String FileId = filePathId + this.LastId + ".csv";
-        String Line2 = "" + this.LastId + "," + Titre.getText() + "," + nomS.getText() + " " + nomS.getText() + "," + nomS.getText() + " " + nomS.getText();
+        String Line2 = "" + this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText() + "," + nomS.getText() + " " + nomS.getText();
         try {
             // Vérifier si le fichier existe, sinon le créer
             File file = new File(FileId);

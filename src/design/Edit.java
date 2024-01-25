@@ -17,7 +17,7 @@ import javax.swing.BoxLayout;
  *
  * @author joseph
  */
-public class View extends javax.swing.JFrame {
+public class Edit extends javax.swing.JFrame {
 
     private fenetreprincipal mainFrame;
     private String filePath;
@@ -35,7 +35,7 @@ public class View extends javax.swing.JFrame {
     }
 
     //Initialisation de la fenetre
-    public View(fenetreprincipal mainFrame, String id) {
+    public Edit(fenetreprincipal mainFrame, String id) {
         initComponents();
         jScrollPane1.setVerticalScrollBar(new ScrollBarCustom());
         jScrollPane2.setVerticalScrollBar(new ScrollBarCustom());
@@ -46,23 +46,16 @@ public class View extends javax.swing.JFrame {
         LectLine(filePath);
         int length = data2.length;
         this.Titre.setText(data2[1]);
-        this.ChefN.setText(enleverEspaces(data2[2])[0]);
-        this.ChefP.setText(enleverEspaces(data2[2])[1]);
-        this.SuppN.setText(enleverEspaces(data2[3])[0]);
-        this.SuppC.setText(enleverEspaces(data2[3])[1]);
+        this.Chef.setText(data2[2]);
+        this.Supp.setText(data2[3]);
         this.Descr.setText(data2[length - 1]);
-        //A modifier lors de l'ajout des dates
-        for (int i = 4; i < length - 1; i++) {
+        //A modifier lors de l'ajout des datesw
+        for (int i = 4; i < length-1; i++) {
             addTextFieldToScroll(data2[i]);
         }
+        setDarkTheme();
     }
-
-    public static String[] enleverEspaces(String chaine) {
-        // Séparer en tableau
-        String[] tableau = chaine.split("\\s+");
-        return tableau;
-    }
-
+    
     //DarkTheme
     private void setDarkTheme() {
         getContentPane().setBackground(new java.awt.Color(34, 34, 34)); // Couleur de fond sombre
@@ -75,20 +68,14 @@ public class View extends javax.swing.JFrame {
 
         // Vous pouvez également configurer d'autres composants ici...
     }
-
     //Ajouter les suppléant dans le jscroll
     private void addTextFieldToScroll(String text) {
-        String[] tableau = enleverEspaces(text);
         design.TextField newTextField = new design.TextField();
-        design.TextField newTextField2 = new design.TextField();
-        newTextField.setPreferredSize(new java.awt.Dimension(144, 42));        
-        newTextField2.setPreferredSize(new java.awt.Dimension(144, 42));
+        newTextField.setText(text);
+        newTextField.setPreferredSize(new java.awt.Dimension(144, 42));
 
-        newTextField.setText(tableau[0]);        
-        newTextField.setText(tableau[1]);
         // Vérifier si la vue interne du JScrollPane est null
-        newTextField.setEditable(false);        
-        newTextField2.setEditable(false);
+        newTextField.setEditable(false);
         if (jScrollPane2.getViewport().getView() == null) {
             // Si null, créer un nouveau JPanel comme vue interne avec un BoxLayout vertical
             javax.swing.JPanel scrollPaneView = new javax.swing.JPanel();
@@ -99,7 +86,6 @@ public class View extends javax.swing.JFrame {
         // Accéder à la vue interne du JScrollPane et y ajouter le nouveau champ texte
         javax.swing.JPanel scrollPaneView = (javax.swing.JPanel) jScrollPane2.getViewport().getView();
         scrollPaneView.add(newTextField);
-        scrollPaneView.add(newTextField2);
 
         jScrollPane2.repaint();
         jScrollPane2.revalidate();
@@ -137,11 +123,9 @@ public class View extends javax.swing.JFrame {
         TitreLab = new javax.swing.JLabel();
         ChefLab = new javax.swing.JLabel();
         SuppLab = new javax.swing.JLabel();
-        SuppC = new design.TextField();
-        ChefP = new design.TextField();
+        Supp = new design.TextField();
+        Chef = new design.TextField();
         jScrollPane2 = new javax.swing.JScrollPane();
-        ChefN = new design.TextField();
-        SuppN = new design.TextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -152,14 +136,11 @@ public class View extends javax.swing.JFrame {
             }
         });
 
-        Descr.setEditable(false);
         Descr.setColumns(20);
         Descr.setRows(5);
         jScrollPane1.setViewportView(Descr);
 
         DescrLab.setText("Description du projet");
-
-        Titre.setEditable(false);
 
         TitreLab.setText("Titre");
 
@@ -167,15 +148,7 @@ public class View extends javax.swing.JFrame {
 
         SuppLab.setText("Suppléant");
 
-        SuppC.setEditable(false);
-
-        ChefP.setEditable(false);
-
         jScrollPane2.setBorder(null);
-
-        ChefN.setEditable(false);
-
-        SuppN.setEditable(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -206,17 +179,10 @@ public class View extends javax.swing.JFrame {
                             .addComponent(ChefLab)
                             .addComponent(SuppLab))
                         .addGap(29, 29, 29)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(SuppN, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(SuppC, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(ChefN, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(42, 42, 42)
-                                    .addComponent(ChefP, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(Supp, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Chef, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -229,17 +195,14 @@ public class View extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ChefLab)
-                    .addComponent(ChefP, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ChefN, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Chef, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(22, 22, 22)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(SuppLab)
-                        .addComponent(SuppN, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(SuppC, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(SuppLab)
+                    .addComponent(Supp, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
                 .addComponent(DescrLab)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -276,26 +239,25 @@ public class View extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(View.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Edit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(View.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Edit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(View.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Edit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(View.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Edit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private design.TextField Chef;
     private javax.swing.JLabel ChefLab;
-    private design.TextField ChefN;
-    private design.TextField ChefP;
     private javax.swing.JTextArea Descr;
     private javax.swing.JLabel DescrLab;
-    private design.TextField SuppC;
+    private design.TextField Supp;
     private javax.swing.JLabel SuppLab;
-    private design.TextField SuppN;
     private design.Button Terminer;
     private design.TextField Titre;
     private javax.swing.JLabel TitreLab;

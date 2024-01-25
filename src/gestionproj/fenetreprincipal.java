@@ -190,7 +190,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
 
             @Override
             public void onView(int row) {
-                System.out.println("View row : " + row);
+                Idview(row, filePath);
             }
         };
         jTable2.getColumnModel().getColumn(3).setCellRenderer(new TableActionCellRender());
@@ -568,11 +568,12 @@ public class fenetreprincipal extends javax.swing.JFrame {
         ajouts = new design.Button();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setBackground(new java.awt.Color(204, 255, 255));
+        setBackground(new java.awt.Color(102, 102, 102));
 
         jScrollPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jScrollPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
+        jTable2.setBackground(new java.awt.Color(255, 255, 255));
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null},
@@ -592,6 +593,8 @@ public class fenetreprincipal extends javax.swing.JFrame {
         jTable2.getColumnModel().getColumn(0).setPreferredWidth(5);
     }
 
+    carLayout1.setBackground(new java.awt.Color(255, 255, 255));
+
     jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Rechercher dans projet actif", "Recherche dans archive" }));
     jComboBox1.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -607,6 +610,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
     jCheckBox3.setBackground(new java.awt.Color(255, 153, 0));
     jCheckBox3.setText("Chef");
 
+    Demande.setBackground(new java.awt.Color(255, 255, 255));
     Demande.setShadowColor(new java.awt.Color(255, 0, 0));
 
     rechercher.setText("Rechercher");
