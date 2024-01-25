@@ -5,6 +5,7 @@
 package design;
 
 import gestionproj.fenetreprincipal;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
@@ -41,7 +42,9 @@ public class View extends javax.swing.JFrame {
         jScrollPane2.setVerticalScrollBar(new ScrollBarCustom());
         this.mainFrame = mainFrame;
         this.id = id;
-        this.filePath = "/Users/joseph/Desktop/GestionProj/src/gestionproj/ProjetCSV/" + this.id + ".csv";
+        String chemin = System.getProperty("user.dir");
+        System.out.println("Le répertoire de travail actuel est : " + chemin);
+        this.filePath = chemin ="/src/gestionproj/ProjetCSV/" + this.id + ".csv";
         System.out.println("L'id : " + id + " et le fichier : " + filePath);
         LectLine(filePath);
         int length = data2.length;
@@ -63,46 +66,35 @@ public class View extends javax.swing.JFrame {
         return tableau;
     }
 
-    //DarkTheme
-    private void setDarkTheme() {
-        getContentPane().setBackground(new java.awt.Color(34, 34, 34)); // Couleur de fond sombre
-
-        // Configurer les autres composants avec des couleurs sombres
-        DescrLab.setForeground(new java.awt.Color(255, 255, 255)); // Couleur du texte en blanc
-        TitreLab.setForeground(new java.awt.Color(255, 255, 255)); // Couleur du texte en blanc
-        ChefLab.setForeground(new java.awt.Color(255, 255, 255)); // Couleur du texte en blanc
-        SuppLab.setForeground(new java.awt.Color(255, 255, 255)); // Couleur du texte en blanc
-
-        // Vous pouvez également configurer d'autres composants ici...
-    }
-
-    //Ajouter les suppléant dans le jscroll
+    //Ajouter les suppléant dans le jScroll
     private void addTextFieldToScroll(String text) {
         String[] tableau = enleverEspaces(text);
-        design.TextField newTextField = new design.TextField();
+        design.TextField newTextField1 = new design.TextField();
         design.TextField newTextField2 = new design.TextField();
-        newTextField.setPreferredSize(new java.awt.Dimension(144, 42));        
-        newTextField2.setPreferredSize(new java.awt.Dimension(144, 42));
 
-        newTextField.setText(tableau[0]);        
-        newTextField.setText(tableau[1]);
-        // Vérifier si la vue interne du JScrollPane est null
-        newTextField.setEditable(false);        
+
+        newTextField1.setPreferredSize(new java.awt.Dimension(136, 36));
+        newTextField2.setPreferredSize(new java.awt.Dimension(136, 36));
+        newTextField1.setText(tableau[0]);        
+        newTextField2.setText(tableau[1]);
+        newTextField1.setEditable(false);
         newTextField2.setEditable(false);
-        if (jScrollPane2.getViewport().getView() == null) {
-            // Si null, créer un nouveau JPanel comme vue interne avec un BoxLayout vertical
-            javax.swing.JPanel scrollPaneView = new javax.swing.JPanel();
-            scrollPaneView.setLayout(new BoxLayout(scrollPaneView, BoxLayout.Y_AXIS));
-            jScrollPane2.setViewportView(scrollPaneView);
+
+        javax.swing.JPanel panel = (javax.swing.JPanel) jScrollPane2.getViewport().getView();
+        if (panel == null) {
+            panel = new javax.swing.JPanel();
+            panel.setLayout(new javax.swing.BoxLayout(panel, javax.swing.BoxLayout.Y_AXIS));
+            jScrollPane2.setViewportView(panel);
         }
 
-        // Accéder à la vue interne du JScrollPane et y ajouter le nouveau champ texte
-        javax.swing.JPanel scrollPaneView = (javax.swing.JPanel) jScrollPane2.getViewport().getView();
-        scrollPaneView.add(newTextField);
-        scrollPaneView.add(newTextField2);
+        javax.swing.JPanel pairPanel = new javax.swing.JPanel();
+        pairPanel.setLayout(new java.awt.FlowLayout());
+        pairPanel.add(newTextField1);
+        pairPanel.add(newTextField2);
 
-        jScrollPane2.repaint();
-        jScrollPane2.revalidate();
+        panel.add(pairPanel);
+
+        jScrollPane2.setViewportView(panel);
     }
 
     //Lecture la ligne
@@ -142,6 +134,7 @@ public class View extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         ChefN = new design.TextField();
         SuppN = new design.TextField();
+        SuppA = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -177,6 +170,8 @@ public class View extends javax.swing.JFrame {
 
         SuppN.setEditable(false);
 
+        SuppA.setText("Autres suppléants :");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -206,17 +201,19 @@ public class View extends javax.swing.JFrame {
                             .addComponent(ChefLab)
                             .addComponent(SuppLab))
                         .addGap(29, 29, 29)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(SuppN, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(SuppC, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(ChefN, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(42, 42, 42)
-                                    .addComponent(ChefP, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(ChefN, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(42, 42, 42)
+                                .addComponent(ChefP, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(322, 322, 322)
+                        .addComponent(SuppA)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -232,14 +229,15 @@ public class View extends javax.swing.JFrame {
                     .addComponent(ChefP, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ChefN, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(22, 22, 22)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(SuppLab)
-                        .addComponent(SuppN, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(SuppC, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(SuppC, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(SuppN, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(SuppLab))
+                .addGap(16, 16, 16)
+                .addComponent(SuppA)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
                 .addComponent(DescrLab)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -293,6 +291,7 @@ public class View extends javax.swing.JFrame {
     private design.TextField ChefP;
     private javax.swing.JTextArea Descr;
     private javax.swing.JLabel DescrLab;
+    private javax.swing.JLabel SuppA;
     private design.TextField SuppC;
     private javax.swing.JLabel SuppLab;
     private design.TextField SuppN;

@@ -41,9 +41,11 @@ public class AjoutProj extends javax.swing.JFrame {
         SuppListe.setVisible(false);
         Remove.setVisible(false);
         this.mainFrame = mainFrame;
-        this.filePath = "/Users/joseph/Desktop/GestionProj/src/gestionproj/gestion.csv";
-        this.filePathId = "/Users/joseph/Desktop/GestionProj/src/gestionproj/ProjetCSV/";
-        this.filePathAll = "/Users/joseph/Desktop/GestionProj/src/gestionproj/AllProjects.csv";
+        String chemin = System.getProperty("user.dir");
+        System.out.println("Le répertoire de travail actuel est : " + chemin);
+        this.filePath = chemin+"/src/gestionproj/gestion.csv";
+        this.filePathId = chemin+"/src/gestionproj/ProjetCSV/";
+        this.filePathAll = chemin+"/src/gestionproj/AllProjects.csv";
         CompareLastId(filePath,filePathAll);
         jScrollPane6.setVerticalScrollBar(new ScrollBarCustom());
         SuppListe.setVerticalScrollBar(new ScrollBarCustom());

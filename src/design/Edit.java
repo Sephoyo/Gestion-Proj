@@ -4,6 +4,7 @@
  */
 package design;
 
+import static design.View.enleverEspaces;
 import gestionproj.fenetreprincipal;
 import java.awt.FlowLayout;
 import java.awt.Toolkit;
@@ -41,7 +42,9 @@ public class Edit extends javax.swing.JFrame {
         jScrollPane2.setVerticalScrollBar(new ScrollBarCustom());
         this.mainFrame = mainFrame;
         this.id = id;
-        this.filePath = "/Users/joseph/Desktop/GestionProj/src/gestionproj/ProjetCSV/" + this.id + ".csv";
+        String chemin = System.getProperty("user.dir");
+        System.out.println("Le répertoire de travail actuel est : " + chemin);
+        this.filePath = chemin+"/src/gestionproj/ProjetCSV/" + this.id + ".csv";
         System.out.println("L'id : " + id + " et le fichier : " + filePath);
         LectLine(filePath);
         int length = data2.length;
@@ -53,42 +56,36 @@ public class Edit extends javax.swing.JFrame {
         for (int i = 4; i < length-1; i++) {
             addTextFieldToScroll(data2[i]);
         }
-        setDarkTheme();
     }
     
-    //DarkTheme
-    private void setDarkTheme() {
-        getContentPane().setBackground(new java.awt.Color(34, 34, 34)); // Couleur de fond sombre
 
-        // Configurer les autres composants avec des couleurs sombres
-        DescrLab.setForeground(new java.awt.Color(255, 255, 255)); // Couleur du texte en blanc
-        TitreLab.setForeground(new java.awt.Color(255, 255, 255)); // Couleur du texte en blanc
-        ChefLab.setForeground(new java.awt.Color(255, 255, 255)); // Couleur du texte en blanc
-        SuppLab.setForeground(new java.awt.Color(255, 255, 255)); // Couleur du texte en blanc
-
-        // Vous pouvez également configurer d'autres composants ici...
-    }
     //Ajouter les suppléant dans le jscroll
     private void addTextFieldToScroll(String text) {
-        design.TextField newTextField = new design.TextField();
-        newTextField.setText(text);
-        newTextField.setPreferredSize(new java.awt.Dimension(144, 42));
+        String[] tableau = enleverEspaces(text);
+        design.TextField newTextField1 = new design.TextField();
+        design.TextField newTextField2 = new design.TextField();
 
-        // Vérifier si la vue interne du JScrollPane est null
-        newTextField.setEditable(false);
-        if (jScrollPane2.getViewport().getView() == null) {
-            // Si null, créer un nouveau JPanel comme vue interne avec un BoxLayout vertical
-            javax.swing.JPanel scrollPaneView = new javax.swing.JPanel();
-            scrollPaneView.setLayout(new BoxLayout(scrollPaneView, BoxLayout.Y_AXIS));
-            jScrollPane2.setViewportView(scrollPaneView);
+
+        newTextField1.setPreferredSize(new java.awt.Dimension(136, 36));
+        newTextField2.setPreferredSize(new java.awt.Dimension(136, 36));
+        newTextField1.setText(tableau[0]);        
+        newTextField2.setText(tableau[1]);
+
+        javax.swing.JPanel panel = (javax.swing.JPanel) jScrollPane2.getViewport().getView();
+        if (panel == null) {
+            panel = new javax.swing.JPanel();
+            panel.setLayout(new javax.swing.BoxLayout(panel, javax.swing.BoxLayout.Y_AXIS));
+            jScrollPane2.setViewportView(panel);
         }
 
-        // Accéder à la vue interne du JScrollPane et y ajouter le nouveau champ texte
-        javax.swing.JPanel scrollPaneView = (javax.swing.JPanel) jScrollPane2.getViewport().getView();
-        scrollPaneView.add(newTextField);
+        javax.swing.JPanel pairPanel = new javax.swing.JPanel();
+        pairPanel.setLayout(new java.awt.FlowLayout());
+        pairPanel.add(newTextField1);
+        pairPanel.add(newTextField2);
 
-        jScrollPane2.repaint();
-        jScrollPane2.revalidate();
+        panel.add(pairPanel);
+
+        jScrollPane2.setViewportView(panel);
     }
 
     //Lecture la ligne

@@ -75,9 +75,11 @@ public class fenetreprincipal extends javax.swing.JFrame {
 
     public fenetreprincipal() {
         //Chemin d'accès
-        this.filePath = "/Users/joseph/Desktop/GestionProj/src/gestionproj/gestion.csv";
-        this.filePathAll = "/Users/joseph/Desktop/GestionProj/src/gestionproj/AllProjects.csv";
-        this.filePathRC = "/Users/joseph/Desktop/GestionProj/src/gestionproj/ChefProject.csv";
+        String chemin = System.getProperty("user.dir");
+        System.out.println("Le répertoire de travail actuel est : " + chemin);
+        this.filePath = chemin+"/src/gestionproj/gestion.csv";
+        this.filePathAll = chemin+"/src/gestionproj/AllProjects.csv";
+        this.filePathRC = chemin+"/src/gestionproj/ChefProject.csv";
         initComponents();
         populateTable();
         jScrollPane1.setVerticalScrollBar(new ScrollBarCustom());
