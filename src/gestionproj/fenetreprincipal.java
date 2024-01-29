@@ -6,6 +6,8 @@ import action.cell.TableActionCellEditor;
 import action.cell.TableActionCellEditorTotal;
 import action.cell.TableActionCellRender;
 import action.cell.TableActionCellRenderTotal;
+import action.data.Csv;
+import design.Edit;
 import design.ScrollBarCustom;
 import design.View;
 import java.awt.BorderLayout;
@@ -19,6 +21,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -39,6 +42,8 @@ import javax.swing.table.DefaultTableModel;
  */
 public class fenetreprincipal extends javax.swing.JFrame {
 
+    
+    private Csv csv=new Csv(this);
     private String filePath;
     private String filePathAll;
     private String filePathRC;
@@ -77,9 +82,12 @@ public class fenetreprincipal extends javax.swing.JFrame {
         //Chemin d'accès
         String chemin = System.getProperty("user.dir");
         System.out.println("Le répertoire de travail actuel est : " + chemin);
-        this.filePath = chemin+"/src/gestionproj/gestion.csv";
-        this.filePathAll = chemin+"/src/gestionproj/AllProjects.csv";
-        this.filePathRC = chemin+"/src/gestionproj/ChefProject.csv";
+        Path filePath = Paths.get("src", "gestionproj/gestion.csv");
+        String absolutePath = filePath.toAbsolutePath().toString();
+        System.out.println(absolutePath);
+        this.filePath = chemin + "/src/gestionproj/gestion.csv";
+        this.filePathAll = chemin + "/src/gestionproj/AllProjects.csv";
+        this.filePathRC = chemin + "/src/gestionproj/ChefProject.csv";
         initComponents();
         populateTable();
         jScrollPane1.setVerticalScrollBar(new ScrollBarCustom());
@@ -154,7 +162,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
         TableActionEvent event = new TableActionEvent() {
             @Override
             public void onEdit(int row) {
-                System.out.println("Edit row : " + row);
+                IdEdit(row, filePath);
             }
 
             @Override
@@ -176,8 +184,8 @@ public class fenetreprincipal extends javax.swing.JFrame {
                 if (i == 0) {
                     ///l'utilisateur a dit oui
                     // Ajouter la ligne au fichier CSV
-                    appendLineToCSV(filePathAll, dataAdd);
-                    deleteLineFromCsv(filePath, row + 1);
+                    csv.appendLineToCSV(filePathAll, dataAdd);
+                    csv.deleteLineFromCsv(filePath, row + 1);
                     model.removeRow(row);
                     NbrPA = NbrPA - 1;
                     NbrPAS = String.valueOf(NbrPA);
@@ -204,7 +212,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
         TableActionEvent event = new TableActionEvent() {
             @Override
             public void onEdit(int row) {
-
+                IdEdit(row, filePathAll);
             }
 
             @Override
@@ -218,7 +226,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
                         JOptionPane.YES_NO_OPTION);
                 if (i == 0) {
                     ///l'utilisateur a dit oui
-                    deleteLineFromCsvTotal(filePathAll, row + 1);
+                    csv.deleteLineFromCsvTotal(filePathAll, row + 1);
                     model.removeRow(row);
                     NbrPT = NbrPT - 1;
                     NbrPTS = String.valueOf(NbrPT);
@@ -244,7 +252,44 @@ public class fenetreprincipal extends javax.swing.JFrame {
         view.setVisible(true);
 
     }
+    private void edit(String id,int row, String filePath){
+        close();
+        Edit edit = new Edit(this,id,row,filePath);
+        edit.setVisible(true);
+    }
 
+    private void IdEdit(int row, String filePath) {
+        String id = "";
+        try {
+            try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+                String line;
+                int currentRow = 0;
+
+                // Parcourir le fichier CSV
+                while ((line = br.readLine()) != null) {
+                    // Vérifier si c'est la ligne recherchée
+                    if (currentRow == row + 1) {
+                        // Diviser la ligne en colonnes (supposant une virgule comme séparateur)
+                        String[] columns = line.split(",");
+                        // Assurez-vous que la ligne a suffisamment d'éléments
+                        if (columns.length > 0) {
+                            // Récupérer l'ID à partir de la première colonne (index 0)
+                            id = columns[0];
+                            System.out.println("Edit row : " + (row + 1) + ", ID : " + id);
+                        } else {
+                            System.out.println("La ligne ne contient pas assez d'éléments.");
+                        }
+                        break; // Sortir de la boucle une fois que la ligne est trouvée
+                    }
+
+                    currentRow++; // Déplacer cette ligne après la vérification
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        edit(id,row,filePath);
+    }
     private void Idview(int row, String filePath) {
         String id = "";
         try {
@@ -402,85 +447,6 @@ public class fenetreprincipal extends javax.swing.JFrame {
             e.printStackTrace();
         }
         return model;
-    }
-
-    //Supprimer une ligne du csv
-    public void deleteLineFromCsv(String filePath, int lineIndexToDelete) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath)); FileWriter writer = new FileWriter(filePath + ".tmp")) {
-            String line;
-            int currentLineIndex = 0;
-            while ((line = reader.readLine()) != null) {
-                if (currentLineIndex != lineIndexToDelete) {
-                    writer.write(line);
-                    writer.write(System.lineSeparator());
-                }
-                currentLineIndex++;
-            }
-            writer.flush();
-            System.out.println("Line deleted successfully.");
-        } catch (IOException e) {
-            System.err.println("Error reading or writing the file: " + e.getMessage());
-        }
-        // Renommer le fichier temporaire au fichier d'origine 
-        Path originalPath = Paths.get(filePath);
-        Path tempPath = Paths.get(filePath + ".tmp");
-        try {
-            Files.move(tempPath, originalPath, StandardCopyOption.REPLACE_EXISTING);
-            System.out.println("File renamed successfully.");
-        } catch (IOException e) {
-            System.err.println("Error renaming the file: " + e.getMessage());
-        }
-        repaint();
-        revalidate();
-    }
-
-    //Supprimer une ligne du total + le fichier correspondant à celui-ci
-    public void deleteLineFromCsvTotal(String filePath, int lineIndexToDelete) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath)); FileWriter writer = new FileWriter(filePath + ".tmp")) {
-            String line;
-            int currentLineIndex = 0;
-            while ((line = reader.readLine()) != null) {
-                if (currentLineIndex != lineIndexToDelete) {
-                    writer.write(line);
-                    writer.write(System.lineSeparator());
-                } else {
-                    String[] columns = line.split(",");
-                    if (columns.length > 0) {
-                        String id = columns[0];
-                        System.out.println("ID to be deleted: " + id);
-                        // Suppression du fichier en dehors de la condition else
-                        File file = new File("/Users/joseph/Desktop/GestionProj/src/gestionproj/ProjetCSV/" + id + ".csv");
-                        if (file.delete()) {
-                            System.out.println(file);
-                            System.out.println(file.getName() + " est supprimé.");
-                        } else {
-                            System.out.println(file);
-                            System.out.println("Suppression échouée");
-                        }
-                    }
-                }
-                currentLineIndex++;
-            }
-            writer.flush();
-            System.out.println("Line deleted successfully.");
-        } catch (IOException e) {
-            System.err.println("Error reading or writing the file: " + e.getMessage());
-        }
-
-        // Renommer le fichier temporaire au fichier d'origine 
-        Path originalPath = Paths.get(filePath);
-        Path tempPath = Paths.get(filePath + ".tmp");
-
-        try {
-            Files.move(tempPath, originalPath, StandardCopyOption.REPLACE_EXISTING);
-            System.out.println("File renamed successfully.");
-        } catch (IOException e) {
-            System.err.println("Error renaming the file: " + e.getMessage());
-        }
-
-        repaint();
-
-        revalidate();
     }
 
     //Recherche dans Actif

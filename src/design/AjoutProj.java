@@ -4,6 +4,7 @@
  */
 package design;
 
+import action.data.Pair;
 import gestionproj.fenetreprincipal;
 import java.awt.Color;
 import java.awt.Toolkit;
@@ -138,8 +139,8 @@ public class AjoutProj extends javax.swing.JFrame {
         }
     }
 
-    //A l'aide de la class pair je peux et de cette méthode cela pren d tout les usplléants ajouter pour les mettre dans un tableau
-    private java.util.List<Pair<String, String>> getAllDataPairs() {
+    //A l'aide de la class pair et de cette méthode cela prend tout les supplléants ajouter pour les mettre dans un tableau
+    public java.util.List<Pair<String, String>> getAllDataPairs() {
         java.util.List<Pair<String, String>> dataPairs = new java.util.ArrayList<>();
 
         javax.swing.JPanel panel = (javax.swing.JPanel) SuppListe.getViewport().getView();

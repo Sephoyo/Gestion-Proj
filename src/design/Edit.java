@@ -4,15 +4,19 @@
  */
 package design;
 
-import static design.View.enleverEspaces;
+import action.data.Csv;
+import action.data.Pair;
 import gestionproj.fenetreprincipal;
-import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import javax.swing.BoxLayout;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 /**
  *
@@ -21,10 +25,13 @@ import javax.swing.BoxLayout;
 public class Edit extends javax.swing.JFrame {
 
     private fenetreprincipal mainFrame;
+    private Csv csv;
     private String filePath;
     private String id;
+    private String file;
     private String[] data1;
     private String[] data2;
+    private int row;
 
     /**
      * Creates new form View
@@ -36,39 +43,48 @@ public class Edit extends javax.swing.JFrame {
     }
 
     //Initialisation de la fenetre
-    public Edit(fenetreprincipal mainFrame, String id) {
+    public Edit(fenetreprincipal mainFrame, String id, int row, String file) {
         initComponents();
         jScrollPane1.setVerticalScrollBar(new ScrollBarCustom());
         jScrollPane2.setVerticalScrollBar(new ScrollBarCustom());
         this.mainFrame = mainFrame;
+        this.csv = new Csv(this.mainFrame);
         this.id = id;
+        this.row = row;
+        this.file = file;
         String chemin = System.getProperty("user.dir");
         System.out.println("Le répertoire de travail actuel est : " + chemin);
-        this.filePath = chemin+"/src/gestionproj/ProjetCSV/" + this.id + ".csv";
+        this.filePath = chemin + "/src/gestionproj/ProjetCSV/" + this.id + ".csv";
         System.out.println("L'id : " + id + " et le fichier : " + filePath);
         LectLine(filePath);
         int length = data2.length;
         this.Titre.setText(data2[1]);
-        this.Chef.setText(data2[2]);
-        this.Supp.setText(data2[3]);
+        this.ChefN.setText(enleverEspaces(data2[2])[0]);
+        this.ChefP.setText(enleverEspaces(data2[2])[1]);
+        this.SuppN.setText(enleverEspaces(data2[3])[0]);
+        this.SuppC.setText(enleverEspaces(data2[3])[1]);
         this.Descr.setText(data2[length - 1]);
-        //A modifier lors de l'ajout des datesw
-        for (int i = 4; i < length-1; i++) {
+        //A modifier lors de l'ajout des dates
+        for (int i = 4; i < length - 1; i++) {
             addTextFieldToScroll(data2[i]);
         }
     }
-    
 
-    //Ajouter les suppléant dans le jscroll
+    public static String[] enleverEspaces(String chaine) {
+        // Séparer en tableau
+        String[] tableau = chaine.split("\\s+");
+        return tableau;
+    }
+
+    //Ajouter les suppléant dans le jScroll
     private void addTextFieldToScroll(String text) {
         String[] tableau = enleverEspaces(text);
         design.TextField newTextField1 = new design.TextField();
         design.TextField newTextField2 = new design.TextField();
 
-
         newTextField1.setPreferredSize(new java.awt.Dimension(136, 36));
         newTextField2.setPreferredSize(new java.awt.Dimension(136, 36));
-        newTextField1.setText(tableau[0]);        
+        newTextField1.setText(tableau[0]);
         newTextField2.setText(tableau[1]);
 
         javax.swing.JPanel panel = (javax.swing.JPanel) jScrollPane2.getViewport().getView();
@@ -108,6 +124,54 @@ public class Edit extends javax.swing.JFrame {
         this.data2 = data;
     }
 
+    private void EditSave() {
+        csv.deleteLineFromCsv(filePath, 1);
+        //Écriture de la ligne
+        String line = this.id + this.Titre.getText() + "," + this.ChefN.getText() + " " + this.ChefP.getText() + "," + this.SuppN.getText() + " " + this.SuppC.getText();
+        //Il faut mtn ajouter tout les suppléants
+        //Il faut maintenant ajouter tous les suppléants
+        java.util.List<Pair<String, String>> supplList = getAllDataPairs();
+        int nombreSupp = supplList.size();
+        System.out.println(nombreSupp);
+        for (int i = 1; i <= nombreSupp; i++) {
+            Pair<String, String> pair = supplList.get(i - 1);
+            String one = pair.getFirst();
+            String twice = pair.getSecond();
+            System.out.println(one + " . " + twice);
+            line += "," + one + " " + twice;
+            System.out.println(line);
+        }
+        line += "," + this.Descr.getText();
+        String lineGest = this.id +","+ this.Titre.getText() + "," + this.ChefN.getText() + " " + this.ChefP.getText() + "," + this.SuppN.getText() + " " + this.SuppC.getText();
+        System.out.println(line);
+        csv.appendLineToCSV(filePath, line);
+        csv.updateCsv(file, row+1, lineGest);
+    }
+
+    public java.util.List<Pair<String, String>> getAllDataPairs() {
+        java.util.List<Pair<String, String>> dataPairs = new java.util.ArrayList<>();
+
+        javax.swing.JPanel panel = (javax.swing.JPanel) jScrollPane2.getViewport().getView();
+        if (panel != null) {
+            int componentCount = panel.getComponentCount();
+
+            for (int i = 0; i < componentCount; i++) {
+                javax.swing.JPanel pairPanel = (javax.swing.JPanel) panel.getComponent(i);
+                if (pairPanel != null) {
+                    javax.swing.JTextField textField1 = (javax.swing.JTextField) pairPanel.getComponent(0);
+                    javax.swing.JTextField textField2 = (javax.swing.JTextField) pairPanel.getComponent(1);
+
+                    String text1 = textField1.getText();
+                    String text2 = textField2.getText();
+
+                    // Ajoutez les données sous forme de paire à la liste
+                    dataPairs.add(new Pair<>(text1, text2));
+                }
+            }
+        }
+        return dataPairs;
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -120,9 +184,12 @@ public class Edit extends javax.swing.JFrame {
         TitreLab = new javax.swing.JLabel();
         ChefLab = new javax.swing.JLabel();
         SuppLab = new javax.swing.JLabel();
-        Supp = new design.TextField();
-        Chef = new design.TextField();
+        SuppC = new design.TextField();
+        ChefP = new design.TextField();
         jScrollPane2 = new javax.swing.JScrollPane();
+        ChefN = new design.TextField();
+        SuppN = new design.TextField();
+        SuppA = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -146,6 +213,8 @@ public class Edit extends javax.swing.JFrame {
         SuppLab.setText("Suppléant");
 
         jScrollPane2.setBorder(null);
+
+        SuppA.setText("Autres suppléants :");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -176,10 +245,19 @@ public class Edit extends javax.swing.JFrame {
                             .addComponent(ChefLab)
                             .addComponent(SuppLab))
                         .addGap(29, 29, 29)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Supp, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Chef, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(SuppN, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(SuppC, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(ChefN, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(42, 42, 42)
+                                .addComponent(ChefP, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(322, 322, 322)
+                        .addComponent(SuppA)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -192,14 +270,18 @@ public class Edit extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ChefLab)
-                    .addComponent(Chef, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ChefP, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ChefN, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(22, 22, 22)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(SuppLab)
-                    .addComponent(Supp, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(SuppC, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(SuppN, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(SuppLab))
+                .addGap(16, 16, 16)
+                .addComponent(SuppA)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
                 .addComponent(DescrLab)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -213,7 +295,11 @@ public class Edit extends javax.swing.JFrame {
 
     private void TerminerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TerminerActionPerformed
         //Enregistrer les modifications
+        EditSave();
+        //Supprimer la ligne necessaire
         close();
+        mainFrame.populateTable();
+        mainFrame.setupCustomTableColumn();
         mainFrame.setVisible(true);
         mainFrame.repaint();
         mainFrame.revalidate();
@@ -249,12 +335,15 @@ public class Edit extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private design.TextField Chef;
     private javax.swing.JLabel ChefLab;
+    private design.TextField ChefN;
+    private design.TextField ChefP;
     private javax.swing.JTextArea Descr;
     private javax.swing.JLabel DescrLab;
-    private design.TextField Supp;
+    private javax.swing.JLabel SuppA;
+    private design.TextField SuppC;
     private javax.swing.JLabel SuppLab;
+    private design.TextField SuppN;
     private design.Button Terminer;
     private design.TextField Titre;
     private javax.swing.JLabel TitreLab;

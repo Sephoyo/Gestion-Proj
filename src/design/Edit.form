@@ -56,11 +56,23 @@
                           <Component id="SuppLab" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="Supp" min="-2" pref="144" max="-2" attributes="0"/>
-                          <Component id="Chef" min="-2" pref="144" max="-2" attributes="0"/>
-                          <Component id="jScrollPane2" alignment="0" min="-2" pref="201" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Group type="102" alignment="1" attributes="0">
+                              <Component id="SuppN" min="-2" pref="144" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="SuppC" min="-2" pref="144" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Component id="ChefN" min="-2" pref="144" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
+                              <Component id="ChefP" min="-2" pref="144" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="jScrollPane2" alignment="1" max="32767" attributes="0"/>
                       </Group>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="322" max="-2" attributes="0"/>
+                      <Component id="SuppA" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -77,16 +89,20 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="ChefLab" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="Chef" alignment="3" min="-2" pref="42" max="-2" attributes="0"/>
+                  <Component id="ChefP" alignment="3" min="-2" pref="42" max="-2" attributes="0"/>
+                  <Component id="ChefN" alignment="3" min="-2" pref="42" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="SuppC" alignment="3" min="-2" pref="42" max="-2" attributes="0"/>
+                  <Component id="SuppN" alignment="3" min="-2" pref="42" max="-2" attributes="0"/>
                   <Component id="SuppLab" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="Supp" alignment="3" min="-2" pref="42" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
+              <Component id="SuppA" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="jScrollPane2" min="-2" pref="100" max="-2" attributes="0"/>
-              <EmptySpace pref="92" max="32767" attributes="0"/>
+              <EmptySpace pref="71" max="32767" attributes="0"/>
               <Component id="DescrLab" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jScrollPane1" min="-2" pref="177" max="-2" attributes="0"/>
@@ -143,9 +159,9 @@
         <Property name="text" type="java.lang.String" value="Suppl&#xe9;ant"/>
       </Properties>
     </Component>
-    <Component class="design.TextField" name="Supp">
+    <Component class="design.TextField" name="SuppC">
     </Component>
-    <Component class="design.TextField" name="Chef">
+    <Component class="design.TextField" name="ChefP">
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane2">
       <Properties>
@@ -156,5 +172,14 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
     </Container>
+    <Component class="design.TextField" name="ChefN">
+    </Component>
+    <Component class="design.TextField" name="SuppN">
+    </Component>
+    <Component class="javax.swing.JLabel" name="SuppA">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Autres suppl&#xe9;ants :"/>
+      </Properties>
+    </Component>
   </SubComponents>
 </Form>
