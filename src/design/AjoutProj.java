@@ -4,6 +4,7 @@
  */
 package design;
 
+import action.data.Csv;
 import action.data.Pair;
 import gestionproj.fenetreprincipal;
 import java.awt.Color;
@@ -28,6 +29,7 @@ public class AjoutProj extends javax.swing.JFrame {
     private String filePathId;
     private int LastId;
     private fenetreprincipal mainFrame;
+    private Csv csv;
 
     public void close() {
         WindowEvent closeWindow = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
@@ -39,6 +41,7 @@ public class AjoutProj extends javax.swing.JFrame {
      */
     public AjoutProj(fenetreprincipal mainFrame) {
         initComponents();
+        this.csv = new Csv(mainFrame);
         SuppListe.setVisible(false);
         Remove.setVisible(false);
         this.mainFrame = mainFrame;
@@ -91,9 +94,8 @@ public class AjoutProj extends javax.swing.JFrame {
         }
         System.out.println(line);
 
-        repaint();
-
-        revalidate();
+        mainFrame.repaint();
+        mainFrame.revalidate();
     }
 
 //Ajouts des suppléants
@@ -363,12 +365,12 @@ public class AjoutProj extends javax.swing.JFrame {
     private void ValiderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ValiderActionPerformed
         close();
         this.CsvFichier();
-        mainFrame.appendLineToCSV(filePath, "" + ("" + this.LastId + "," + Titre.getText() + "," + nomS.getText() + " " + nomS.getText()));
+        csv.appendLineToCSV(filePath, this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText());
         mainFrame.populateTable();
         mainFrame.setupCustomTableColumn();
-        mainFrame.setVisible(true);
         mainFrame.repaint();
         mainFrame.revalidate();
+        mainFrame.setVisible(true);
     }//GEN-LAST:event_ValiderActionPerformed
 
     private void TitreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TitreActionPerformed

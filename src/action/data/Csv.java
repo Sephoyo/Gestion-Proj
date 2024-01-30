@@ -111,14 +111,12 @@ public class Csv {
         } catch (IOException e) {
             System.err.println("Error renaming the file: " + e.getMessage());
         }
-
         frame.repaint();
-
         frame.revalidate();
     }
     
     
-    private void IdEdit(int row, String filePath) {
+    private void IdEdit(int row, String filePath,int a ) {
         String id = "";
         try {
             try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -148,12 +146,14 @@ public class Csv {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        edit(id,row,filePath);
+        edit(id,row,filePath,a);
+        frame.repaint();
+        frame.revalidate();
     }
     
-    private void edit(String id,int row, String filePath){
+    private void edit(String id,int row, String filePath,int a ){
         frame.close();
-        Edit edit = new Edit(frame,id,row,filePath);
+        Edit edit = new Edit(frame,id,row,filePath,a);
         edit.setVisible(true);
     }
     
@@ -192,10 +192,10 @@ public class Csv {
         } catch (IOException e) {
             System.err.println("Error renaming the file: " + e.getMessage());
         }
-
         frame.repaint();
         frame.revalidate();
     }
+
 }
 
 

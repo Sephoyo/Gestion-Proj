@@ -7,9 +7,12 @@ package design;
 import action.data.Csv;
 import action.data.Pair;
 import gestionproj.fenetreprincipal;
+import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -32,6 +35,7 @@ public class Edit extends javax.swing.JFrame {
     private String[] data1;
     private String[] data2;
     private int row;
+    private int ActifNon;
 
     /**
      * Creates new form View
@@ -43,8 +47,13 @@ public class Edit extends javax.swing.JFrame {
     }
 
     //Initialisation de la fenetre
-    public Edit(fenetreprincipal mainFrame, String id, int row, String file) {
+    public Edit(fenetreprincipal mainFrame, String id, int row, String file, int actif) {
         initComponents();
+        if (actif == 0) {
+            ActifArchiv.setVisible(false);
+        } else {
+            ActifArchiv.setVisible(true);
+        }
         jScrollPane1.setVerticalScrollBar(new ScrollBarCustom());
         jScrollPane2.setVerticalScrollBar(new ScrollBarCustom());
         this.mainFrame = mainFrame;
@@ -66,7 +75,7 @@ public class Edit extends javax.swing.JFrame {
         this.Descr.setText(data2[length - 1]);
         //A modifier lors de l'ajout des dates
         for (int i = 4; i < length - 1; i++) {
-            addTextFieldToScroll(data2[i]);
+            addSuppl(data2[i]);
         }
     }
 
@@ -77,11 +86,13 @@ public class Edit extends javax.swing.JFrame {
     }
 
     //Ajouter les suppléant dans le jScroll
-    private void addTextFieldToScroll(String text) {
+    private void addSuppl(String text) {
         String[] tableau = enleverEspaces(text);
         design.TextField newTextField1 = new design.TextField();
         design.TextField newTextField2 = new design.TextField();
-
+        Color CouleurShadow = new Color(255, 153, 0);
+        newTextField1.setShadowColor(CouleurShadow);
+        newTextField2.setShadowColor(CouleurShadow);
         newTextField1.setPreferredSize(new java.awt.Dimension(136, 36));
         newTextField2.setPreferredSize(new java.awt.Dimension(136, 36));
         newTextField1.setText(tableau[0]);
@@ -104,8 +115,37 @@ public class Edit extends javax.swing.JFrame {
         jScrollPane2.setViewportView(panel);
     }
 
+    private void addSupplWt() {
+        design.TextField newTextField1 = new design.TextField();
+        design.TextField newTextField2 = new design.TextField();
+        Color CouleurShadow = new Color(255, 153, 0);
+        newTextField1.setShadowColor(CouleurShadow);
+        newTextField2.setShadowColor(CouleurShadow);
+
+        newTextField1.setPreferredSize(new java.awt.Dimension(176, 36));
+        newTextField2.setPreferredSize(new java.awt.Dimension(176, 36));
+
+        javax.swing.JPanel panel = (javax.swing.JPanel) jScrollPane2.getViewport().getView();
+        if (panel == null) {
+            panel = new javax.swing.JPanel();
+            panel.setLayout(new javax.swing.BoxLayout(panel, javax.swing.BoxLayout.Y_AXIS));
+            jScrollPane2.setViewportView(panel);
+        }
+
+        javax.swing.JPanel pairPanel = new javax.swing.JPanel();
+        pairPanel.setLayout(new java.awt.FlowLayout());
+        pairPanel.add(newTextField1);
+        pairPanel.add(newTextField2);
+
+        panel.add(pairPanel);
+
+        jScrollPane2.setViewportView(panel);
+        getAllDataPairs();
+    }
+
     //Lecture la ligne
     private void LectLine(String filePath) {
+        System.out.println("Je suis dans ma fonction lectline");
         String[] data = null;
         String[] data2 = null;
 
@@ -122,30 +162,6 @@ public class Edit extends javax.swing.JFrame {
         }
         this.data1 = data2;
         this.data2 = data;
-    }
-
-    private void EditSave() {
-        csv.deleteLineFromCsv(filePath, 1);
-        //Écriture de la ligne
-        String line = this.id + this.Titre.getText() + "," + this.ChefN.getText() + " " + this.ChefP.getText() + "," + this.SuppN.getText() + " " + this.SuppC.getText();
-        //Il faut mtn ajouter tout les suppléants
-        //Il faut maintenant ajouter tous les suppléants
-        java.util.List<Pair<String, String>> supplList = getAllDataPairs();
-        int nombreSupp = supplList.size();
-        System.out.println(nombreSupp);
-        for (int i = 1; i <= nombreSupp; i++) {
-            Pair<String, String> pair = supplList.get(i - 1);
-            String one = pair.getFirst();
-            String twice = pair.getSecond();
-            System.out.println(one + " . " + twice);
-            line += "," + one + " " + twice;
-            System.out.println(line);
-        }
-        line += "," + this.Descr.getText();
-        String lineGest = this.id +","+ this.Titre.getText() + "," + this.ChefN.getText() + " " + this.ChefP.getText() + "," + this.SuppN.getText() + " " + this.SuppC.getText();
-        System.out.println(line);
-        csv.appendLineToCSV(filePath, line);
-        csv.updateCsv(file, row+1, lineGest);
     }
 
     public java.util.List<Pair<String, String>> getAllDataPairs() {
@@ -172,6 +188,64 @@ public class Edit extends javax.swing.JFrame {
         return dataPairs;
     }
 
+    private void RetirerSupll() {
+        javax.swing.JPanel panel = (javax.swing.JPanel) jScrollPane2.getViewport().getView();
+        if (panel != null) {
+            int componentCount = panel.getComponentCount();
+            if (componentCount > 0) {
+                panel.remove(componentCount - 1); // Remove the last pair panel
+                panel.revalidate();
+                panel.repaint();
+            }
+        }
+    }
+
+    private void CsvFichier() {
+        String line = "id,Projet,Chef de projet,Suppléant,";
+
+        String FileId = filePath;
+        String Line2 = "" + this.id + "," + Titre.getText() + "," + ChefN.getText() + " " + ChefP.getText() + "," + SuppN.getText() + " " + SuppC.getText();
+        try {
+            // Vérifier si le fichier existe, sinon le créer
+            File file = new File(FileId);
+            if (file.exists()) {
+                file.delete();
+            }
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            java.util.List<Pair<String, String>> supplList = getAllDataPairs();
+            int nombreSupp = supplList.size();
+
+            for (int i = 1; i <= nombreSupp; i++) {
+                Pair<String, String> Pair = supplList.get(i - 1);
+                line += "Suppléant" + String.valueOf(i) + ",";
+                String one = Pair.getFirst();
+                String twice = Pair.getSecond();
+                Line2 += "," + one + " " + twice;
+            }
+            Line2 += "," + Descr.getText();
+
+            line += "Description,Date de Début,Date de fin";
+            // Utiliser BufferedWriter pour écrire dans le fichier
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+                writer.write(line);
+                writer.newLine();
+                writer.write(Line2);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("Error appending line to CSV file: " + e.getMessage());
+            e.printStackTrace();
+        }
+        String gestion = this.id + "," + this.Titre.getText() + "," + this.ChefN.getText() + " " + this.ChefP.getText();
+        System.out.println(gestion);
+        csv.updateCsv(file, this.row+1, gestion);
+        System.out.println(line);
+    }
+    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -190,6 +264,9 @@ public class Edit extends javax.swing.JFrame {
         ChefN = new design.TextField();
         SuppN = new design.TextField();
         SuppA = new javax.swing.JLabel();
+        Remove = new design.Button();
+        Add = new design.Button();
+        ActifArchiv = new design.JCheckBoxCustom();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -216,49 +293,82 @@ public class Edit extends javax.swing.JFrame {
 
         SuppA.setText("Autres suppléants :");
 
+        Remove.setText("-");
+        Remove.setBorderColor(new java.awt.Color(204, 0, 0));
+        Remove.setColorClick(new java.awt.Color(255, 51, 51));
+        Remove.setColorOver(new java.awt.Color(255, 102, 102));
+        Remove.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        Remove.setPreferredSize(new java.awt.Dimension(21, 23));
+        Remove.setRadius(500);
+        Remove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RemoveActionPerformed(evt);
+            }
+        });
+
+        Add.setText("+");
+        Add.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        Add.setPreferredSize(new java.awt.Dimension(21, 23));
+        Add.setRadius(500);
+        Add.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddActionPerformed(evt);
+            }
+        });
+
+        ActifArchiv.setText("Rendre ce projet actif.");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(40, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(Titre, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                            .addComponent(Terminer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap())
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(58, 58, 58)))))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(340, 340, 340)
-                        .addComponent(DescrLab))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(390, 390, 390)
                         .addComponent(TitreLab))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(102, 102, 102)
+                        .addGap(292, 292, 292)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(SuppN, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(SuppA)
+                            .addComponent(ChefN, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(340, 340, 340)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(ActifArchiv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(DescrLab))))
+                .addGap(0, 353, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(58, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(Titre, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addComponent(Terminer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addContainerGap())
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(58, 58, 58))))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(Add, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(Remove, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(129, 129, 129)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(96, 96, 96)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(ChefLab)
                             .addComponent(SuppLab))
-                        .addGap(29, 29, 29)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(SuppN, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(SuppC, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(ChefN, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(42, 42, 42)
-                                .addComponent(ChefP, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(322, 322, 322)
-                        .addComponent(SuppA)))
-                .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(270, 270, 270)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(SuppC, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ChefP, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -276,12 +386,19 @@ public class Edit extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(SuppC, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(SuppN, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(SuppLab))
+                    .addComponent(SuppLab)
+                    .addComponent(Add, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(16, 16, 16)
                 .addComponent(SuppA)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addComponent(Remove, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(ActifArchiv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                 .addComponent(DescrLab)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -294,16 +411,40 @@ public class Edit extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void TerminerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TerminerActionPerformed
-        //Enregistrer les modifications
-        EditSave();
-        //Supprimer la ligne necessaire
-        close();
-        mainFrame.populateTable();
-        mainFrame.setupCustomTableColumn();
-        mainFrame.setVisible(true);
-        mainFrame.repaint();
-        mainFrame.revalidate();
+        //Enregistrer les modifications dans le fichier csv
+        CsvFichier();
+        String chemin = System.getProperty("user.dir");
+        //si le check box et selectionner alors
+        if (ActifArchiv.isSelected()) {
+            csv.deleteLineFromCsv(this.file, this.row+1);
+            String filePatH = chemin + "/src/gestionproj/gestion.csv";
+            csv.appendLineToCSV(filePatH, this.id + "," + this.Titre.getText() + "," + this.ChefN.getText() + " " + this.ChefP.getText());
+            close();
+            mainFrame.populateTableTotal();
+            mainFrame.setupCustomTableColumnTotal();
+            mainFrame.repaint();
+            mainFrame.revalidate();
+            mainFrame.setVisible(true);
+        } else //sinon
+        {
+            close();
+            mainFrame.populateTable();
+            mainFrame.setupCustomTableColumn();
+            mainFrame.setVisible(true);
+            mainFrame.repaint();
+            mainFrame.revalidate();
+        }
     }//GEN-LAST:event_TerminerActionPerformed
+
+    private void RemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveActionPerformed
+        // TODO add your handling code here:
+        RetirerSupll();
+    }//GEN-LAST:event_RemoveActionPerformed
+
+    private void AddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddActionPerformed
+        // TODO add your handling code here:
+        addSupplWt();
+    }//GEN-LAST:event_AddActionPerformed
 
     /**
      * @param args the command line arguments
@@ -335,11 +476,14 @@ public class Edit extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private design.JCheckBoxCustom ActifArchiv;
+    private design.Button Add;
     private javax.swing.JLabel ChefLab;
     private design.TextField ChefN;
     private design.TextField ChefP;
     private javax.swing.JTextArea Descr;
     private javax.swing.JLabel DescrLab;
+    private design.Button Remove;
     private javax.swing.JLabel SuppA;
     private design.TextField SuppC;
     private javax.swing.JLabel SuppLab;

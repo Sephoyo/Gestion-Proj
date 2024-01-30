@@ -11,6 +11,7 @@ import design.Edit;
 import design.ScrollBarCustom;
 import design.View;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -32,9 +33,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.RowFilter;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -42,8 +46,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class fenetreprincipal extends javax.swing.JFrame {
 
-    
-    private Csv csv=new Csv(this);
+    private Csv csv = new Csv(this);
     private String filePath;
     private String filePathAll;
     private String filePathRC;
@@ -66,16 +69,8 @@ public class fenetreprincipal extends javax.swing.JFrame {
         Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closeWindow);
     }
 
-    //ajouter une ligne au csv
-    public void appendLineToCSV(String filePath, String line) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
-            writer.write(line);
-            writer.newLine();
-        } catch (IOException e) {
-            System.err.println("Error appending line to CSV file: " + e.getMessage());
-        }
-        repaint();
-        revalidate();
+    public void Review(){
+        
     }
 
     public fenetreprincipal() {
@@ -105,37 +100,12 @@ public class fenetreprincipal extends javax.swing.JFrame {
                 return super.getTableCellRendererComponent(jtable, o, bln, bln1, i, i1);
             }
         });
-
-        //Ecouteur d'action sur les checkbox
-        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBoxActionPerformed(evt, 0);
-            }
-        });
-
-        jCheckBox2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBoxActionPerformed(evt, 1);
-            }
-        });
-
-        jCheckBox3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBoxActionPerformed(evt, 2);
-            }
-        });
-        checkBoxArray = new javax.swing.JCheckBox[]{jCheckBox1, jCheckBox2, jCheckBox3};
-        //Ecoute de clique sur le bouton rechercher
-        rechercher.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-
-            }
-        });
         //Ecouteur de clique sur les cartes
         carLayout1.card2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 populateTable();
                 setupCustomTableColumn();
+                resetSearch(jTable2, Demande, resultat);
             }
         });
 
@@ -143,18 +113,10 @@ public class fenetreprincipal extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 populateTableTotal();
                 setupCustomTableColumnTotal();
+                resetSearch(jTable2, Demande, resultat);
             }
         });
         setupCustomTableColumn();
-    }
-
-    //actionner lors du check d'une checkbox
-    private void jCheckBoxActionPerformed(java.awt.event.ActionEvent evt, int index) {
-        for (int i = 0; i < checkBoxArray.length; i++) {
-            if (i != index) {
-                checkBoxArray[i].setSelected(false);
-            }
-        }
     }
 
     //Button edit delet view table actif
@@ -162,7 +124,8 @@ public class fenetreprincipal extends javax.swing.JFrame {
         TableActionEvent event = new TableActionEvent() {
             @Override
             public void onEdit(int row) {
-                IdEdit(row, filePath);
+                IdEdit(row, filePath,0);
+                System.out.println("Je vais bien dans ma setup custom");
             }
 
             @Override
@@ -212,7 +175,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
         TableActionEvent event = new TableActionEvent() {
             @Override
             public void onEdit(int row) {
-                IdEdit(row, filePathAll);
+                IdEdit(row, filePathAll, 1);
             }
 
             @Override
@@ -252,13 +215,16 @@ public class fenetreprincipal extends javax.swing.JFrame {
         view.setVisible(true);
 
     }
-    private void edit(String id,int row, String filePath){
+
+    private void edit(String id, int row, String filePath,int a) {
+        System.out.println("Je suis dans ma fonction edit avec comme argument : "+id+" "+row+" "+filePath);
         close();
-        Edit edit = new Edit(this,id,row,filePath);
+        Edit edit = new Edit(this, id, row, filePath,a);
         edit.setVisible(true);
     }
 
-    private void IdEdit(int row, String filePath) {
+    private void IdEdit(int row, String filePath, int a) {
+        System.out.println("Je suis dans mon idEdit avec comment argument : "+ row + filePath);
         String id = "";
         try {
             try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -288,8 +254,9 @@ public class fenetreprincipal extends javax.swing.JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        edit(id,row,filePath);
+        edit(id, row, filePath, a);
     }
+
     private void Idview(int row, String filePath) {
         String id = "";
         try {
@@ -449,70 +416,43 @@ public class fenetreprincipal extends javax.swing.JFrame {
         return model;
     }
 
-    //Recherche dans Actif
-    private void RechercheActif(String demandeText) {
-        if (jCheckBox1.isSelected()) {
-            boolean rep = Demander.searchAndSaveResultsID(filePath, demandeText, filePathRC, this);
-            if (rep) {
-                populateTableR();
-                setupCustomTableColumn();
-                Demande.setText("");
-                jCheckBox1.setSelected(false);
-            }
-        }
-        //Projet
-        if (jCheckBox2.isSelected()) {
-            boolean rep = Demander.searchAndSaveResultsPROJET(filePath, demandeText, filePathRC, this);
-            if (rep) {
-                populateTableR();
-                setupCustomTableColumn();
-                Demande.setText("");
-                jCheckBox2.setSelected(false);
-            }
-        }
-        //Chef
-        if (jCheckBox3.isSelected()) {
-            boolean rep = Demander.searchAndSaveResultsNOM(filePath, demandeText, filePathRC, this);
-            if (rep) {
-                populateTableR();
-                setupCustomTableColumn();
-                Demande.setText("");
-                jCheckBox3.setSelected(false);
-            }
-        }
+    public static void rechercheAuto(JTable jt, JTextField jtf, JLabel jl) {
+    DefaultTableModel dtm = (DefaultTableModel) jt.getModel();
+    String mot = jtf.getText().trim().toLowerCase();
+
+    if (mot.isEmpty()) {
+        jl.setText("");
+        TableRowSorter<DefaultTableModel> trs = new TableRowSorter<>(dtm);
+        jt.setRowSorter(trs);
+        return;
     }
 
-    //Recherche dans l'archive
-    private void RechercheArchive(String demandeText) {
-        if (jCheckBox1.isSelected()) {
-            boolean rep = Demander.searchAndSaveResultsID(filePathAll, demandeText, filePathRC, this);
-            if (rep) {
-                populateTableR();
-                setupCustomTableColumn();
-                Demande.setText("");
-                jCheckBox1.setSelected(false);
-            }
-        }
-        //Projet
-        if (jCheckBox2.isSelected()) {
-            boolean rep = Demander.searchAndSaveResultsPROJET(filePathAll, demandeText, filePathRC, this);
-            if (rep) {
-                populateTableR();
-                setupCustomTableColumn();
-                Demande.setText("");
-                jCheckBox2.setSelected(false);
-            }
-        }
-        //Chef
-        if (jCheckBox3.isSelected()) {
-            boolean rep = Demander.searchAndSaveResultsNOM(filePathAll, demandeText, filePathRC, this);
-            if (rep) {
-                populateTableR();
-                setupCustomTableColumn();
-                Demande.setText("");
-                jCheckBox3.setSelected(false);
-            }
-        }
+    // Créer un filtre pour toutes les colonnes
+    RowFilter<DefaultTableModel, Object> filter = RowFilter.regexFilter("(?i)" + mot);
+
+    TableRowSorter<DefaultTableModel> trs = new TableRowSorter<>(dtm);
+    trs.setRowFilter(filter);
+    jt.setRowSorter(trs);
+
+    int nbr = jt.getRowCount();
+    if (nbr == 0) {
+        jl.setForeground(Color.red);
+        jl.setText("Aucun projet trouvé");
+    } else if (nbr == 1) {
+        jl.setForeground(new Color(0, 102, 0));
+        jl.setText("Un Projet trouvé");
+    } else {
+        jl.setForeground(new Color(0, 102, 0));
+        jl.setText("Retrouvé :" + nbr);
+    }
+}
+
+
+    public static void resetSearch(JTable jt, JTextField jtf, JLabel jl) {
+        jtf.setText("");
+        TableRowSorter<DefaultTableModel> trs = new TableRowSorter<>((DefaultTableModel) jt.getModel());
+        jt.setRowSorter(trs);
+        jl.setText("");
     }
 
     /**
@@ -527,13 +467,9 @@ public class fenetreprincipal extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
         carLayout1 = new design.CarLayout();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jCheckBox1 = new design.JCheckBoxCustom();
-        jCheckBox2 = new design.JCheckBoxCustom();
-        jCheckBox3 = new design.JCheckBoxCustom();
         Demande = new design.TextField();
-        rechercher = new design.Button();
         ajouts = new design.Button();
+        resultat = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(102, 102, 102));
@@ -563,33 +499,13 @@ public class fenetreprincipal extends javax.swing.JFrame {
 
     carLayout1.setBackground(new java.awt.Color(255, 255, 255));
 
-    jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Rechercher dans projet actif", "Recherche dans archive" }));
-    jComboBox1.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            jComboBox1ActionPerformed(evt);
-        }
-    });
-
-    jCheckBox1.setText("id");
-
-    jCheckBox2.setBackground(new java.awt.Color(0, 204, 0));
-    jCheckBox2.setText("Projet");
-
-    jCheckBox3.setBackground(new java.awt.Color(255, 153, 0));
-    jCheckBox3.setText("Chef");
-
-    Demande.setBackground(new java.awt.Color(255, 255, 255));
     Demande.setShadowColor(new java.awt.Color(255, 0, 0));
-
-    rechercher.setText("Rechercher");
-    rechercher.setBorderColor(new java.awt.Color(102, 102, 255));
-    rechercher.setBorderPainted(false);
-    rechercher.setColorClick(new java.awt.Color(153, 153, 255));
-    rechercher.setColorOver(new java.awt.Color(102, 102, 255));
-    rechercher.setRadius(17);
-    rechercher.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            rechercherActionPerformed(evt);
+    Demande.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyReleased(java.awt.event.KeyEvent evt) {
+            DemandeKeyReleased(evt);
+        }
+        public void keyTyped(java.awt.event.KeyEvent evt) {
+            DemandeKeyTyped(evt);
         }
     });
 
@@ -621,15 +537,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                     .addComponent(Demande, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(18, 18, 18)
-                    .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(18, 18, 18)
-                    .addComponent(jCheckBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addComponent(jCheckBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(24, 24, 24)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(18, 18, 18)
-                    .addComponent(rechercher, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(resultat, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(ajouts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(28, 28, 28))))
@@ -638,17 +546,14 @@ public class fenetreprincipal extends javax.swing.JFrame {
         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(layout.createSequentialGroup()
             .addContainerGap()
-            .addComponent(carLayout1, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(Demande, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(jCheckBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(jCheckBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(rechercher, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(ajouts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(carLayout1, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
+            .addGap(18, 18, 18)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(resultat, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Demande, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ajouts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 412, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addContainerGap())
     );
@@ -657,47 +562,21 @@ public class fenetreprincipal extends javax.swing.JFrame {
     setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        // TODO add your handling code here:
-        //Afficher la jtable correspondant à la selection dans le combo box
-        String selectedOption = (String) jComboBox1.getSelectedItem();
-        if (selectedOption == "Rechercher dans projet actif") {
-            populateTable();
-            setupCustomTableColumn();
-        } else if (selectedOption == "Recherche dans archive") {
-            populateTableTotal();
-            setupCustomTableColumnTotal();
-        }
-    }//GEN-LAST:event_jComboBox1ActionPerformed
-
-    private void rechercherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rechercherActionPerformed
-        // TODO add your handling code here:
-        //Verifie si le champs est vide et si au moins un checkbox est valide
-        String demandeText = Demande.getText().trim();
-        if (!jCheckBox1.isSelected() && !jCheckBox2.isSelected() && !jCheckBox3.isSelected()) {
-            JOptionPane.showMessageDialog(this, "Vous devez selectionner au moins 1 attributs (id,projet,chef de projet) !", "Attribut non selectionner", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (demandeText.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Champs de text vide !", "Champs vide", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        //prend le résultat de la combobox
-        String selectedOption = (String) jComboBox1.getSelectedItem();
-        //Recherche dans l'actif pour l'archive
-        if (selectedOption == "Rechercher dans projet actif") {
-            RechercheActif(demandeText);
-        } else if (selectedOption == "Recherche dans archive") {
-            RechercheArchive(demandeText);
-        }
-    }//GEN-LAST:event_rechercherActionPerformed
-
     private void ajoutsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ajoutsActionPerformed
         // TODO add your handling code here:
         close();
         AjoutProj aj = new AjoutProj(this);
         aj.setVisible(true);
     }//GEN-LAST:event_ajoutsActionPerformed
+
+    private void DemandeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_DemandeKeyReleased
+        // TODO add your handling code here:
+        rechercheAuto(jTable2, Demande, resultat);
+    }//GEN-LAST:event_DemandeKeyReleased
+
+    private void DemandeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_DemandeKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_DemandeKeyTyped
 
     /**
      * @param args the command line arguments
@@ -753,12 +632,8 @@ public class fenetreprincipal extends javax.swing.JFrame {
     private design.TextField Demande;
     private design.Button ajouts;
     private static design.CarLayout carLayout1;
-    private design.JCheckBoxCustom jCheckBox1;
-    private design.JCheckBoxCustom jCheckBox2;
-    private design.JCheckBoxCustom jCheckBox3;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable2;
-    private design.Button rechercher;
+    private javax.swing.JLabel resultat;
     // End of variables declaration//GEN-END:variables
 }
