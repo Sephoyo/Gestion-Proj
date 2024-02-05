@@ -16,18 +16,27 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author joseph
  */
 public class Csv {
-    
+
     private fenetreprincipal frame;
-    
-    public Csv(fenetreprincipal Frame){
+    private String filePath;
+    private String filePathAll;
+
+    public Csv(fenetreprincipal Frame) {
         this.frame = Frame;
+        String chemin = System.getProperty("user.dir");
+        this.filePath = chemin + "/src/gestionproj/gestion.csv";
+        this.filePathAll = chemin + "/src/gestionproj/AllProjects.csv";
+
     }
+
     public void appendLineToCSV(String filePath, String line) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
             writer.write(line);
@@ -38,8 +47,54 @@ public class Csv {
         frame.repaint();
         frame.revalidate();
     }
-    
-    public void deleteLineFromCsv(String filePath, int lineIndexToDelete) {
+
+    public void deleteLineModifDossier(int lineIndexToDelete) {
+        String deletedLine = null;
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath)); FileWriter writer = new FileWriter(filePath + ".tmp")) {
+
+            String line;
+            int currentLineIndex = 0;
+
+            while ((line = reader.readLine()) != null) {
+                String[] columns = line.split(",");
+                if (columns.length > 0) {
+                    String idInCurrentLine = columns[0];
+                    if (idInCurrentLine.equals(Integer.toString(lineIndexToDelete))) {
+                        deletedLine = line;
+                        System.out.println("Deleted line: " + deletedLine);
+                    } else {
+                        writer.write(line);
+                        writer.write(System.lineSeparator());
+                    }
+                } else {
+                    System.out.println("La ligne ne contient pas assez d'éléments.");
+                }
+                currentLineIndex++;
+            }
+
+            writer.flush();
+            System.out.println("Line deleted successfully.");
+        } catch (IOException e) {
+            System.err.println("Error reading or writing the file: " + e.getMessage());
+        }
+        Path originalPath = Paths.get(filePath);
+        Path tempPath = Paths.get(filePath + ".tmp");
+
+        try {
+            Files.move(tempPath, originalPath, StandardCopyOption.REPLACE_EXISTING);
+            System.out.println("File renamed successfully.");
+        } catch (IOException e) {
+            System.err.println("Error renaming the file: " + e.getMessage());
+        }
+        if (deletedLine != null) {
+            appendLineToCSV(filePathAll, deletedLine);
+        }
+
+        frame.repaint();
+        frame.revalidate();
+    }
+
+    public void deleteLineFromCsv(int lineIndexToDelete) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath)); FileWriter writer = new FileWriter(filePath + ".tmp")) {
             String line;
             int currentLineIndex = 0;
@@ -69,13 +124,14 @@ public class Csv {
     }
 
     //Supprimer une ligne du total + le fichier correspondant à celui-ci
-    public void deleteLineFromCsvTotal(String filePath, int lineIndexToDelete) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath)); FileWriter writer = new FileWriter(filePath + ".tmp")) {
+    public void deleteLineFromCsvTotal(int lineIndexToDelete) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePathAll)); FileWriter writer = new FileWriter(filePathAll + ".tmp")) {
             String line;
             int currentLineIndex = 0;
             while ((line = reader.readLine()) != null) {
                 if (currentLineIndex != lineIndexToDelete) {
                     writer.write(line);
+                    System.out.println(line);
                     writer.write(System.lineSeparator());
                 } else {
                     String[] columns = line.split(",");
@@ -102,8 +158,8 @@ public class Csv {
         }
 
         // Renommer le fichier temporaire au fichier d'origine 
-        Path originalPath = Paths.get(filePath);
-        Path tempPath = Paths.get(filePath + ".tmp");
+        Path originalPath = Paths.get(filePathAll);
+        Path tempPath = Paths.get(filePathAll + ".tmp");
 
         try {
             Files.move(tempPath, originalPath, StandardCopyOption.REPLACE_EXISTING);
@@ -114,9 +170,8 @@ public class Csv {
         frame.repaint();
         frame.revalidate();
     }
-    
-    
-    private void IdEdit(int row, String filePath,int a ) {
+
+    private void IdEdit(int row, String filePath, int a) {
         String id = "";
         try {
             try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -146,17 +201,17 @@ public class Csv {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        edit(id,row,filePath,a);
+        edit(id, row, filePath, a);
         frame.repaint();
         frame.revalidate();
     }
-    
-    private void edit(String id,int row, String filePath,int a ){
+
+    private void edit(String id, int row, String filePath, int a) {
         frame.close();
-        Edit edit = new Edit(frame,id,row,filePath,a);
+        Edit edit = new Edit(frame, id, row, filePath, a);
         edit.setVisible(true);
     }
-    
+
     public void updateCsv(String filePath, int lineIndexToUpdate, String newLine) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath)); FileWriter writer = new FileWriter(filePath + ".tmp")) {
 
@@ -197,5 +252,3 @@ public class Csv {
     }
 
 }
-
-

@@ -7,6 +7,7 @@ import action.cell.TableActionCellEditorTotal;
 import action.cell.TableActionCellRender;
 import action.cell.TableActionCellRenderTotal;
 import action.data.Csv;
+import action.data.DateDefinExtraction;
 import design.Edit;
 import design.ScrollBarCustom;
 import design.View;
@@ -27,7 +28,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -59,6 +67,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
     private ChefProjets CP;
     private javax.swing.JCheckBox[] checkBoxArray;
     private ChefProjets Demander = new ChefProjets();
+    private DateDefinExtraction DateFin = new DateDefinExtraction();
 
     /**
      * Creates new form fenetreprincipal
@@ -69,17 +78,37 @@ public class fenetreprincipal extends javax.swing.JFrame {
         Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closeWindow);
     }
 
-    public void Review(){
-        
+    public void Review() {
+
     }
 
     public fenetreprincipal() {
         //Chemin d'accès
+        System.out.println(DateFin.Datedefin);
+        String Deplacer = "Les projets : ";
+        Set<String> uniqueElements = new HashSet<>();
+        System.out.println("Les projets dépasser : "+DateFin.Depasser);
+        if (DateFin.Depasser.size() > 0) {
+            for (String element : DateFin.Depasser) {
+                if (uniqueElements.add(element)) {  // Add returns true if the element is added, false if it already exists
+                    Deplacer += element + ",";
+                    try {
+                        int intValue = Integer.parseInt(element);
+                        System.out.println("Valuer entré dans la fonction deleteLineModifDossier "+intValue);
+                        csv.deleteLineModifDossier(intValue);
+                    } catch (NumberFormatException e) {
+                        System.err.println("Error parsing integer: " + e.getMessage());
+                    }
+                }
+            }
+
+            if (!uniqueElements.isEmpty()) {
+                Deplacer += "sont déplacés dans les projets archivés car leur date butoire est arrivée.";
+                JOptionPane.showMessageDialog(null, Deplacer, "Attention fichier déplacé", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+
         String chemin = System.getProperty("user.dir");
-        System.out.println("Le répertoire de travail actuel est : " + chemin);
-        Path filePath = Paths.get("src", "gestionproj/gestion.csv");
-        String absolutePath = filePath.toAbsolutePath().toString();
-        System.out.println(absolutePath);
         this.filePath = chemin + "/src/gestionproj/gestion.csv";
         this.filePathAll = chemin + "/src/gestionproj/AllProjects.csv";
         this.filePathRC = chemin + "/src/gestionproj/ChefProject.csv";
@@ -124,8 +153,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
         TableActionEvent event = new TableActionEvent() {
             @Override
             public void onEdit(int row) {
-                IdEdit(row, filePath,0);
-                System.out.println("Je vais bien dans ma setup custom");
+                IdEdit(row, filePath, 0);
             }
 
             @Override
@@ -148,7 +176,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
                     ///l'utilisateur a dit oui
                     // Ajouter la ligne au fichier CSV
                     csv.appendLineToCSV(filePathAll, dataAdd);
-                    csv.deleteLineFromCsv(filePath, row + 1);
+                    csv.deleteLineFromCsv(row + 1);
                     model.removeRow(row);
                     NbrPA = NbrPA - 1;
                     NbrPAS = String.valueOf(NbrPA);
@@ -189,7 +217,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
                         JOptionPane.YES_NO_OPTION);
                 if (i == 0) {
                     ///l'utilisateur a dit oui
-                    csv.deleteLineFromCsvTotal(filePathAll, row + 1);
+                    csv.deleteLineFromCsvTotal(row + 1);
                     model.removeRow(row);
                     NbrPT = NbrPT - 1;
                     NbrPTS = String.valueOf(NbrPT);
@@ -216,15 +244,15 @@ public class fenetreprincipal extends javax.swing.JFrame {
 
     }
 
-    private void edit(String id, int row, String filePath,int a) {
-        System.out.println("Je suis dans ma fonction edit avec comme argument : "+id+" "+row+" "+filePath);
+    private void edit(String id, int row, String filePath, int a) {
+        System.out.println("Je suis dans ma fonction edit avec comme argument : " + id + " " + row + " " + filePath);
         close();
-        Edit edit = new Edit(this, id, row, filePath,a);
+        Edit edit = new Edit(this, id, row, filePath, a);
         edit.setVisible(true);
     }
 
     private void IdEdit(int row, String filePath, int a) {
-        System.out.println("Je suis dans mon idEdit avec comment argument : "+ row + filePath);
+        System.out.println("Je suis dans mon idEdit avec comment argument : " + row + filePath);
         String id = "";
         try {
             try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -417,36 +445,35 @@ public class fenetreprincipal extends javax.swing.JFrame {
     }
 
     public static void rechercheAuto(JTable jt, JTextField jtf, JLabel jl) {
-    DefaultTableModel dtm = (DefaultTableModel) jt.getModel();
-    String mot = jtf.getText().trim().toLowerCase();
+        DefaultTableModel dtm = (DefaultTableModel) jt.getModel();
+        String mot = jtf.getText().trim().toLowerCase();
 
-    if (mot.isEmpty()) {
-        jl.setText("");
+        if (mot.isEmpty()) {
+            jl.setText("");
+            TableRowSorter<DefaultTableModel> trs = new TableRowSorter<>(dtm);
+            jt.setRowSorter(trs);
+            return;
+        }
+
+        // Créer un filtre pour toutes les colonnes
+        RowFilter<DefaultTableModel, Object> filter = RowFilter.regexFilter("(?i)" + mot);
+
         TableRowSorter<DefaultTableModel> trs = new TableRowSorter<>(dtm);
+        trs.setRowFilter(filter);
         jt.setRowSorter(trs);
-        return;
+
+        int nbr = jt.getRowCount();
+        if (nbr == 0) {
+            jl.setForeground(Color.red);
+            jl.setText("Aucun projet trouvé");
+        } else if (nbr == 1) {
+            jl.setForeground(new Color(0, 102, 0));
+            jl.setText("Un Projet trouvé");
+        } else {
+            jl.setForeground(new Color(0, 102, 0));
+            jl.setText("Retrouvé :" + nbr);
+        }
     }
-
-    // Créer un filtre pour toutes les colonnes
-    RowFilter<DefaultTableModel, Object> filter = RowFilter.regexFilter("(?i)" + mot);
-
-    TableRowSorter<DefaultTableModel> trs = new TableRowSorter<>(dtm);
-    trs.setRowFilter(filter);
-    jt.setRowSorter(trs);
-
-    int nbr = jt.getRowCount();
-    if (nbr == 0) {
-        jl.setForeground(Color.red);
-        jl.setText("Aucun projet trouvé");
-    } else if (nbr == 1) {
-        jl.setForeground(new Color(0, 102, 0));
-        jl.setText("Un Projet trouvé");
-    } else {
-        jl.setForeground(new Color(0, 102, 0));
-        jl.setText("Retrouvé :" + nbr);
-    }
-}
-
 
     public static void resetSearch(JTable jt, JTextField jtf, JLabel jl) {
         jtf.setText("");

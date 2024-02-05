@@ -71,7 +71,9 @@ public class View extends javax.swing.JFrame {
         String[] tableau = enleverEspaces(text);
         design.TextField newTextField1 = new design.TextField();
         design.TextField newTextField2 = new design.TextField();
-
+        Color CouleurShadow = new Color(255, 153, 0);
+        newTextField1.setShadowColor(CouleurShadow);
+        newTextField2.setShadowColor(CouleurShadow);
 
         newTextField1.setPreferredSize(new java.awt.Dimension(136, 36));
         newTextField2.setPreferredSize(new java.awt.Dimension(136, 36));
@@ -147,12 +149,15 @@ public class View extends javax.swing.JFrame {
 
         Descr.setEditable(false);
         Descr.setColumns(20);
+        Descr.setLineWrap(true);
         Descr.setRows(5);
+        Descr.setWrapStyleWord(true);
         jScrollPane1.setViewportView(Descr);
 
         DescrLab.setText("Description du projet");
 
         Titre.setEditable(false);
+        Titre.setShadowColor(new java.awt.Color(0, 102, 255));
 
         TitreLab.setText("Titre");
 
@@ -161,14 +166,18 @@ public class View extends javax.swing.JFrame {
         SuppLab.setText("Suppléant");
 
         SuppC.setEditable(false);
+        SuppC.setShadowColor(new java.awt.Color(255, 153, 0));
 
         ChefP.setEditable(false);
+        ChefP.setShadowColor(new java.awt.Color(255, 0, 0));
 
         jScrollPane2.setBorder(null);
 
         ChefN.setEditable(false);
+        ChefN.setShadowColor(new java.awt.Color(255, 0, 0));
 
         SuppN.setEditable(false);
+        SuppN.setShadowColor(new java.awt.Color(255, 153, 0));
 
         SuppA.setText("Autres suppléants :");
 
@@ -193,9 +202,6 @@ public class View extends javax.swing.JFrame {
                         .addGap(340, 340, 340)
                         .addComponent(DescrLab))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(390, 390, 390)
-                        .addComponent(TitreLab))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(102, 102, 102)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(ChefLab)
@@ -213,7 +219,10 @@ public class View extends javax.swing.JFrame {
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(322, 322, 322)
-                        .addComponent(SuppA)))
+                        .addComponent(SuppA))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(377, 377, 377)
+                        .addComponent(TitreLab)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -247,6 +256,7 @@ public class View extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void TerminerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TerminerActionPerformed

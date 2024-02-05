@@ -17,6 +17,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 
 import java.io.IOException;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -44,13 +45,14 @@ public class AjoutProj extends javax.swing.JFrame {
         this.csv = new Csv(mainFrame);
         SuppListe.setVisible(false);
         Remove.setVisible(false);
+        txtFin.setText("");
         this.mainFrame = mainFrame;
         String chemin = System.getProperty("user.dir");
         System.out.println("Le répertoire de travail actuel est : " + chemin);
-        this.filePath = chemin+"/src/gestionproj/gestion.csv";
-        this.filePathId = chemin+"/src/gestionproj/ProjetCSV/";
-        this.filePathAll = chemin+"/src/gestionproj/AllProjects.csv";
-        CompareLastId(filePath,filePathAll);
+        this.filePath = chemin + "/src/gestionproj/gestion.csv";
+        this.filePathId = chemin + "/src/gestionproj/ProjetCSV/";
+        this.filePathAll = chemin + "/src/gestionproj/AllProjects.csv";
+        CompareLastId(filePath, filePathAll);
         jScrollPane6.setVerticalScrollBar(new ScrollBarCustom());
         SuppListe.setVerticalScrollBar(new ScrollBarCustom());
     }
@@ -72,13 +74,17 @@ public class AjoutProj extends javax.swing.JFrame {
             int nombreSupp = supplList.size();
 
             for (int i = 1; i <= nombreSupp; i++) {
-                Pair<String, String> Pair = supplList.get(i-1);
+                Pair<String, String> Pair = supplList.get(i - 1);
                 line += "Suppléant" + String.valueOf(i) + ",";
                 String one = Pair.getFirst();
                 String twice = Pair.getSecond();
-                Line2 += ","+one+" "+twice;
+                Line2 += "," + one + " " + twice;
             }
-            Line2 += ","+Descr.getText();
+            if (!txtFin.getText().trim().isEmpty() && txtFin.getText().matches("\\d{2}-\\d{2}-\\d{4}")) {
+                Line2 += "," + Descr.getText() + "," + Txtdate.getText() + "," + txtFin.getText();
+            } else {
+                Line2 += "," + Descr.getText() + "," + Txtdate.getText();
+            }
 
             line += "Description,Date de Début,Date de fin";
             // Utiliser BufferedWriter pour écrire dans le fichier
@@ -102,10 +108,9 @@ public class AjoutProj extends javax.swing.JFrame {
     private void AddSuppl() {
         design.TextField newTextField1 = new design.TextField();
         design.TextField newTextField2 = new design.TextField();
-        Color CouleurShadow = new Color(255,153,0);
+        Color CouleurShadow = new Color(255, 153, 0);
         newTextField1.setShadowColor(CouleurShadow);
         newTextField2.setShadowColor(CouleurShadow);
-
 
         newTextField1.setPreferredSize(new java.awt.Dimension(176, 36));
         newTextField2.setPreferredSize(new java.awt.Dimension(176, 36));
@@ -175,6 +180,8 @@ public class AjoutProj extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        dateChooser1 = new date.DateChooser();
+        dateChooser2 = new date.DateChooser();
         Valider = new javax.swing.JButton();
         Annuler = new javax.swing.JButton();
         jScrollPane6 = new javax.swing.JScrollPane();
@@ -191,6 +198,15 @@ public class AjoutProj extends javax.swing.JFrame {
         NomC = new design.TextField();
         PrenomC = new design.TextField();
         prenomS = new design.TextField();
+        Txtdate = new design.TextField();
+        DD = new javax.swing.JLabel();
+        DF = new javax.swing.JLabel();
+        txtFin = new design.TextField();
+
+        dateChooser1.setForeground(new java.awt.Color(102, 102, 255));
+        dateChooser1.setTextRefernce(Txtdate);
+
+        dateChooser2.setTextRefernce(txtFin);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Ajout d'un projet");
@@ -214,8 +230,12 @@ public class AjoutProj extends javax.swing.JFrame {
         });
 
         Descr.setColumns(20);
+        Descr.setLineWrap(true);
         Descr.setRows(5);
+        Descr.setWrapStyleWord(true);
         jScrollPane6.setViewportView(Descr);
+
+        SuppListe.setBorder(null);
 
         jLabel2.setText("Chef De Projet");
 
@@ -263,6 +283,15 @@ public class AjoutProj extends javax.swing.JFrame {
 
         prenomS.setShadowColor(new java.awt.Color(255, 153, 0));
 
+        Txtdate.setShadowColor(new java.awt.Color(102, 102, 255));
+
+        DD.setText("Date de début :");
+
+        DF.setText("Date de fin :");
+
+        txtFin.setEditable(true);
+        txtFin.setShadowColor(new java.awt.Color(204, 93, 93));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -277,42 +306,53 @@ public class AjoutProj extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(51, 51, 51)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 732, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addGap(9, 9, 9)
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                .addComponent(jLabel3)
-                                                .addComponent(jLabel2))
-                                            .addGap(45, 45, 45)
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addGroup(layout.createSequentialGroup()
-                                                    .addComponent(NomC, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                    .addComponent(PrenomC, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addGroup(layout.createSequentialGroup()
-                                                    .addComponent(nomS, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                    .addComponent(prenomS, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                            .addGap(18, 18, 18)
-                                            .addComponent(Add, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGap(138, 138, 138))
-                                        .addComponent(Titre, javax.swing.GroupLayout.PREFERRED_SIZE, 732, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addGap(94, 94, 94)
-                                            .addComponent(SuppListe, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(Remove, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addGap(54, 54, 54)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(9, 9, 9)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                    .addComponent(jLabel3)
+                                                    .addComponent(jLabel2))
+                                                .addGap(45, 45, 45)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addGroup(layout.createSequentialGroup()
+                                                        .addComponent(NomC, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(PrenomC, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                    .addGroup(layout.createSequentialGroup()
+                                                        .addComponent(nomS, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(prenomS, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addGap(18, 18, 18)
+                                                .addComponent(Add, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(124, 124, 124))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(18, 18, 18)
+                                                .addComponent(DD)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(Txtdate, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(DF)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(txtFin, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(0, 0, Short.MAX_VALUE))))
+                                    .addComponent(Titre, javax.swing.GroupLayout.PREFERRED_SIZE, 732, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jScrollPane6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 732, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(106, 106, 106)
+                                        .addComponent(SuppListe, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(Remove, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(326, 326, 326)
-                                .addComponent(jLabel4)))
-                        .addGap(0, 39, Short.MAX_VALUE)))
+                                .addGap(359, 359, 359)
+                                .addComponent(jLabel5)))
+                        .addGap(0, 54, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(359, 359, 359)
-                .addComponent(jLabel5)
+                .addGap(344, 344, 344)
+                .addComponent(jLabel4)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -321,33 +361,39 @@ public class AjoutProj extends javax.swing.JFrame {
                 .addGap(11, 11, 11)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Titre, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(NomC, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(PrenomC, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Titre, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(NomC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(PrenomC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(nomS, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(prenomS, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nomS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(prenomS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Add, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addComponent(SuppListe, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(35, 35, 35)
+                        .addComponent(Remove, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
-                        .addComponent(Remove, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(SuppListe, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Txtdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(DD)
+                    .addComponent(DF)
+                    .addComponent(txtFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addComponent(jLabel4)
-                .addGap(10, 10, 10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Valider)
-                    .addComponent(Annuler))
+                    .addComponent(Annuler)
+                    .addComponent(Valider))
                 .addContainerGap())
         );
 
@@ -360,17 +406,32 @@ public class AjoutProj extends javax.swing.JFrame {
         mainFrame.setVisible(true);
         mainFrame.repaint();
         mainFrame.revalidate();
+        mainFrame.repaint();
+        mainFrame.revalidate();
+        mainFrame.populateTable();
+        mainFrame.setupCustomTableColumn();
     }//GEN-LAST:event_AnnulerActionPerformed
     //Bouton valider
     private void ValiderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ValiderActionPerformed
-        close();
-        this.CsvFichier();
-        csv.appendLineToCSV(filePath, this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText());
-        mainFrame.populateTable();
-        mainFrame.setupCustomTableColumn();
-        mainFrame.repaint();
-        mainFrame.revalidate();
-        mainFrame.setVisible(true);
+
+        if (areFieldsNotEmpty()) {
+            if (!txtFin.getText().trim().isEmpty() || txtFin.getText().matches("\\d{2}-\\d{2}-\\d{4}")) {
+                this.CsvFichier();
+                csv.appendLineToCSV(filePath, this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText());
+                close();
+                mainFrame.repaint();
+                mainFrame.revalidate();
+                mainFrame.populateTable();
+                mainFrame.setupCustomTableColumn();
+                mainFrame.setVisible(true);
+            } else if (!txtFin.getText().matches("\\d{2}-\\d{2}-\\d{4}")) {
+                JOptionPane.showMessageDialog(this, "Veuillez remplir une date valide ou laisser le champ vide pour la date de fin !"
+                        + "\nLa date doit être au format jj-mm-aaaa", "Erreur date de fin !", JOptionPane.WARNING_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Veuillez remplir tous les champs obligatoires.");
+        }
+
     }//GEN-LAST:event_ValiderActionPerformed
 
     private void TitreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TitreActionPerformed
@@ -387,42 +448,66 @@ public class AjoutProj extends javax.swing.JFrame {
     private void RemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveActionPerformed
         // TODO add your handling code here:
         RetirerSupll();
+        //verifier qu'il existe encore des suppléants
+        java.util.List<Pair<String, String>> suppPairs = getAllDataPairs();
+        if (suppPairs.isEmpty()) {
+            SuppListe.setVisible(false);
+            Remove.setVisible(false);
+        }
     }//GEN-LAST:event_RemoveActionPerformed
-    private void CompareLastId(String filePath, String filePathAll){
-        int id1 = LastId(filePath);
-        int id2 = LastId(filePathAll);
-        this.LastId = id1>id2 ? id1 : id2;
-        System.out.println(LastId);
+    private void CompareLastId(String filePath, String filePathAll) {
+        LastId(filePath);
+        LastId(filePathAll);
+        this.LastId = this.LastId + 1;
+        System.out.println("LastId final = " + LastId);
     }
 
-//Savoir le dernier id dans le fichier avec tout les projets
-    private int LastId(String filePath) {
-        int id = 0;
-        String lastLine = ""; // Stocke la dernière ligne 
+    private void LastId(String filePath) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
+            boolean firstLineSkipped = false;
             while ((line = reader.readLine()) != null) {
-                lastLine = line;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (!lastLine.isEmpty()) {
-            String[] parts = lastLine.split(",");
-            if (parts.length > 0) {
-                String lastIdString = parts[0].trim();
-                try {
-                    int lastId = Integer.parseInt(lastIdString);
-                    id = lastId + 1;
-                } catch (NumberFormatException e) {
-                    System.err.println("Erreur lors de la conversion de l'ID en entier : " + e.getMessage());
-                    id = 1; // En cas d'erreur, réinitialisez à 0 
+                // Ignorer la première ligne
+                if (!firstLineSkipped) {
+                    firstLineSkipped = true;
+                    continue;
+                }
+                String[] fields = line.split(",");
+                if (fields.length > 0) {
+                    int currentId = Integer.parseInt(fields[0]);
+                    System.out.println("Currentid = " + currentId);
+                    if (currentId > this.LastId) {
+                        System.out.println(currentId + ">" + this.LastId);
+                        this.LastId = currentId;
+                    }
                 }
             }
-        } else {
-            id = 1; // Si le fichier est vide, réinitialisez à 0 
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
         }
-        return id;
+        System.out.println(this.LastId);
+    }
+
+// Méthode pour vérifier si tous les champs obligatoires sont remplis
+    private boolean areFieldsNotEmpty() {
+        return !Titre.getText().trim().isEmpty()
+                && !NomC.getText().trim().isEmpty()
+                && !PrenomC.getText().trim().isEmpty()
+                && areSupplFieldsNotEmpty()
+                && !nomS.getText().trim().isEmpty()
+                && !prenomS.getText().trim().isEmpty()
+                && !Descr.getText().trim().isEmpty();
+    }
+
+// Méthode pour vérifier si les champs de suppléants ne sont pas vides
+    private boolean areSupplFieldsNotEmpty() {
+        java.util.List<Pair<String, String>> suppPairs = getAllDataPairs();
+        for (Pair<String, String> pair : suppPairs) {
+            if (pair.getFirst().trim().isEmpty() || pair.getSecond().trim().isEmpty()) {
+                return false; // 
+            }
+        }
+        return true; // Tous les champs de suppléants sont remplis
     }
 
     /**
@@ -461,16 +546,22 @@ public class AjoutProj extends javax.swing.JFrame {
         //</editor-fold>
     }
 
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private design.Button Add;
     private javax.swing.JButton Annuler;
+    private javax.swing.JLabel DD;
+    private javax.swing.JLabel DF;
     private javax.swing.JTextArea Descr;
     private design.TextField NomC;
     private design.TextField PrenomC;
     private design.Button Remove;
     private javax.swing.JScrollPane SuppListe;
     private design.TextField Titre;
+    private design.TextField Txtdate;
     private javax.swing.JButton Valider;
+    private date.DateChooser dateChooser1;
+    private date.DateChooser dateChooser2;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -478,5 +569,6 @@ public class AjoutProj extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane6;
     private design.TextField nomS;
     private design.TextField prenomS;
+    private design.TextField txtFin;
     // End of variables declaration//GEN-END:variables
 }
