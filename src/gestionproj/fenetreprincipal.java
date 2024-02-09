@@ -8,6 +8,7 @@ import action.cell.TableActionCellRender;
 import action.cell.TableActionCellRenderTotal;
 import action.data.Csv;
 import action.data.DateDefinExtraction;
+import static action.data.DateDefinExtraction.getCurrentDateAsString;
 import design.Edit;
 import design.ScrollBarCustom;
 import design.View;
@@ -57,17 +58,17 @@ public class fenetreprincipal extends javax.swing.JFrame {
     private Csv csv = new Csv(this);
     private String filePath;
     private String filePathAll;
-    private String filePathRC;
     private int NbrPA;
     private static String NbrPAS;
     private int NbrPT;
     private static String NbrPTS;
     private int NbrC;
     private static String NbrCS;
-    private ChefProjets CP;
+    private ChefProjet CP;
     private javax.swing.JCheckBox[] checkBoxArray;
-    private ChefProjets Demander = new ChefProjets();
+    private ChefProjet Demander = new ChefProjet();
     private DateDefinExtraction DateFin = new DateDefinExtraction();
+    private String currentDate = getCurrentDateAsString("dd-MM-yyyy");
 
     /**
      * Creates new form fenetreprincipal
@@ -87,14 +88,14 @@ public class fenetreprincipal extends javax.swing.JFrame {
         System.out.println(DateFin.Datedefin);
         String Deplacer = "Les projets : ";
         Set<String> uniqueElements = new HashSet<>();
-        System.out.println("Les projets dépasser : "+DateFin.Depasser);
+        System.out.println("Les projets dépasser : " + DateFin.Depasser);
         if (DateFin.Depasser.size() > 0) {
             for (String element : DateFin.Depasser) {
                 if (uniqueElements.add(element)) {  // Add returns true if the element is added, false if it already exists
                     Deplacer += element + ",";
                     try {
                         int intValue = Integer.parseInt(element);
-                        System.out.println("Valuer entré dans la fonction deleteLineModifDossier "+intValue);
+                        System.out.println("Valuer entré dans la fonction deleteLineModifDossier " + intValue);
                         csv.deleteLineModifDossier(intValue);
                     } catch (NumberFormatException e) {
                         System.err.println("Error parsing integer: " + e.getMessage());
@@ -107,18 +108,12 @@ public class fenetreprincipal extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, Deplacer, "Attention fichier déplacé", JOptionPane.WARNING_MESSAGE);
             }
         }
-
-        String chemin = System.getProperty("user.dir");
-        this.filePath = chemin + "/src/gestionproj/gestion.csv";
-        this.filePathAll = chemin + "/src/gestionproj/AllProjects.csv";
-        this.filePathRC = chemin + "/src/gestionproj/ChefProject.csv";
+        this.filePath = System.getProperty("user.home")+"/gestionProjet/gestion.csv";
+        this.filePathAll = System.getProperty("user.home")+"/gestionProjet/AllProjects.csv";
         initComponents();
         populateTable();
         jScrollPane1.setVerticalScrollBar(new ScrollBarCustom());
-        //tableau unique des noms de chef
-        //String[] uniqueChefNoms = CP.getUniqueChefNoms("/Users/joseph/Desktop/GestionProj/src/gestionproj/AllProjects.csv",);
-        //System.out.println("Noms uniques des chefs de projets : " + Arrays.toString(uniqueChefNoms));
-        //Définition du titre et du logo de l'application
+        //titre et logo de l'application
         setIconImage(new ImageIcon(getClass().getResource("/gestionproj/logo/logo-icon.png")).getImage());
         this.setTitle("Gestion des projets");
 
@@ -169,12 +164,13 @@ public class fenetreprincipal extends javax.swing.JFrame {
                     dataAdd += "," + rowData[i];
                 }
                 dataAdd = dataAdd.replaceFirst(",", "");
-                int i = JOptionPane.showConfirmDialog(null, "Le projet vas être archiver. Êtes-vous sûr de vouloir continuer?",
+                int i = JOptionPane.showConfirmDialog(null, "Le projet vas être archiver et la date de fin de projet sera la date du jour .\n Êtes-vous sûr de vouloir continuer?",
                         "Veuillez confirmer votre choix",
                         JOptionPane.YES_NO_OPTION);
                 if (i == 0) {
                     ///l'utilisateur a dit oui
                     // Ajouter la ligne au fichier CSV
+                    csv.findId(row);
                     csv.appendLineToCSV(filePathAll, dataAdd);
                     csv.deleteLineFromCsv(row + 1);
                     model.removeRow(row);
@@ -344,27 +340,6 @@ public class fenetreprincipal extends javax.swing.JFrame {
         DefaultTableModel model = buildTableModel(filePath);
         DefaultTableModel modeltotal = buildTableModelTotal(filePathAll);
         jTable2.setModel(modeltotal);
-        //Projets total
-        NbrPT = modeltotal.getRowCount();
-        NbrPTS = String.valueOf(NbrPT);
-        //Projet Actif
-        NbrPA = model.getRowCount();
-        NbrPAS = String.valueOf(NbrPA);
-        //Nom des chefs de projets
-        String[] commonChefNoms = CP.getUniqueChefNoms(filePath, filePathAll);
-        NbrC = commonChefNoms.length;
-        NbrCS = String.valueOf(NbrC);
-        fenetreprincipal.carLayout1.card1.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/chef.png")), "Chef de projet", NbrCS, "12000"));
-        fenetreprincipal.carLayout1.card2.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/lumiere.png")), "Nombre de projet actif", NbrPAS, "12000"));
-        fenetreprincipal.carLayout1.card3.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/dossier.png")), "Nombre de projet total", NbrPTS, "12000"));
-    }
-
-    //Population de la table pour une recherche
-    public void populateTableR() {
-        DefaultTableModel model = buildTableModel(filePath);
-        DefaultTableModel modeltotal = buildTableModelTotal(filePathAll);
-        DefaultTableModel modelRc = buildTableModelRc(filePathRC);
-        jTable2.setModel(modelRc);
         //Projets total
         NbrPT = modeltotal.getRowCount();
         NbrPTS = String.valueOf(NbrPT);

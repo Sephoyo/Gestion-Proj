@@ -6,6 +6,7 @@ package design;
 
 import action.data.Csv;
 import action.data.DateDefinExtraction;
+import static action.data.DateDefinExtraction.getCurrentDateAsString;
 import action.data.Pair;
 import gestionproj.fenetreprincipal;
 import java.awt.Color;
@@ -39,6 +40,7 @@ public class Edit extends javax.swing.JFrame {
     private int row;
     private boolean ActifNon;
     private DateDefinExtraction date = new DateDefinExtraction();
+    private String currentDate = getCurrentDateAsString("dd-MM-yyyy");
 
     /**
      * Creates new form View
@@ -51,13 +53,22 @@ public class Edit extends javax.swing.JFrame {
 
     //Initialisation de la fenetre
     public Edit(fenetreprincipal mainFrame, String id, int row, String file, int actif) {
+        String currentDate = getCurrentDateAsString("dd-MM-yyyy");
         initComponents();
         if (actif == 0) {
             ActifArchiv.setVisible(false);
             this.ActifNon = false;
+            this.dateChooser1.setTextRefernceWD(Txtdate);
+            this.dateChooser2.setTextRefernceWD(txtFin);
+            this.dateChooser1.setEnabled(true);
+            this.dateChooser2.setEnabled(true);
         } else {
             ActifArchiv.setVisible(true);
             this.ActifNon = true;
+            this.dateChooser1.setTextRefernceWD(Txtdate);
+            this.dateChooser2.setTextRefernceWD(txtFin);
+            this.dateChooser1.setEnabled(true);
+            this.dateChooser2.setEnabled(true);
         }
         jScrollPane1.setVerticalScrollBar(new ScrollBarCustom());
         jScrollPane2.setVerticalScrollBar(new ScrollBarCustom());
@@ -66,8 +77,7 @@ public class Edit extends javax.swing.JFrame {
         this.id = id;
         this.row = row;
         this.file = file;
-        String chemin = System.getProperty("user.dir");
-        this.filePath = chemin + "/src/gestionproj/ProjetCSV/" + this.id + ".csv";
+        this.filePath = System.getProperty("user.home")+"/gestionProjet/ProjetCSV/"+id+"csv";
         LectLine(filePath);
         int length = data2.length;
         this.Titre.setText(data2[1]);
@@ -76,8 +86,8 @@ public class Edit extends javax.swing.JFrame {
         this.SuppN.setText(enleverEspaces(data2[3])[0]);
         this.SuppC.setText(enleverEspaces(data2[3])[1]);
         this.Descr.setText(data2[length - 3]);
-        this.Txtdate.setText(data2[length - 1]);
-        this.txtFin.setText(data2[length - 2]);
+        this.Txtdate.setText(data2[length - 2]);
+        this.txtFin.setText(data2[length - 1]);
         //A modifier lors de l'ajout des dates
         for (int i = 4; i < length - 3; i++) {
             addSuppl(data2[i]);
@@ -191,7 +201,7 @@ public class Edit extends javax.swing.JFrame {
         }
         return dataPairs;
     }
-
+    
     private void RetirerSupll() {
         javax.swing.JPanel panel = (javax.swing.JPanel) jScrollPane2.getViewport().getView();
         if (panel != null) {
@@ -229,7 +239,7 @@ public class Edit extends javax.swing.JFrame {
                 String twice = Pair.getSecond();
                 Line2 += "," + one + " " + twice;
             }
-            Line2 += "," + Descr.getText()+","+Txtdate.getText()+","+txtFin.getText();
+            Line2 += "," + Descr.getText() + "," + Txtdate.getText() + "," + txtFin.getText();
 
             line += "Description,Date de Début,Date de fin";
             // Utiliser BufferedWriter pour écrire dans le fichier
@@ -245,6 +255,29 @@ public class Edit extends javax.swing.JFrame {
         }
         String gestion = this.id + "," + this.Titre.getText() + "," + this.ChefN.getText() + " " + this.ChefP.getText();
         csv.updateCsv(file, this.row + 1, gestion);
+    }
+
+    private boolean TestDate() {
+        if (date.isDateFormatValid(Txtdate.getText())
+                && date.compareDates(Txtdate.getText(), txtFin.getText())
+                && (currentDate.equals(txtFin.getText()) || date.compareDates(currentDate, txtFin.getText()))) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void AfficheErreur() {
+        if (!date.isDateFormatValid(Txtdate.getText())) {
+            JOptionPane.showMessageDialog(this, "La date de début n'est pas au format jj-mm-aaaa", "Erreur de date", JOptionPane.WARNING_MESSAGE);
+            return;
+        } else if (!date.compareDates(Txtdate.getText(), txtFin.getText())) {
+            JOptionPane.showMessageDialog(this, "La date de fin est inférieur à la date de début", "Erreur de date", JOptionPane.WARNING_MESSAGE);
+            return;
+        } else if (!currentDate.equals(txtFin.getText()) || !date.compareDates(currentDate, txtFin.getText())) {
+            JOptionPane.showMessageDialog(this, "La date de fin doit être supérieur ou égal à la date du jour", "Erreur de date", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -276,6 +309,9 @@ public class Edit extends javax.swing.JFrame {
         DD = new javax.swing.JLabel();
 
         dateChooser1.setForeground(new java.awt.Color(102, 102, 255));
+        dateChooser1.setTextRefernce(Txtdate);
+
+        dateChooser2.setTextRefernce(txtFin);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -378,39 +414,9 @@ public class Edit extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(390, 390, 390)
-                        .addComponent(TitreLab))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(292, 292, 292)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(SuppN, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(ChefN, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(340, 340, 340)
-                        .addComponent(DescrLab)))
-                .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(58, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Add, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Remove, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(129, 129, 129))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(DD)
-                        .addGap(18, 18, 18)
-                        .addComponent(Txtdate, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(DF)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtFin, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(ActifArchiv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(32, 32, 32))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(Titre, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -422,21 +428,50 @@ public class Edit extends javax.swing.JFrame {
                                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(58, 58, 58))))
                         .addGroup(layout.createSequentialGroup()
-                            .addGap(96, 96, 96)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(layout.createSequentialGroup()
+                                    .addGap(332, 332, 332)
+                                    .addComponent(TitreLab))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(234, 234, 234)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(ChefLab)
-                                        .addComponent(SuppLab))
-                                    .addGap(270, 270, 270)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(SuppC, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(ChefP, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addContainerGap()))
+                                        .addComponent(SuppN, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(ChefN, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(45, 45, 45)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                .addComponent(ChefLab)
+                                                .addComponent(SuppLab))
+                                            .addGap(270, 270, 270)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(SuppC, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(ChefP, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(237, 237, 237)
+                                                .addComponent(DescrLab)
+                                                .addGap(213, 213, 213))
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                .addComponent(DD)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(Txtdate, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(DF)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(txtFin, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                            .addGap(18, 18, 18)
+                            .addComponent(ActifArchiv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(SuppA)
-                        .addGap(365, 365, 365))))
+                        .addGap(365, 365, 365))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(Add, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Remove, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(129, 129, 129))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -468,9 +503,9 @@ public class Edit extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ActifArchiv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Txtdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(DF)
-                    .addComponent(DD))
+                    .addComponent(DD)
+                    .addComponent(txtFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(9, 9, 9)
                 .addComponent(DescrLab)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -485,44 +520,77 @@ public class Edit extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void TerminerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TerminerActionPerformed
-        //Enregistrer les modifications dans le fichier csv
-        if (areFieldsNotEmpty() && date.isDateFormatValid(this.Txtdate.getText()) && date.isDateFormatValid(this.txtFin.getText())) {
-            CsvFichier();
-            String chemin = System.getProperty("user.dir");
-            //si le check box et selectionner alors
-            if (ActifArchiv.isSelected()) {
-                csv.deleteLineFromCsv(this.row + 1);
-                String filePatH = chemin + "/src/gestionproj/gestion.csv";
-                csv.appendLineToCSV(filePatH, this.id + "," + this.Titre.getText() + "," + this.ChefN.getText() + " " + this.ChefP.getText());
-                close();
-                //Mettre à jour les cards
-                mainFrame.repaint();
-                mainFrame.revalidate();
-                mainFrame.populateTableTotal();
-                mainFrame.setupCustomTableColumnTotal();
-                mainFrame.setVisible(true);
-            } else //sinon
-            {
-                csv.updateCsv(file, row + 1, this.id + "," + this.Titre.getText() + "," + this.ChefN.getText() + " " + this.ChefP.getText());
-                close();
-                mainFrame.repaint();
-                mainFrame.revalidate();
-                if (ActifNon) {
-                    mainFrame.populateTableTotal();
-                    mainFrame.setupCustomTableColumnTotal();
-                    mainFrame.setVisible(true);
+
+        // Enregistrer les modifications dans le fichier csv
+        if (areFieldsNotEmpty()) {
+            System.out.println("Je suis passer par les champs plein");
+            if (ActifArchiv.isVisible()) {
+                System.out.println("Case visible");
+                if (ActifArchiv.isSelected()) {
+                    System.out.println("La case est selectionner");
+                    if (TestDate()) {
+                        System.out.println("Tout est bon, la case est coché et les champs respecte les contraintes ");
+                        // Enregistrer les modifications
+                        CsvFichier();
+                        // Supprimer la ligne du fichier CSV original
+                        csv.deleteLineFromCsvTot(row + 1);
+                        // Ajouter la nouvelle ligne au fichier CSV
+                        String filePatH = System.getProperty("user.home") + "/gestionProjet/gestion.csv";
+                        csv.appendLineToCSV(filePatH, id + "," + Titre.getText() + "," + ChefN.getText() + " " + ChefP.getText());
+                        // Fermer la fenêtre
+                        close();
+                        // Mettre à jour l'interface principale
+                        mainFrame.repaint();
+                        mainFrame.revalidate();
+                        mainFrame.populateTable();
+                        mainFrame.setupCustomTableColumn();
+                        mainFrame.setVisible(true);
+                    } else {
+                        AfficheErreur();
+                        }
                 } else {
+                    System.out.println("La case n'est pas coché");
+                    if (TestDate()) {
+                        System.out.println("Tout est bon, la case n'est pas coché et les champs respecte les contraintes ");
+                        System.out.println("J'arrive la ou il faut pas ");
+                        CsvFichier();
+                        csv.updateCsv(file, row + 1, id + "," + Titre.getText() + "," + ChefN.getText() + " " + ChefP.getText());
+                        close();
+                        mainFrame.repaint();
+                        mainFrame.revalidate();
+                        if (ActifNon) {
+                            mainFrame.populateTableTotal();
+                            mainFrame.setupCustomTableColumnTotal();
+                            mainFrame.setVisible(true);
+                        } else {
+                            mainFrame.populateTable();
+                            mainFrame.setupCustomTableColumn();
+                            mainFrame.setVisible(true);
+                }
+                    } else {
+                        AfficheErreur();
+            }
+                }
+        } else {
+                System.out.println("La case n'est pas visible");
+                if (TestDate()) {
+                    System.out.println("La case n'est pas visible et tout les éléments sont bon");
+                    CsvFichier();
+                    csv.deleteLineFromCsv(row + 1);
+                    String filePatH = System.getProperty("user.home") + "/gestionProjet/gestion.csv";
+                    csv.appendLineToCSV(filePatH, id + "," + Titre.getText() + "," + ChefN.getText() + " " + ChefP.getText());
+                    close();
+                    mainFrame.repaint();
+                    mainFrame.revalidate();
                     mainFrame.populateTable();
                     mainFrame.setupCustomTableColumn();
                     mainFrame.setVisible(true);
+                } else {
+                    AfficheErreur();
                 }
             }
         } else {
-            if(areFieldsNotEmpty()){
-                JOptionPane.showMessageDialog(this, "Veuillez remplir tous les champs obligatoires.");
-            }else if(date.isDateFormatValid(this.Txtdate.getText()) && date.isDateFormatValid(this.txtFin.getText())){
-                JOptionPane.showMessageDialog(this, "L'une ou les dates ne sont pas au format jj-mm-aa ");
-            }
+            JOptionPane.showMessageDialog(this, "Veuillez remplir tout les champs obligatoire !", "Erreur de date", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_TerminerActionPerformed
 
@@ -537,29 +605,11 @@ public class Edit extends javax.swing.JFrame {
     }//GEN-LAST:event_AddActionPerformed
 
     private void ActifArchivActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ActifArchivActionPerformed
-        if (ActifArchiv.isSelected()) {
-            this.txtFin.setText("");
-            this.dateChooser1.setTextRefernceWD(Txtdate);
-            this.dateChooser2.setTextRefernceWD(txtFin);
-            this.dateChooser1.setEnabled(true);
-            this.dateChooser2.setEnabled(true);
-        } else {
-            this.dateChooser1.setTextRefernceWD(null);
-            this.dateChooser2.setTextRefernceWD(null);
-            this.txtFin.setText(data2[data2.length - 1]);
-            this.dateChooser1.setEnabled(false);
-            this.dateChooser2.setEnabled(false);
-        }
+
     }//GEN-LAST:event_ActifArchivActionPerformed
 
     private void TxtdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtdateActionPerformed
-        // TODO add your handling code here:
-        if (ActifArchiv.isSelected()) {
-            return;
-        } else {
-            JOptionPane.showMessageDialog(this, "Pour modifier la date début, il faut cocher la case", "Modification impossible !",
-                    JOptionPane.WARNING_MESSAGE);
-        }
+
     }//GEN-LAST:event_TxtdateActionPerformed
 
     private void txtFinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFinActionPerformed
@@ -567,29 +617,17 @@ public class Edit extends javax.swing.JFrame {
     }//GEN-LAST:event_txtFinActionPerformed
 
     private void TxtdateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TxtdateMouseClicked
-        // TODO add your handling code here:
-        if (ActifArchiv.isSelected()) {
-            return;
-        } else {
-            JOptionPane.showMessageDialog(this, "Pour modifier la date début, il faut cocher la case", "Modification impossible !",
-                    JOptionPane.WARNING_MESSAGE);
-        }
+
     }//GEN-LAST:event_TxtdateMouseClicked
 
     private void txtFinMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtFinMouseClicked
-        // TODO add your handling code here:
-        if (ActifArchiv.isSelected()) {
-            return;
-        } else {
-            JOptionPane.showMessageDialog(this, "Pour modifier la date de fin, il faut cocher la case", "Modification impossible !",
-                    JOptionPane.WARNING_MESSAGE);
-        }
+
     }//GEN-LAST:event_txtFinMouseClicked
 
-/**
- * @param args the command line arguments
- */
-public static void main(String args[]) {
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -601,27 +639,23 @@ public static void main(String args[]) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
 
-}
+                }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Edit.class  
+            java.util.logging.Logger.getLogger(Edit.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
 
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Edit.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
 
-} catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Edit.class  
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Edit.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
 
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
-} catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Edit.class  
-
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
-} catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Edit.class  
-
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Edit.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>

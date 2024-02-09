@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.*;
 import javax.swing.JOptionPane;
 
-public class ChefProjets {
+public class ChefProjet {
 
     // Méthode pour effectuer une recherche et enregistrer les résultats dans un nouveau fichier CSV ID
     public boolean searchAndSaveResultsID(String filePath, String searchTerm, String outputFilePath, fenetreprincipal frame) {

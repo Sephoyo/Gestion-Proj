@@ -49,9 +49,9 @@ public class AjoutProj extends javax.swing.JFrame {
         this.mainFrame = mainFrame;
         String chemin = System.getProperty("user.dir");
         System.out.println("Le répertoire de travail actuel est : " + chemin);
-        this.filePath = chemin + "/src/gestionproj/gestion.csv";
-        this.filePathId = chemin + "/src/gestionproj/ProjetCSV/";
-        this.filePathAll = chemin + "/src/gestionproj/AllProjects.csv";
+        this.filePath = System.getProperty("user.home")+"/gestionProjet/gestion.csv";
+        this.filePathId = System.getProperty("user.home")+"/gestionProjet/ProjetCSV/";
+        this.filePathAll = System.getProperty("user.home")+"/gestionProjet/AllProjects.csv";
         CompareLastId(filePath, filePathAll);
         jScrollPane6.setVerticalScrollBar(new ScrollBarCustom());
         SuppListe.setVerticalScrollBar(new ScrollBarCustom());
@@ -415,7 +415,7 @@ public class AjoutProj extends javax.swing.JFrame {
     private void ValiderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ValiderActionPerformed
 
         if (areFieldsNotEmpty()) {
-            if (!txtFin.getText().trim().isEmpty() || txtFin.getText().matches("\\d{2}-\\d{2}-\\d{4}")) {
+            if (txtFin.getText().trim().isEmpty() || txtFin.getText().matches("\\d{2}-\\d{2}-\\d{4}")) {
                 this.CsvFichier();
                 csv.appendLineToCSV(filePath, this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText());
                 close();

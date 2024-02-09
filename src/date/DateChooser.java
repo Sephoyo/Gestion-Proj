@@ -75,8 +75,11 @@ public final class DateChooser extends javax.swing.JPanel {
                 }
             }
         });
+    } else {
+        this.textRefernce.setText("");
     }
 }
+
 
 
     private void setText(boolean runEvent, int act) {

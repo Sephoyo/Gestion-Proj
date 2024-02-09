@@ -44,7 +44,7 @@ public class View extends javax.swing.JFrame {
         this.id = id;
         String chemin = System.getProperty("user.dir");
         System.out.println("Le répertoire de travail actuel est : " + chemin);
-        this.filePath = chemin +"/src/gestionproj/ProjetCSV/" + this.id + ".csv";
+        this.filePath = System.getProperty("user.home")+"/gestionProjet/ProjetCSV/"+id+"csv";
         System.out.println("L'id : " + id + " et le fichier : " + filePath);
         LectLine(filePath);
         int length = data2.length;
@@ -53,9 +53,10 @@ public class View extends javax.swing.JFrame {
         this.ChefP.setText(enleverEspaces(data2[2])[1]);
         this.SuppN.setText(enleverEspaces(data2[3])[0]);
         this.SuppC.setText(enleverEspaces(data2[3])[1]);
-        this.Descr.setText(data2[length - 1]);
-        //A modifier lors de l'ajout des dates
-        for (int i = 4; i < length - 1; i++) {
+        this.Descr.setText(data2[length - 3]);
+        this.Txtdate.setText(data2[length-2]);
+        this.txtFin.setText(data2[length-1]);
+        for (int i = 4; i < length - 3; i++) {
             addTextFieldToScroll(data2[i]);
         }
     }
@@ -137,6 +138,10 @@ public class View extends javax.swing.JFrame {
         ChefN = new design.TextField();
         SuppN = new design.TextField();
         SuppA = new javax.swing.JLabel();
+        Txtdate = new design.TextField();
+        DD = new javax.swing.JLabel();
+        txtFin = new design.TextField();
+        DF = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -181,6 +186,36 @@ public class View extends javax.swing.JFrame {
 
         SuppA.setText("Autres suppléants :");
 
+        Txtdate.setEditable(false);
+        Txtdate.setShadowColor(new java.awt.Color(102, 102, 255));
+        Txtdate.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TxtdateMouseClicked(evt);
+            }
+        });
+        Txtdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TxtdateActionPerformed(evt);
+            }
+        });
+
+        DD.setText("Date de début :");
+
+        txtFin.setEditable(false);
+        txtFin.setShadowColor(new java.awt.Color(204, 93, 93));
+        txtFin.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtFinMouseClicked(evt);
+            }
+        });
+        txtFin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtFinActionPerformed(evt);
+            }
+        });
+
+        DF.setText("Date de fin :");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -222,7 +257,16 @@ public class View extends javax.swing.JFrame {
                         .addComponent(SuppA))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(377, 377, 377)
-                        .addComponent(TitreLab)))
+                        .addComponent(TitreLab))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(94, 94, 94)
+                        .addComponent(DD)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(Txtdate, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(47, 47, 47)
+                        .addComponent(DF)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtFin, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -246,7 +290,13 @@ public class View extends javax.swing.JFrame {
                 .addComponent(SuppA)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Txtdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(DD)
+                    .addComponent(txtFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(DF))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
                 .addComponent(DescrLab)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -266,6 +316,22 @@ public class View extends javax.swing.JFrame {
         mainFrame.repaint();
         mainFrame.revalidate();
     }//GEN-LAST:event_TerminerActionPerformed
+
+    private void TxtdateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TxtdateMouseClicked
+
+    }//GEN-LAST:event_TxtdateMouseClicked
+
+    private void TxtdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtdateActionPerformed
+
+    }//GEN-LAST:event_TxtdateActionPerformed
+
+    private void txtFinMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtFinMouseClicked
+
+    }//GEN-LAST:event_txtFinMouseClicked
+
+    private void txtFinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFinActionPerformed
+
+    }//GEN-LAST:event_txtFinActionPerformed
 
     /**
      * @param args the command line arguments
@@ -299,6 +365,8 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JLabel ChefLab;
     private design.TextField ChefN;
     private design.TextField ChefP;
+    private javax.swing.JLabel DD;
+    private javax.swing.JLabel DF;
     private javax.swing.JTextArea Descr;
     private javax.swing.JLabel DescrLab;
     private javax.swing.JLabel SuppA;
@@ -308,7 +376,9 @@ public class View extends javax.swing.JFrame {
     private design.Button Terminer;
     private design.TextField Titre;
     private javax.swing.JLabel TitreLab;
+    private design.TextField Txtdate;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private design.TextField txtFin;
     // End of variables declaration//GEN-END:variables
 }

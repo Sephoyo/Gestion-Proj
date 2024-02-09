@@ -74,6 +74,16 @@
                       <EmptySpace min="-2" pref="377" max="-2" attributes="0"/>
                       <Component id="TitreLab" min="-2" max="-2" attributes="0"/>
                   </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="94" max="-2" attributes="0"/>
+                      <Component id="DD" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="Txtdate" min="-2" pref="180" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="47" max="-2" attributes="0"/>
+                      <Component id="DF" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="txtFin" min="-2" pref="180" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
           </Group>
@@ -102,7 +112,14 @@
               <Component id="SuppA" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jScrollPane2" min="-2" pref="100" max="-2" attributes="0"/>
-              <EmptySpace pref="71" max="32767" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="Txtdate" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="DD" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtFin" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="DF" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="11" max="32767" attributes="0"/>
               <Component id="DescrLab" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jScrollPane1" min="-2" pref="177" max="-2" attributes="0"/>
@@ -212,6 +229,40 @@
     <Component class="javax.swing.JLabel" name="SuppA">
       <Properties>
         <Property name="text" type="java.lang.String" value="Autres suppl&#xe9;ants :"/>
+      </Properties>
+    </Component>
+    <Component class="design.TextField" name="Txtdate">
+      <Properties>
+        <Property name="editable" type="boolean" value="false"/>
+        <Property name="shadowColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="66" red="66" type="rgb"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="TxtdateMouseClicked"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="TxtdateActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="DD">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Date de d&#xe9;but :"/>
+      </Properties>
+    </Component>
+    <Component class="design.TextField" name="txtFin">
+      <Properties>
+        <Property name="editable" type="boolean" value="false"/>
+        <Property name="shadowColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="5d" green="5d" red="cc" type="rgb"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="txtFinMouseClicked"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtFinActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="DF">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Date de fin :"/>
       </Properties>
     </Component>
   </SubComponents>
