@@ -157,6 +157,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
                     jTable2.getCellEditor().stopCellEditing();
                 }
                 DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+                
                 Object rowData[] = new Object[model.getColumnCount()];
                 String dataAdd = "";
                 for (int i = 0; i < model.getColumnCount(); i++) {
@@ -360,6 +361,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
     //Table avec information du csv actif
     private DefaultTableModel buildTableModel(String filePath) {
         DefaultTableModel model = new DefaultTableModel();
+        
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             // Lire la première ligne pour obtenir les noms de colonnes
@@ -482,19 +484,25 @@ public class fenetreprincipal extends javax.swing.JFrame {
         jScrollPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         jTable2.setBackground(new java.awt.Color(255, 255, 255));
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4", "null", "null", "null"
+        jTable2.setModel(new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // Rend toutes les cellules non modifiables
+                return false;
             }
-        ) {}
+        }
     );
     jTable2.setRowHeight(40);
+    jTable2.addMouseListener(new java.awt.event.MouseAdapter() {
+        public void mouseClicked(java.awt.event.MouseEvent evt) {
+            jTable2MouseClicked(evt);
+        }
+    });
+    jTable2.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            jTable2KeyPressed(evt);
+        }
+    });
     jScrollPane1.setViewportView(jTable2);
     if (jTable2.getColumnModel().getColumnCount() > 0) {
         jTable2.getColumnModel().getColumn(0).setResizable(false);
@@ -581,6 +589,28 @@ public class fenetreprincipal extends javax.swing.JFrame {
     private void DemandeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_DemandeKeyTyped
         // TODO add your handling code here:
     }//GEN-LAST:event_DemandeKeyTyped
+
+    private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
+        // TODO add your handling code here:
+        if (evt.getClickCount() == 2) {
+            // Double-clic détecté
+            System.out.println("Double-clic détecté");
+            // Ajoutez le traitement que vous souhaitez pour le double-clic ici
+        } else if (evt.getClickCount() == 1) {
+            // Clic simple détecté
+            System.out.println("Clic simple détecté");
+            if (jTable2.isEditing()) {
+                jTable2.getCellEditor().stopCellEditing();
+            }
+        }
+    }//GEN-LAST:event_jTable2MouseClicked
+
+    private void jTable2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable2KeyPressed
+        // TODO add your handling code here:
+        if (jTable2.isEditing()) {
+            jTable2.getCellEditor().stopCellEditing();
+        }
+    }//GEN-LAST:event_jTable2KeyPressed
 
     /**
      * @param args the command line arguments
