@@ -77,7 +77,7 @@ public class Edit extends javax.swing.JFrame {
         this.id = id;
         this.row = row;
         this.file = file;
-        this.filePath = System.getProperty("user.home")+"/gestionProjet/ProjetCSV/"+id+"csv";
+        this.filePath = System.getProperty("user.home")+"/gestionProjet/ProjetCSV/"+id+".csv";
         LectLine(filePath);
         int length = data2.length;
         this.Titre.setText(data2[1]);
@@ -268,7 +268,10 @@ public class Edit extends javax.swing.JFrame {
     }
 
     private void AfficheErreur() {
-        if (!date.isDateFormatValid(Txtdate.getText())) {
+        if(!date.isDateFormatValid(txtFin.getText())){
+            JOptionPane.showMessageDialog(this, "La date de fin n'est pas au format jj-mm-aaaa", "Erreur de date", JOptionPane.WARNING_MESSAGE);
+            return;
+        }else if (!date.isDateFormatValid(Txtdate.getText())) {
             JOptionPane.showMessageDialog(this, "La date de début n'est pas au format jj-mm-aaaa", "Erreur de date", JOptionPane.WARNING_MESSAGE);
             return;
         } else if (!date.compareDates(Txtdate.getText(), txtFin.getText())) {

@@ -91,7 +91,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
         System.out.println("Les projets dépasser : " + DateFin.Depasser);
         if (DateFin.Depasser.size() > 0) {
             for (String element : DateFin.Depasser) {
-                if (uniqueElements.add(element)) {  // Add returns true if the element is added, false if it already exists
+                if (uniqueElements.add(element)) {
                     Deplacer += element + ",";
                     try {
                         int intValue = Integer.parseInt(element);
@@ -180,6 +180,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
                     NbrPTS = String.valueOf(NbrPT);
                     fenetreprincipal.this.carLayout1.card3.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/dossier.png")), "Nombre de projet total", NbrPTS, "12000"));
                     fenetreprincipal.this.carLayout1.card2.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/lumiere.png")), "Nombre de projet actif", NbrPAS, "12000"));
+                    fenetreprincipal.this.carLayout1.card1.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/chef.png")), "Chef de projet", NbrCS, "12000"));
                 } else {
                     // l'utilisateur a dit non
                 }
@@ -217,6 +218,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
                     model.removeRow(row);
                     NbrPT = NbrPT - 1;
                     NbrPTS = String.valueOf(NbrPT);
+                    fenetreprincipal.this.carLayout1.card1.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/chef.png")), "Chef de projet", NbrCS, "12000"));
                     fenetreprincipal.this.carLayout1.card3.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/dossier.png")), "Nombre de projet total", NbrPTS, "12000"));
                     fenetreprincipal.this.carLayout1.card2.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/lumiere.png")), "Nombre de projet actif", NbrPAS, "12000"));
                 } else {
