@@ -53,9 +53,9 @@ public class AjoutProj extends javax.swing.JFrame {
         this.mainFrame = mainFrame;
         String chemin = System.getProperty("user.dir");
         System.out.println("Le répertoire de travail actuel est : " + chemin);
-        this.filePath = System.getProperty("user.home") + "/gestionProjet/gestion.csv";
-        this.filePathId = System.getProperty("user.home") + "/gestionProjet/ProjetCSV/";
-        this.filePathAll = System.getProperty("user.home") + "/gestionProjet/AllProjects.csv";
+        this.filePath = "L:\\test/gestion.csv";
+        this.filePathId = "L:\\test/ProjetCSV/";
+        this.filePathAll = "L:\\test/AllProjects.csv";
         CompareLastId(filePath, filePathAll);
         jScrollPane6.setVerticalScrollBar(new ScrollBarCustom());
         SuppListe.setVerticalScrollBar(new ScrollBarCustom());
@@ -87,7 +87,7 @@ public class AjoutProj extends javax.swing.JFrame {
             if (!txtFin.getText().trim().isEmpty() && txtFin.getText().matches("\\d{2}-\\d{2}-\\d{4}")) {
                 Line2 += "," + Descr.getText() + "," + Txtdate.getText() + "," + txtFin.getText();
             } else {
-                Line2 += "," + Descr.getText() + "," + Txtdate.getText();
+                Line2 += "," + Descr.getText() + "," + Txtdate.getText()+", ";
             }
 
             line += "Description,Date de Début,Date de fin";
@@ -293,7 +293,6 @@ public class AjoutProj extends javax.swing.JFrame {
 
         DF.setText("Date de fin :");
 
-        txtFin.setEditable(true);
         txtFin.setShadowColor(new java.awt.Color(204, 93, 93));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -355,7 +354,7 @@ public class AjoutProj extends javax.swing.JFrame {
                         .addGap(0, 54, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(344, 344, 344)
+                .addGap(348, 348, 348)
                 .addComponent(jLabel4)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -390,9 +389,9 @@ public class AjoutProj extends javax.swing.JFrame {
                     .addComponent(DD)
                     .addComponent(DF)
                     .addComponent(txtFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                 .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -419,48 +418,58 @@ public class AjoutProj extends javax.swing.JFrame {
     private void ValiderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ValiderActionPerformed
 
         if (areFieldsNotEmpty()) {
-            if (txtFin.getText().trim().isEmpty() || txtFin.getText().matches("\\d{2}-\\d{2}-\\d{4}")) {
-                if (date.compareDates(Txtdate.getText(), txtFin.getText())) {
-                    if (currentDate.equals(txtFin.getText()) || date.compareDates(currentDate, txtFin.getText())) {
-                        this.CsvFichier();
-                        csv.appendLineToCSV(filePath, this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText());
-                        close();
-                        mainFrame.repaint();
-                        mainFrame.revalidate();
-                        mainFrame.populateTable();
-                        mainFrame.setupCustomTableColumn();
-                        mainFrame.setVisible(true);
-                        return;  // Ajoutez ce retour ici
-                    } else if (!date.compareDates(currentDate, txtFin.getText())) {
-                        int n = JOptionPane.showConfirmDialog(
-                                this,
-                                "La date de fin est inférieure à la date du jour le projet sera donc archivé",
-                                "Date de fin inférieure à la date du jour !",
-                                JOptionPane.YES_NO_OPTION);
-                        if (n == 0) {
+            if (!txtFin.getText().trim().isEmpty()) {
+                if (txtFin.getText().matches("\\d{2}-\\d{2}-\\d{4}")) {
+                    if (date.compareDates(Txtdate.getText(), txtFin.getText())) {
+                        if (currentDate.equals(txtFin.getText()) || date.compareDates(currentDate, txtFin.getText())) {
                             this.CsvFichier();
-                            csv.appendLineToCSV(filePathAll, this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText());
+                            csv.appendLineToCSV(filePath, this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText());
                             close();
                             mainFrame.repaint();
                             mainFrame.revalidate();
-                            mainFrame.populateTableTotal();
-                            mainFrame.setupCustomTableColumnTotal();
+                            mainFrame.populateTable();
+                            mainFrame.setupCustomTableColumn();
                             mainFrame.setVisible(true);
-                            return;  // Ajoutez ce retour ici
-                        } else {
                             return;
+                        } else if (!date.compareDates(currentDate, txtFin.getText())) {
+                            int n = JOptionPane.showConfirmDialog(
+                                    this,
+                                    "La date de fin est inférieure à la date du jour le projet sera donc archivé",
+                                    "Date de fin inférieure à la date du jour !",
+                                    JOptionPane.YES_NO_OPTION);
+                            if (n == 0) {
+                                this.CsvFichier();
+                                csv.appendLineToCSV(filePathAll, this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText());
+                                close();
+                                mainFrame.repaint();
+                                mainFrame.revalidate();
+                                mainFrame.populateTableTotal();
+                                mainFrame.setupCustomTableColumnTotal();
+                                mainFrame.setVisible(true);
+                                return;
+                            } else {
+                                return;
+                            }
                         }
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Veuillez remplir une date valide ou laisser le champ vide pour la date de fin !"
+                                + "\nLa date doit être au format jj-mm-aaaa", "Erreur date de fin !", JOptionPane.WARNING_MESSAGE);
+                        return;
                     }
                 } else {
-                    // Ajoutez un retour ici pour éviter l'exécution du code suivant si la date de fin n'est pas valide
                     JOptionPane.showMessageDialog(this, "Veuillez remplir une date valide ou laisser le champ vide pour la date de fin !"
                             + "\nLa date doit être au format jj-mm-aaaa", "Erreur date de fin !", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
             } else {
-                // Ajoutez un retour ici pour éviter l'exécution du code suivant si la date de fin n'est pas vide mais ne correspond pas au format
-                JOptionPane.showMessageDialog(this, "Veuillez remplir une date valide ou laisser le champ vide pour la date de fin !"
-                        + "\nLa date doit être au format jj-mm-aaaa", "Erreur date de fin !", JOptionPane.WARNING_MESSAGE);
+                this.CsvFichier();
+                csv.appendLineToCSV(filePath, this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText());
+                close();
+                mainFrame.repaint();
+                mainFrame.revalidate();
+                mainFrame.populateTable();
+                mainFrame.setupCustomTableColumn();
+                mainFrame.setVisible(true);
                 return;
             }
         } else {

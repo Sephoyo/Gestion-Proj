@@ -111,10 +111,6 @@
                       </Group>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
-                      <Component id="SuppA" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="365" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="Add" min="-2" pref="39" max="-2" attributes="0"/>
                           <Component id="Remove" min="-2" pref="39" max="-2" attributes="0"/>
@@ -145,9 +141,7 @@
                   <Component id="SuppLab" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="Add" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="SuppA" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jScrollPane2" min="-2" pref="100" max="-2" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
@@ -262,11 +256,6 @@
         <Property name="shadowColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="0" green="99" red="ff" type="rgb"/>
         </Property>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="SuppA">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Autres suppl&#xe9;ants :"/>
       </Properties>
     </Component>
     <Component class="design.Button" name="Remove">

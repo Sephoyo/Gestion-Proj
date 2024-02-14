@@ -36,9 +36,9 @@ public class Csv {
 
     public Csv(fenetreprincipal Frame) {
         this.frame = Frame;
-        this.filePath = System.getProperty("user.home")+"/gestionProjet/gestion.csv";
-        this.filePathAll = System.getProperty("user.home")+"/gestionProjet/AllProjects.csv";
-        this.File = System.getProperty("user.home")+"/gestionProjet/ProjetCSV/";
+        this.filePath = "L:\\test/gestion.csv";
+        this.filePathAll = "L:\\test/AllProjects.csv";
+        this.File = "L:\\test/ProjetCSV/";
 
     }
 
@@ -173,7 +173,7 @@ public class Csv {
                         String id = columns[0];
                         System.out.println("ID to be deleted: " + id);
                         // Suppression du fichier en dehors de la condition else
-                        File file = new File("/Users/joseph/Desktop/GestionProj/src/gestionproj/ProjetCSV/" + id + ".csv");
+                        File file = new File("L:\\test/ProjetCSV/" + id + ".csv");
                         if (file.delete()) {
                             System.out.println(file);
                             System.out.println(file.getName() + " est supprimé.");

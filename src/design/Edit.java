@@ -41,6 +41,7 @@ public class Edit extends javax.swing.JFrame {
     private boolean ActifNon;
     private DateDefinExtraction date = new DateDefinExtraction();
     private String currentDate = getCurrentDateAsString("dd-MM-yyyy");
+    private java.util.List<Pair<String, String>> Supps = new java.util.ArrayList<>();
 
     /**
      * Creates new form View
@@ -77,7 +78,7 @@ public class Edit extends javax.swing.JFrame {
         this.id = id;
         this.row = row;
         this.file = file;
-        this.filePath = System.getProperty("user.home")+"/gestionProjet/ProjetCSV/"+id+".csv";
+        this.filePath = "L:\\test/ProjetCSV/"+id+".csv";
         LectLine(filePath);
         int length = data2.length;
         this.Titre.setText(data2[1]);
@@ -92,6 +93,11 @@ public class Edit extends javax.swing.JFrame {
         for (int i = 4; i < length - 3; i++) {
             addSuppl(data2[i]);
         }
+        if(Supps.isEmpty()){
+            this.jScrollPane2.setVisible(false);
+            this.Remove.setVisible(false);
+        }
+        
     }
 
     public static String[] enleverEspaces(String chaine) {
@@ -259,7 +265,7 @@ public class Edit extends javax.swing.JFrame {
 
     private boolean TestDate() {
         if (date.isDateFormatValid(Txtdate.getText())
-                && date.compareDates(Txtdate.getText(), txtFin.getText())
+                && (date.compareDates(Txtdate.getText(), txtFin.getText()) || Txtdate.getText().equals(txtFin.getText()))
                 && (currentDate.equals(txtFin.getText()) || date.compareDates(currentDate, txtFin.getText()))) {
             return true;
         } else {
@@ -302,7 +308,6 @@ public class Edit extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         ChefN = new design.TextField();
         SuppN = new design.TextField();
-        SuppA = new javax.swing.JLabel();
         Remove = new design.Button();
         Add = new design.Button();
         ActifArchiv = new design.JCheckBoxCustom();
@@ -350,8 +355,6 @@ public class Edit extends javax.swing.JFrame {
         ChefN.setShadowColor(new java.awt.Color(255, 0, 0));
 
         SuppN.setShadowColor(new java.awt.Color(255, 153, 0));
-
-        SuppA.setText("Autres suppléants :");
 
         Remove.setText("-");
         Remove.setBorderColor(new java.awt.Color(204, 0, 0));
@@ -468,9 +471,6 @@ public class Edit extends javax.swing.JFrame {
                             .addGap(18, 18, 18)
                             .addComponent(ActifArchiv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(SuppA)
-                        .addGap(365, 365, 365))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(Add, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Remove, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -494,9 +494,7 @@ public class Edit extends javax.swing.JFrame {
                     .addComponent(SuppN, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(SuppLab)
                     .addComponent(Add, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(SuppA)
-                .addGap(4, 4, 4)
+                .addGap(38, 38, 38)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
@@ -538,7 +536,7 @@ public class Edit extends javax.swing.JFrame {
                         // Supprimer la ligne du fichier CSV original
                         csv.deleteLineFromCsvTot(row + 1);
                         // Ajouter la nouvelle ligne au fichier CSV
-                        String filePatH = System.getProperty("user.home") + "/gestionProjet/gestion.csv";
+                        String filePatH = "L:\\test/gestion.csv";
                         csv.appendLineToCSV(filePatH, id + "," + Titre.getText() + "," + ChefN.getText() + " " + ChefP.getText());
                         // Fermer la fenêtre
                         close();
@@ -580,7 +578,7 @@ public class Edit extends javax.swing.JFrame {
                     System.out.println("La case n'est pas visible et tout les éléments sont bon");
                     CsvFichier();
                     csv.deleteLineFromCsv(row + 1);
-                    String filePatH = System.getProperty("user.home") + "/gestionProjet/gestion.csv";
+                    String filePatH = "L:\\test/gestion.csv";
                     csv.appendLineToCSV(filePatH, id + "," + Titre.getText() + "," + ChefN.getText() + " " + ChefP.getText());
                     close();
                     mainFrame.repaint();
@@ -600,11 +598,18 @@ public class Edit extends javax.swing.JFrame {
     private void RemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveActionPerformed
         // TODO add your handling code here:
         RetirerSupll();
+        java.util.List<Pair<String, String>> suppPairs = getAllDataPairs();
+        if(suppPairs.isEmpty()){
+            this.Remove.setVisible(false);
+            this.jScrollPane2.setVisible(false);
+        }
     }//GEN-LAST:event_RemoveActionPerformed
 
     private void AddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddActionPerformed
         // TODO add your handling code here:
         addSupplWt();
+        this.Remove.setVisible(true);
+        this.jScrollPane2.setVisible(true);
     }//GEN-LAST:event_AddActionPerformed
 
     private void ActifArchivActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ActifArchivActionPerformed
@@ -697,7 +702,6 @@ public class Edit extends javax.swing.JFrame {
     private javax.swing.JTextArea Descr;
     private javax.swing.JLabel DescrLab;
     private design.Button Remove;
-    private javax.swing.JLabel SuppA;
     private design.TextField SuppC;
     private javax.swing.JLabel SuppLab;
     private design.TextField SuppN;
