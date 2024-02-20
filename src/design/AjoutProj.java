@@ -10,7 +10,9 @@ import static action.data.DateDefinExtraction.getCurrentDateAsString;
 import action.data.Pair;
 import gestionproj.fenetreprincipal;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -36,15 +38,17 @@ public class AjoutProj extends javax.swing.JFrame {
     private DateDefinExtraction date = new DateDefinExtraction();
     private String currentDate = getCurrentDateAsString("dd-MM-yyyy");
 
-    public void close() {
-        WindowEvent closeWindow = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
-        Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closeWindow);
-    }
-
     /**
      * Creates new form AjoutProj
      */
     public AjoutProj(fenetreprincipal mainFrame) {
+        mainFrame.setVisible(false);
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                confirmerFermeture(AjoutProj.this);
+            }
+        });
         initComponents();
         this.csv = new Csv(mainFrame);
         SuppListe.setVisible(false);
@@ -53,20 +57,65 @@ public class AjoutProj extends javax.swing.JFrame {
         this.mainFrame = mainFrame;
         String chemin = System.getProperty("user.dir");
         System.out.println("Le répertoire de travail actuel est : " + chemin);
-        this.filePath = "L:\\test/gestion.csv";
-        this.filePathId = "L:\\test/ProjetCSV/";
-        this.filePathAll = "L:\\test/AllProjects.csv";
+        this.filePath = "/Users/joseph/gestionProjet/gestion.csv";
+        this.filePathId = "/Users/joseph/gestionProjet/ProjetCSV/";
+        this.filePathAll = "/Users/joseph/gestionProjet/AllProjects.csv";
         CompareLastId(filePath, filePathAll);
         jScrollPane6.setVerticalScrollBar(new ScrollBarCustom());
         SuppListe.setVerticalScrollBar(new ScrollBarCustom());
     }
 
+    private void confirmerFermeture(AjoutProj frame) {
+        design.Button butOui = new design.Button();
+        butOui.setText("Oui");
+        butOui.setBorderColor(new java.awt.Color(204, 0, 0));
+        butOui.setColorClick(new java.awt.Color(255, 51, 51));
+        butOui.setColorOver(new java.awt.Color(255, 102, 102));
+
+        design.Button butNon = new design.Button();
+        butNon.setText("Non");
+
+        butOui.addActionListener(e -> {
+            System.out.println("Bouton Oui cliqué");
+            frame.dispose();
+            mainFrame.setVisible(true);
+            mainFrame.repaint();
+            mainFrame.revalidate();
+        });
+
+        butNon.addActionListener(e -> {
+            System.out.println("Bouton Non cliqué");
+            Container container = butNon.getParent();
+            while (!(container instanceof JOptionPane) && container != null) {
+                container = container.getParent();
+            }
+            if (container instanceof JOptionPane) {
+                ((JOptionPane) container).setValue(JOptionPane.CLOSED_OPTION);
+            }
+        });
+
+        Object[] options = {butOui, butNon};
+
+        int option = JOptionPane.showOptionDialog(frame,
+                "Êtes-vous sûr vouloir quitter la fenêtre sans ajouter de projet ?",
+                "Confirmation de fermeture",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[1]);
+    }
+
     //Ajout du projet dans un fichier csv 
     private void CsvFichier() {
         String line = "id,Projet,Chef de projet,Suppléant,";
-
+        String Line2 = "";
         String FileId = filePathId + this.LastId + ".csv";
-        String Line2 = "" + this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText() + "," + nomS.getText() + " " + nomS.getText();
+        if (!this.nomS.getText().trim().isEmpty() && !this.prenomS.getText().trim().isEmpty()) {
+            Line2 = this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText() + "," + prenomS.getText() + " " + nomS.getText();
+        } else if (this.nomS.getText().trim().isEmpty() && this.prenomS.getText().trim().isEmpty()) {
+            Line2 = this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText() + "," + " ";
+        }
         try {
             // Vérifier si le fichier existe, sinon le créer
             File file = new File(FileId);
@@ -87,7 +136,7 @@ public class AjoutProj extends javax.swing.JFrame {
             if (!txtFin.getText().trim().isEmpty() && txtFin.getText().matches("\\d{2}-\\d{2}-\\d{4}")) {
                 Line2 += "," + Descr.getText() + "," + Txtdate.getText() + "," + txtFin.getText();
             } else {
-                Line2 += "," + Descr.getText() + "," + Txtdate.getText()+", ";
+                Line2 += "," + Descr.getText() + "," + Txtdate.getText() + ", ";
             }
 
             line += "Description,Date de Début,Date de fin";
@@ -186,8 +235,6 @@ public class AjoutProj extends javax.swing.JFrame {
 
         dateChooser1 = new date.DateChooser();
         dateChooser2 = new date.DateChooser();
-        Valider = new javax.swing.JButton();
-        Annuler = new javax.swing.JButton();
         jScrollPane6 = new javax.swing.JScrollPane();
         Descr = new javax.swing.JTextArea();
         SuppListe = new javax.swing.JScrollPane();
@@ -206,6 +253,8 @@ public class AjoutProj extends javax.swing.JFrame {
         DD = new javax.swing.JLabel();
         DF = new javax.swing.JLabel();
         txtFin = new design.TextField();
+        Annuler = new design.Button();
+        Valider = new design.Button();
 
         dateChooser1.setForeground(new java.awt.Color(102, 102, 255));
         dateChooser1.setTextRefernce(Txtdate);
@@ -216,22 +265,6 @@ public class AjoutProj extends javax.swing.JFrame {
         setTitle("Ajout d'un projet");
         setBackground(new java.awt.Color(204, 204, 204));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-
-        Valider.setText("Valider");
-        Valider.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        Valider.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ValiderActionPerformed(evt);
-            }
-        });
-
-        Annuler.setText("Annuler");
-        Annuler.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        Annuler.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AnnulerActionPerformed(evt);
-            }
-        });
 
         Descr.setColumns(20);
         Descr.setLineWrap(true);
@@ -295,17 +328,38 @@ public class AjoutProj extends javax.swing.JFrame {
 
         txtFin.setShadowColor(new java.awt.Color(204, 93, 93));
 
+        Annuler.setText("Annuler");
+        Annuler.setBorderColor(new java.awt.Color(204, 0, 0));
+        Annuler.setColorClick(new java.awt.Color(204, 0, 51));
+        Annuler.setColorOver(new java.awt.Color(255, 51, 51));
+        Annuler.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AnnulerActionPerformed(evt);
+            }
+        });
+
+        Valider.setText("Valider");
+        Valider.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ValiderActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(348, 348, 348)
+                .addComponent(jLabel4)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(Annuler)
+                        .addComponent(Annuler, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(Valider))
+                        .addComponent(Valider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -353,10 +407,6 @@ public class AjoutProj extends javax.swing.JFrame {
                                 .addComponent(jLabel5)))
                         .addGap(0, 54, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(348, 348, 348)
-                .addComponent(jLabel4)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -395,90 +445,14 @@ public class AjoutProj extends javax.swing.JFrame {
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Annuler)
-                    .addComponent(Valider))
+                    .addComponent(Annuler, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Valider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-    //Bouton annuler
-    private void AnnulerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AnnulerActionPerformed
-        close();
-        mainFrame.setVisible(true);
-        mainFrame.repaint();
-        mainFrame.revalidate();
-        mainFrame.repaint();
-        mainFrame.revalidate();
-        mainFrame.populateTable();
-        mainFrame.setupCustomTableColumn();
-    }//GEN-LAST:event_AnnulerActionPerformed
-    //Bouton valider
-    private void ValiderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ValiderActionPerformed
-
-        if (areFieldsNotEmpty()) {
-            if (!txtFin.getText().trim().isEmpty()) {
-                if (txtFin.getText().matches("\\d{2}-\\d{2}-\\d{4}")) {
-                    if (date.compareDates(Txtdate.getText(), txtFin.getText())) {
-                        if (currentDate.equals(txtFin.getText()) || date.compareDates(currentDate, txtFin.getText())) {
-                            this.CsvFichier();
-                            csv.appendLineToCSV(filePath, this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText());
-                            close();
-                            mainFrame.repaint();
-                            mainFrame.revalidate();
-                            mainFrame.populateTable();
-                            mainFrame.setupCustomTableColumn();
-                            mainFrame.setVisible(true);
-                            return;
-                        } else if (!date.compareDates(currentDate, txtFin.getText())) {
-                            int n = JOptionPane.showConfirmDialog(
-                                    this,
-                                    "La date de fin est inférieure à la date du jour le projet sera donc archivé",
-                                    "Date de fin inférieure à la date du jour !",
-                                    JOptionPane.YES_NO_OPTION);
-                            if (n == 0) {
-                                this.CsvFichier();
-                                csv.appendLineToCSV(filePathAll, this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText());
-                                close();
-                                mainFrame.repaint();
-                                mainFrame.revalidate();
-                                mainFrame.populateTableTotal();
-                                mainFrame.setupCustomTableColumnTotal();
-                                mainFrame.setVisible(true);
-                                return;
-                            } else {
-                                return;
-                            }
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Veuillez remplir une date valide ou laisser le champ vide pour la date de fin !"
-                                + "\nLa date doit être au format jj-mm-aaaa", "Erreur date de fin !", JOptionPane.WARNING_MESSAGE);
-                        return;
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(this, "Veuillez remplir une date valide ou laisser le champ vide pour la date de fin !"
-                            + "\nLa date doit être au format jj-mm-aaaa", "Erreur date de fin !", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-            } else {
-                this.CsvFichier();
-                csv.appendLineToCSV(filePath, this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText());
-                close();
-                mainFrame.repaint();
-                mainFrame.revalidate();
-                mainFrame.populateTable();
-                mainFrame.setupCustomTableColumn();
-                mainFrame.setVisible(true);
-                return;
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Veuillez remplir tous les champs obligatoires.");
-            return;
-        }
-
-
-    }//GEN-LAST:event_ValiderActionPerformed
 
     private void TitreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TitreActionPerformed
         // TODO add your handling code here:
@@ -501,6 +475,101 @@ public class AjoutProj extends javax.swing.JFrame {
             Remove.setVisible(false);
         }
     }//GEN-LAST:event_RemoveActionPerformed
+
+    private void AnnulerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AnnulerActionPerformed
+        // TODO add your handling code here:
+        dispose();
+        mainFrame.setVisible(true);
+        mainFrame.repaint();
+        mainFrame.revalidate();
+    }//GEN-LAST:event_AnnulerActionPerformed
+
+    private void ValiderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ValiderActionPerformed
+        if (areFieldsNotEmpty()) {
+            if (!txtFin.getText().trim().isEmpty()) {
+                if (txtFin.getText().matches("\\d{2}-\\d{2}-\\d{4}")) {
+                    if (date.compareDates(Txtdate.getText(), txtFin.getText())) {
+                        if (currentDate.equals(txtFin.getText()) || date.compareDates(currentDate, txtFin.getText())) {
+                            this.CsvFichier();
+                            csv.appendLineToCSV(filePath, this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText());
+                            dispose();
+                            mainFrame.repaint();
+                            mainFrame.revalidate();
+                            mainFrame.populateTable();
+                            mainFrame.setupCustomTableColumn();
+                            mainFrame.setVisible(true);
+                            return;
+                        } else if (!date.compareDates(currentDate, txtFin.getText())) {
+                            design.Button butOui = new design.Button();
+                            butOui.setText("Oui");
+                            butOui.setBorderColor(new java.awt.Color(204, 0, 0));
+                            butOui.setColorClick(new java.awt.Color(255, 51, 51));
+                            butOui.setColorOver(new java.awt.Color(255, 102, 102));
+
+                            design.Button butNon = new design.Button();
+                            butNon.setText("Non");
+
+                            butOui.addActionListener(e -> {
+                                System.out.println("Bouton Oui cliqué");
+                                this.CsvFichier();
+                                csv.appendLineToCSV(filePathAll, this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText());
+                                dispose();
+                                mainFrame.repaint();
+                                mainFrame.revalidate();
+                                mainFrame.populateTableTotal();
+                                mainFrame.setupCustomTableColumnTotal();
+                                mainFrame.setVisible(true);
+                            });
+
+                            butNon.addActionListener(e -> {
+                                System.out.println("Bouton Non cliqué");
+                                Container container = butNon.getParent();
+                                while (!(container instanceof JOptionPane) && container != null) {
+                                    container = container.getParent();
+                                }
+                                if (container instanceof JOptionPane) {
+                                    ((JOptionPane) container).setValue(JOptionPane.CLOSED_OPTION);
+                                }
+                            });
+
+                            Object[] options = {butOui, butNon};
+
+                            int option = JOptionPane.showOptionDialog(this,
+                                    "La date de fin est inférieure à la date du jour le projet sera donc archivé",
+                                    "Date de fin inférieure à la date du jour !",
+                                    JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.QUESTION_MESSAGE,
+                                    null,
+                                    options,
+                                    options[1]);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Veuillez remplir une date valide ou laisser le champ vide pour la date de fin !"
+                                + "\nLa date doit être au format jj-mm-aaaa", "Erreur date de fin !", JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Veuillez remplir une date valide ou laisser le champ vide pour la date de fin !"
+                            + "\nLa date doit être au format jj-mm-aaaa", "Erreur date de fin !", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } else {
+                this.CsvFichier();
+                csv.appendLineToCSV(filePath, this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText());
+                dispose();
+                mainFrame.repaint();
+                mainFrame.revalidate();
+                mainFrame.populateTable();
+                mainFrame.setupCustomTableColumn();
+                mainFrame.setVisible(true);
+                return;
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Veuillez remplir tous les champs obligatoires.");
+            return;
+        }
+
+    }//GEN-LAST:event_ValiderActionPerformed
     private void CompareLastId(String filePath, String filePathAll) {
         LastId(filePath);
         LastId(filePathAll);
@@ -540,8 +609,8 @@ public class AjoutProj extends javax.swing.JFrame {
                 && !NomC.getText().trim().isEmpty()
                 && !PrenomC.getText().trim().isEmpty()
                 && areSupplFieldsNotEmpty()
-                && !nomS.getText().trim().isEmpty()
-                && !prenomS.getText().trim().isEmpty()
+                && (!(!nomS.getText().trim().isEmpty() && prenomS.getText().trim().isEmpty())
+                || !(nomS.getText().trim().isEmpty() && !prenomS.getText().trim().isEmpty()))
                 && !Descr.getText().trim().isEmpty();
     }
 
@@ -550,7 +619,7 @@ public class AjoutProj extends javax.swing.JFrame {
         java.util.List<Pair<String, String>> suppPairs = getAllDataPairs();
         for (Pair<String, String> pair : suppPairs) {
             if (pair.getFirst().trim().isEmpty() || pair.getSecond().trim().isEmpty()) {
-                return false; // 
+                return false;
             }
         }
         return true; // Tous les champs de suppléants sont remplis
@@ -595,7 +664,7 @@ public class AjoutProj extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private design.Button Add;
-    private javax.swing.JButton Annuler;
+    private design.Button Annuler;
     private javax.swing.JLabel DD;
     private javax.swing.JLabel DF;
     private javax.swing.JTextArea Descr;
@@ -605,7 +674,7 @@ public class AjoutProj extends javax.swing.JFrame {
     private javax.swing.JScrollPane SuppListe;
     private design.TextField Titre;
     private design.TextField Txtdate;
-    private javax.swing.JButton Valider;
+    private design.Button Valider;
     private date.DateChooser dateChooser1;
     private date.DateChooser dateChooser2;
     private javax.swing.JLabel jLabel2;

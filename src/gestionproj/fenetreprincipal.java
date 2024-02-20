@@ -15,8 +15,10 @@ import design.View;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -73,17 +75,13 @@ public class fenetreprincipal extends javax.swing.JFrame {
     /**
      * Creates new form fenetreprincipal
      */
-    //fermer la fentrer
-    public void close() {
-        WindowEvent closeWindow = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
-        Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closeWindow);
-    }
-
-    public void Review() {
-
-    }
-
     public fenetreprincipal() {
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                confirmerFermeture(fenetreprincipal.this);
+            }
+        });
         //Chemin d'accès
         System.out.println(DateFin.Datedefin);
         String Deplacer = "Les projets : ";
@@ -108,8 +106,8 @@ public class fenetreprincipal extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, Deplacer, "Attention fichier déplacé", JOptionPane.WARNING_MESSAGE);
             }
         }
-        this.filePath = "L:\\test/gestion.csv";
-        this.filePathAll = "L:\\test/AllProjects.csv";
+        this.filePath = "/Users/joseph/gestionProjet/gestion.csv";
+        this.filePathAll = "/Users/joseph/gestionProjet/AllProjects.csv";
         initComponents();
         populateTable();
         jScrollPane1.setVerticalScrollBar(new ScrollBarCustom());
@@ -143,6 +141,49 @@ public class fenetreprincipal extends javax.swing.JFrame {
         setupCustomTableColumn();
     }
 
+    private void confirmerFermeture(fenetreprincipal frame) {
+
+        design.Button butOui = new design.Button();
+        butOui.setText("Oui");
+        butOui.setBorderColor(new java.awt.Color(204, 0, 0));
+        butOui.setColorClick(new java.awt.Color(255, 51, 51));
+        butOui.setColorOver(new java.awt.Color(255, 102, 102));
+        
+        design.Button butNon = new design.Button();
+        butNon.setText("Non");
+        
+
+        butOui.addActionListener(e -> {
+            // Traitement lorsque le bouton "Oui" est cliqué
+            System.out.println("Bouton Oui cliqué");
+            frame.dispose();
+        });
+
+        butNon.addActionListener(e -> {
+            // Traitement lorsque le bouton "Non" est cliqué
+            System.out.println("Bouton Non cliqué");
+            Container container = butNon.getParent();
+            while (!(container instanceof JOptionPane) && container != null) {
+                container = container.getParent();
+            }
+            if (container instanceof JOptionPane) {
+                ((JOptionPane) container).setValue(JOptionPane.CLOSED_OPTION);
+            }
+        });
+
+        Object[] options = {butOui, butNon};
+
+        int option = JOptionPane.showOptionDialog(frame,
+                "Êtes-vous sûr de vouloir quitter l'application ?",
+                "Confirmation de fermeture",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[1]);
+
+    }
+
     //Button edit delet view table actif
     public void setupCustomTableColumn() {
         TableActionEvent event = new TableActionEvent() {
@@ -157,7 +198,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
                     jTable2.getCellEditor().stopCellEditing();
                 }
                 DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-                
+
                 Object rowData[] = new Object[model.getColumnCount()];
                 String dataAdd = "";
                 for (int i = 0; i < model.getColumnCount(); i++) {
@@ -179,6 +220,8 @@ public class fenetreprincipal extends javax.swing.JFrame {
                     NbrPAS = String.valueOf(NbrPA);
                     NbrPT = NbrPT + 1;
                     NbrPTS = String.valueOf(NbrPT);
+                    NbrC -= 1;
+                    NbrCS = String.valueOf(NbrCS);
                     fenetreprincipal.this.carLayout1.card3.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/dossier.png")), "Nombre de projet total", NbrPTS, "12000"));
                     fenetreprincipal.this.carLayout1.card2.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/lumiere.png")), "Nombre de projet actif", NbrPAS, "12000"));
                     fenetreprincipal.this.carLayout1.card1.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/chef.png")), "Chef de projet", NbrCS, "12000"));
@@ -219,6 +262,8 @@ public class fenetreprincipal extends javax.swing.JFrame {
                     model.removeRow(row);
                     NbrPT = NbrPT - 1;
                     NbrPTS = String.valueOf(NbrPT);
+                    NbrC -= 1;
+                    NbrCS = String.valueOf(NbrCS);
                     fenetreprincipal.this.carLayout1.card1.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/chef.png")), "Chef de projet", NbrCS, "12000"));
                     fenetreprincipal.this.carLayout1.card3.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/dossier.png")), "Nombre de projet total", NbrPTS, "12000"));
                     fenetreprincipal.this.carLayout1.card2.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/lumiere.png")), "Nombre de projet actif", NbrPAS, "12000"));
@@ -237,7 +282,6 @@ public class fenetreprincipal extends javax.swing.JFrame {
     }
 
     private void view(String id) {
-        close();
         View view = new View(this, id);
         view.setVisible(true);
 
@@ -245,7 +289,6 @@ public class fenetreprincipal extends javax.swing.JFrame {
 
     private void edit(String id, int row, String filePath, int a) {
         System.out.println("Je suis dans ma fonction edit avec comme argument : " + id + " " + row + " " + filePath);
-        close();
         Edit edit = new Edit(this, id, row, filePath, a);
         edit.setVisible(true);
     }
@@ -361,7 +404,6 @@ public class fenetreprincipal extends javax.swing.JFrame {
     //Table avec information du csv actif
     private DefaultTableModel buildTableModel(String filePath) {
         DefaultTableModel model = new DefaultTableModel();
-        
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             // Lire la première ligne pour obtenir les noms de colonnes
@@ -477,7 +519,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
         ajouts = new design.Button();
         resultat = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setBackground(new java.awt.Color(102, 102, 102));
 
         jScrollPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -576,7 +618,6 @@ public class fenetreprincipal extends javax.swing.JFrame {
 
     private void ajoutsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ajoutsActionPerformed
         // TODO add your handling code here:
-        close();
         AjoutProj aj = new AjoutProj(this);
         aj.setVisible(true);
     }//GEN-LAST:event_ajoutsActionPerformed

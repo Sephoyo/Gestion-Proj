@@ -18,8 +18,8 @@ public class DateDefinExtraction {
     private static String filePath;
 
     public DateDefinExtraction() {
-        this.filePath = "L:\\test/gestion.csv";
-        String dossierCSV = "L:\\test/ProjetCSV/";
+        this.filePath = "/Users/joseph/gestionProjet/gestion.csv";
+        String dossierCSV = "/Users/joseph/gestionProjet/ProjetCSV/";
 
         // Liste des fichiers dans le dossier
         File dossier = new File(dossierCSV);

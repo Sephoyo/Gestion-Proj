@@ -8,11 +8,13 @@ import gestionproj.fenetreprincipal;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import javax.swing.BoxLayout;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -37,6 +39,13 @@ public class View extends javax.swing.JFrame {
 
     //Initialisation de la fenetre
     public View(fenetreprincipal mainFrame, String id) {
+        mainFrame.setVisible(false);
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                confirmerFermeture(View.this);
+            }
+        });
         initComponents();
         jScrollPane1.setVerticalScrollBar(new ScrollBarCustom());
         jScrollPane2.setVerticalScrollBar(new ScrollBarCustom());
@@ -44,21 +53,39 @@ public class View extends javax.swing.JFrame {
         this.id = id;
         String chemin = System.getProperty("user.dir");
         System.out.println("Le répertoire de travail actuel est : " + chemin);
-        this.filePath = "L:\\test/ProjetCSV/"+id+".csv";
+        this.filePath = "/Users/joseph/gestionProjet/ProjetCSV/" + id + ".csv";
         System.out.println("L'id : " + id + " et le fichier : " + filePath);
         LectLine(filePath);
         int length = data2.length;
         this.Titre.setText(data2[1]);
         this.ChefN.setText(enleverEspaces(data2[2])[0]);
         this.ChefP.setText(enleverEspaces(data2[2])[1]);
-        this.SuppN.setText(enleverEspaces(data2[3])[0]);
-        this.SuppC.setText(enleverEspaces(data2[3])[1]);
+        if (!data2[3].trim().isEmpty()) {
+            this.SuppN.setText(enleverEspaces(data2[3])[0]);
+            this.SuppC.setText(enleverEspaces(data2[3])[1]);
+        }else{
+            this.SuppN.setVisible(false);
+            this.SuppC.setVisible(false);
+            this.SuppLab.setVisible(false);
+            this.SuppA.setVisible(false);
+        }
+        if(data2[length - 1].trim().isEmpty()){
+            txtFin.setText("Non-défini");
+        }else{
+            this.txtFin.setText(data2[length - 1]);
+        }
         this.Descr.setText(data2[length - 3]);
-        this.Txtdate.setText(data2[length-2]);
-        this.txtFin.setText(data2[length-1]);
+        this.Txtdate.setText(data2[length - 2]);
         for (int i = 4; i < length - 3; i++) {
             addTextFieldToScroll(data2[i]);
         }
+    }
+    
+    private void confirmerFermeture(View frame) {
+            frame.dispose();
+            mainFrame.setVisible(true);
+            mainFrame.repaint();
+            mainFrame.revalidate();
     }
 
     public static String[] enleverEspaces(String chaine) {
@@ -78,7 +105,7 @@ public class View extends javax.swing.JFrame {
 
         newTextField1.setPreferredSize(new java.awt.Dimension(136, 36));
         newTextField2.setPreferredSize(new java.awt.Dimension(136, 36));
-        newTextField1.setText(tableau[0]);        
+        newTextField1.setText(tableau[0]);
         newTextField2.setText(tableau[1]);
         newTextField1.setEditable(false);
         newTextField2.setEditable(false);

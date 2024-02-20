@@ -36,9 +36,9 @@ public class Csv {
 
     public Csv(fenetreprincipal Frame) {
         this.frame = Frame;
-        this.filePath = "L:\\test/gestion.csv";
-        this.filePathAll = "L:\\test/AllProjects.csv";
-        this.File = "L:\\test/ProjetCSV/";
+        this.filePath = "/Users/joseph/gestionProjet/gestion.csv";
+        this.filePathAll = "/Users/joseph/gestionProjet/AllProjects.csv";
+        this.File = "/Users/joseph/gestionProjet/ProjetCSV/";
 
     }
 
@@ -173,7 +173,7 @@ public class Csv {
                         String id = columns[0];
                         System.out.println("ID to be deleted: " + id);
                         // Suppression du fichier en dehors de la condition else
-                        File file = new File("L:\\test/ProjetCSV/" + id + ".csv");
+                        File file = new File("/Users/joseph/gestionProjet/ProjetCSV/" + id + ".csv");
                         if (file.delete()) {
                             System.out.println(file);
                             System.out.println(file.getName() + " est supprimé.");
@@ -241,7 +241,6 @@ public class Csv {
     }
 
     private void edit(String id, int row, String filePath, int a) {
-        frame.close();
         Edit edit = new Edit(frame, id, row, filePath, a);
         edit.setVisible(true);
     }
