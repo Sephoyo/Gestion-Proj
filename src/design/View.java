@@ -53,7 +53,7 @@ public class View extends javax.swing.JFrame {
         this.id = id;
         String chemin = System.getProperty("user.dir");
         System.out.println("Le répertoire de travail actuel est : " + chemin);
-        this.filePath = "/Users/joseph/gestionProjet/ProjetCSV/" + id + ".csv";
+        this.filePath = "L:\\Gestion_Projet/ProjetCSV/" + id + ".csv";
         System.out.println("L'id : " + id + " et le fichier : " + filePath);
         LectLine(filePath);
         int length = data2.length;

@@ -106,8 +106,8 @@ public class fenetreprincipal extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, Deplacer, "Attention fichier déplacé", JOptionPane.WARNING_MESSAGE);
             }
         }
-        this.filePath = "/Users/joseph/gestionProjet/gestion.csv";
-        this.filePathAll = "/Users/joseph/gestionProjet/AllProjects.csv";
+        this.filePath = "L:\\Gestion_Projet/gestion.csv";
+        this.filePathAll = "L:\\Gestion_Projet/AllProjects.csv";
         initComponents();
         populateTable();
         jScrollPane1.setVerticalScrollBar(new ScrollBarCustom());
