@@ -21,6 +21,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 
 import java.io.IOException;
+import javaswingdev.message.MessageDialog;
 import javax.swing.JOptionPane;
 
 /**
@@ -46,7 +47,7 @@ public class AjoutProj extends javax.swing.JFrame {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                confirmerFermeture(AjoutProj.this);
+                confirmerFermeture();
             }
         });
         initComponents();
@@ -65,45 +66,16 @@ public class AjoutProj extends javax.swing.JFrame {
         SuppListe.setVerticalScrollBar(new ScrollBarCustom());
     }
 
-    private void confirmerFermeture(AjoutProj frame) {
-        design.Button butOui = new design.Button();
-        butOui.setText("Oui");
-        butOui.setBorderColor(new java.awt.Color(204, 0, 0));
-        butOui.setColorClick(new java.awt.Color(255, 51, 51));
-        butOui.setColorOver(new java.awt.Color(255, 102, 102));
+    private void confirmerFermeture() {
+        MessageDialog obj = new MessageDialog(this);
+        obj.showMessage("Annuler l'ajout ?", "Êtes-vous sur de vouloir annuler l'ajout\nAucune information ne sera garder !");
 
-        design.Button butNon = new design.Button();
-        butNon.setText("Non");
-
-        butOui.addActionListener(e -> {
-            System.out.println("Bouton Oui cliqué");
-            frame.dispose();
-            mainFrame.setVisible(true);
-            mainFrame.repaint();
-            mainFrame.revalidate();
-        });
-
-        butNon.addActionListener(e -> {
-            System.out.println("Bouton Non cliqué");
-            Container container = butNon.getParent();
-            while (!(container instanceof JOptionPane) && container != null) {
-                container = container.getParent();
-            }
-            if (container instanceof JOptionPane) {
-                ((JOptionPane) container).setValue(JOptionPane.CLOSED_OPTION);
-            }
-        });
-
-        Object[] options = {butOui, butNon};
-
-        int option = JOptionPane.showOptionDialog(frame,
-                "Êtes-vous sûr vouloir quitter la fenêtre sans prendre en compte \n les éventuelles changements ?",
-                "Confirmation de fermeture",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[1]);
+        // Ajoutez une vérification ici pour voir si le bouton Cancel a été cliqué
+        if (obj.getMessageType() == MessageDialog.MessageType.OK) {
+            this.dispose();
+            this.mainFrame.setVisible(true);
+        } else {
+        }
     }
 
     //Ajout du projet dans un fichier csv 
@@ -261,7 +233,7 @@ public class AjoutProj extends javax.swing.JFrame {
 
         dateChooser2.setTextRefernce(txtFin);
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Ajout d'un projet");
         setBackground(new java.awt.Color(204, 204, 204));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
