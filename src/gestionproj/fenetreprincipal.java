@@ -47,6 +47,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
@@ -67,6 +68,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
     private int NbrC;
     private static String NbrCS;
     private ChefProjet CP;
+    private String dataAdd;
     private javax.swing.JCheckBox[] checkBoxArray;
     private ChefProjet Demander = new ChefProjet();
     private DateDefinExtraction DateFin = new DateDefinExtraction();
@@ -106,8 +108,8 @@ public class fenetreprincipal extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, Deplacer, "Attention fichier déplacé", JOptionPane.WARNING_MESSAGE);
             }
         }
-        this.filePath = "L:\\Gestion_Projet/gestion.csv";
-        this.filePathAll = "L:\\Gestion_Projet/AllProjects.csv";
+        this.filePath = "/Users/joseph/gestionProjet/gestion.csv";
+        this.filePathAll = "/Users/joseph/gestionProjet/AllProjects.csv";
         initComponents();
         populateTable();
         jScrollPane1.setVerticalScrollBar(new ScrollBarCustom());
@@ -148,10 +150,9 @@ public class fenetreprincipal extends javax.swing.JFrame {
         butOui.setBorderColor(new java.awt.Color(204, 0, 0));
         butOui.setColorClick(new java.awt.Color(255, 51, 51));
         butOui.setColorOver(new java.awt.Color(255, 102, 102));
-        
+
         design.Button butNon = new design.Button();
         butNon.setText("Non");
-        
 
         butOui.addActionListener(e -> {
             // Traitement lorsque le bouton "Oui" est cliqué
@@ -200,18 +201,24 @@ public class fenetreprincipal extends javax.swing.JFrame {
                 DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
 
                 Object rowData[] = new Object[model.getColumnCount()];
-                String dataAdd = "";
                 for (int i = 0; i < model.getColumnCount(); i++) {
                     rowData[i] = model.getValueAt(row, i);
                     dataAdd += "," + rowData[i];
                 }
                 dataAdd = dataAdd.replaceFirst(",", "");
-                int i = JOptionPane.showConfirmDialog(null, "Le projet vas être archiver et la date de fin de projet sera la date du jour .\n Êtes-vous sûr de vouloir continuer?",
-                        "Veuillez confirmer votre choix",
-                        JOptionPane.YES_NO_OPTION);
-                if (i == 0) {
-                    ///l'utilisateur a dit oui
-                    // Ajouter la ligne au fichier CSV
+                design.Button butOui = new design.Button();
+                butOui.setText("Oui");
+                butOui.setBorderColor(new java.awt.Color(204, 0, 0));
+                butOui.setColorClick(new java.awt.Color(255, 51, 51));
+                butOui.setColorOver(new java.awt.Color(255, 102, 102));
+
+                design.Button butNon = new design.Button();
+                butNon.setText("Non");
+
+                butOui.addActionListener(e -> {
+                    // Traitement lorsque le bouton "Oui" est cliqué
+                    SwingUtilities.getWindowAncestor(butOui).dispose();
+                    System.out.println("Bouton Oui cliqué");
                     csv.findId(row);
                     csv.appendLineToCSV(filePathAll, dataAdd);
                     csv.deleteLineFromCsv(row + 1);
@@ -225,9 +232,30 @@ public class fenetreprincipal extends javax.swing.JFrame {
                     fenetreprincipal.this.carLayout1.card3.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/dossier.png")), "Nombre de projet total", NbrPTS, "12000"));
                     fenetreprincipal.this.carLayout1.card2.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/lumiere.png")), "Nombre de projet actif", NbrPAS, "12000"));
                     fenetreprincipal.this.carLayout1.card1.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/chef.png")), "Chef de projet", NbrCS, "12000"));
-                } else {
-                    // l'utilisateur a dit non
-                }
+                });
+
+                butNon.addActionListener(e -> {
+                    // Traitement lorsque le bouton "Non" est cliqué
+                    System.out.println("Bouton Non cliqué");
+                    Container container = butNon.getParent();
+                    while (!(container instanceof JOptionPane) && container != null) {
+                        container = container.getParent();
+                    }
+                    if (container instanceof JOptionPane) {
+                        ((JOptionPane) container).setValue(JOptionPane.CLOSED_OPTION);
+                    }
+                });
+
+                Object[] options = {butOui, butNon};
+
+                int option = JOptionPane.showOptionDialog(fenetreprincipal.this,
+                        "Le projet vas être archiver et la date de fin de projet sera la date du jour .\n Êtes-vous sûr de vouloir continuer ?",
+                        "Archivage en cours",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        options,
+                        options[1]);
             }
 
             @Override
@@ -253,11 +281,19 @@ public class fenetreprincipal extends javax.swing.JFrame {
                     jTable2.getCellEditor().stopCellEditing();
                 }
                 DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-                int i = JOptionPane.showConfirmDialog(null, "La suppression est irréversible. Êtes-vous sûr de vouloir continuer?",
-                        "Veuillez confirmer votre choix",
-                        JOptionPane.YES_NO_OPTION);
-                if (i == 0) {
-                    ///l'utilisateur a dit oui
+                design.Button butOui = new design.Button();
+                butOui.setText("Oui");
+                butOui.setBorderColor(new java.awt.Color(204, 0, 0));
+                butOui.setColorClick(new java.awt.Color(255, 51, 51));
+                butOui.setColorOver(new java.awt.Color(255, 102, 102));
+
+                design.Button butNon = new design.Button();
+                butNon.setText("Non");
+
+                butOui.addActionListener(e -> {
+                    // Traitement lorsque le bouton "Oui" est cliqué
+                    SwingUtilities.getWindowAncestor(butOui).dispose();
+                    System.out.println("Bouton Oui cliqué");
                     csv.deleteLineFromCsvTotal(row + 1);
                     model.removeRow(row);
                     NbrPT = NbrPT - 1;
@@ -267,9 +303,30 @@ public class fenetreprincipal extends javax.swing.JFrame {
                     fenetreprincipal.this.carLayout1.card1.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/chef.png")), "Chef de projet", NbrCS, "12000"));
                     fenetreprincipal.this.carLayout1.card3.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/dossier.png")), "Nombre de projet total", NbrPTS, "12000"));
                     fenetreprincipal.this.carLayout1.card2.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/lumiere.png")), "Nombre de projet actif", NbrPAS, "12000"));
-                } else {
-                    // l'utilisateur a dit non
-                }
+                });
+
+                butNon.addActionListener(e -> {
+                    // Traitement lorsque le bouton "Non" est cliqué
+                    System.out.println("Bouton Non cliqué");
+                    Container container = butNon.getParent();
+                    while (!(container instanceof JOptionPane) && container != null) {
+                        container = container.getParent();
+                    }
+                    if (container instanceof JOptionPane) {
+                        ((JOptionPane) container).setValue(JOptionPane.CLOSED_OPTION);
+                    }
+                });
+
+                Object[] options = {butOui, butNon};
+
+                int option = JOptionPane.showOptionDialog(fenetreprincipal.this,
+                        "Le projet vas être supprimer \n Êtes-vous sûr de vouloir continuer ?",
+                        "Suppression en cours",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        options,
+                        options[1]);
             }
 
             @Override

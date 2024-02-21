@@ -57,9 +57,9 @@ public class AjoutProj extends javax.swing.JFrame {
         this.mainFrame = mainFrame;
         String chemin = System.getProperty("user.dir");
         System.out.println("Le répertoire de travail actuel est : " + chemin);
-        this.filePath = "L:\\Gestion_Projet/gestion.csv";
-        this.filePathId = "L:\\Gestion_Projet/ProjetCSV/";
-        this.filePathAll = "L:\\Gestion_Projet/AllProjects.csv";
+        this.filePath = "/Users/joseph/gestionProjet/gestion.csv";
+        this.filePathId = "/Users/joseph/gestionProjet/ProjetCSV/";
+        this.filePathAll = "/Users/joseph/gestionProjet/AllProjects.csv";
         CompareLastId(filePath, filePathAll);
         jScrollPane6.setVerticalScrollBar(new ScrollBarCustom());
         SuppListe.setVerticalScrollBar(new ScrollBarCustom());
@@ -97,7 +97,7 @@ public class AjoutProj extends javax.swing.JFrame {
         Object[] options = {butOui, butNon};
 
         int option = JOptionPane.showOptionDialog(frame,
-                "Êtes-vous sûr vouloir quitter la fenêtre sans ajouter de projet ?",
+                "Êtes-vous sûr vouloir quitter la fenêtre sans prendre en compte \n les éventuelles changements ?",
                 "Confirmation de fermeture",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,

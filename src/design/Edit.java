@@ -11,7 +11,6 @@ import action.data.Pair;
 import gestionproj.fenetreprincipal;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
@@ -20,10 +19,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import javax.swing.JOptionPane;
 
 /**
@@ -84,7 +79,7 @@ public class Edit extends javax.swing.JFrame {
         this.id = id;
         this.row = row;
         this.file = file;
-        this.filePath = "L:\\Gestion_Projet/ProjetCSV/" + id + ".csv";
+        this.filePath = "/Users/joseph/gestionProjet/ProjetCSV/" + id + ".csv";
         LectLine(filePath);
         int length = data2.length;
         this.Titre.setText(data2[1]);
@@ -608,7 +603,7 @@ public class Edit extends javax.swing.JFrame {
                         System.out.println("Tout est bon, la case est coché et les champs respecte les contraintes ");
                         CsvFichier();
                         csv.deleteLineFromCsvTot(row + 1);
-                        String filePatH = "L:\\Gestion_Projet/gestion.csv";
+                        String filePatH = "/Users/joseph/gestionProjet/gestion.csv";
                         csv.appendLineToCSV(filePatH, id + "," + Titre.getText() + "," + ChefN.getText() + " " + ChefP.getText());
                         dispose();
                         mainFrame.repaint();
@@ -654,7 +649,7 @@ public class Edit extends javax.swing.JFrame {
                     System.out.println("La case n'est pas visible et tout les éléments sont bon");
                     CsvFichier();
                     csv.deleteLineFromCsv(row + 1);
-                    String filePatH = "L:\\Gestion_Projet/gestion.csv";
+                    String filePatH = "/Users/joseph/gestionProjet/gestion.csv";
                     csv.appendLineToCSV(filePatH, id + "," + Titre.getText() + "," + ChefN.getText() + " " + ChefP.getText());
                     dispose();
                     mainFrame.repaint();
