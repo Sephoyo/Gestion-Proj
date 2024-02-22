@@ -145,6 +145,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
                     jTable2.getCellEditor().stopCellEditing();
                 }
                 DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+                dataAdd = "";
                 System.out.println(dataAdd);
                 Object rowData[] = new Object[model.getColumnCount()];
                 for (int i = 0; i < model.getColumnCount(); i++) {
