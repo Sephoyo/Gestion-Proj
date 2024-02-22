@@ -10,8 +10,6 @@ import static action.data.DateDefinExtraction.getCurrentDateAsString;
 import action.data.Pair;
 import gestionproj.fenetreprincipal;
 import java.awt.Color;
-import java.awt.Container;
-import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
@@ -21,8 +19,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 
 import java.io.IOException;
+import javaswingdev.message.AlertDialog;
 import javaswingdev.message.MessageDialog;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -58,9 +56,9 @@ public class AjoutProj extends javax.swing.JFrame {
         this.mainFrame = mainFrame;
         String chemin = System.getProperty("user.dir");
         System.out.println("Le répertoire de travail actuel est : " + chemin);
-        this.filePath = "/Users/joseph/gestionProjet/gestion.csv";
-        this.filePathId = "/Users/joseph/gestionProjet/ProjetCSV/";
-        this.filePathAll = "/Users/joseph/gestionProjet/AllProjects.csv";
+        this.filePath = "L:\\Gestion_Projet/gestion.csv";
+        this.filePathId = "L:\\Gestion_Projet/ProjetCSV/";
+        this.filePathAll = "L:\\Gestion_Projet/AllProjects.csv";
         CompareLastId(filePath, filePathAll);
         jScrollPane6.setVerticalScrollBar(new ScrollBarCustom());
         SuppListe.setVerticalScrollBar(new ScrollBarCustom());
@@ -68,9 +66,7 @@ public class AjoutProj extends javax.swing.JFrame {
 
     private void confirmerFermeture() {
         MessageDialog obj = new MessageDialog(this);
-        obj.showMessage("Annuler l'ajout ?", "Êtes-vous sur de vouloir annuler l'ajout\nAucune information ne sera garder !");
-
-        // Ajoutez une vérification ici pour voir si le bouton Cancel a été cliqué
+        obj.showMessage("Annuler l'ajout !", "Êtes-vous sur de vouloir annuler l'ajout ? \nAucune informations ne sera gardées !");
         if (obj.getMessageType() == MessageDialog.MessageType.OK) {
             this.dispose();
             this.mainFrame.setVisible(true);
@@ -237,6 +233,7 @@ public class AjoutProj extends javax.swing.JFrame {
         setTitle("Ajout d'un projet");
         setBackground(new java.awt.Color(204, 204, 204));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setResizable(false);
 
         Descr.setColumns(20);
         Descr.setLineWrap(true);
@@ -389,9 +386,10 @@ public class AjoutProj extends javax.swing.JFrame {
                 .addComponent(Titre, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(NomC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(PrenomC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(NomC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel2))
+                    .addComponent(PrenomC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -472,17 +470,9 @@ public class AjoutProj extends javax.swing.JFrame {
                             mainFrame.setVisible(true);
                             return;
                         } else if (!date.compareDates(currentDate, txtFin.getText())) {
-                            design.Button butOui = new design.Button();
-                            butOui.setText("Oui");
-                            butOui.setBorderColor(new java.awt.Color(204, 0, 0));
-                            butOui.setColorClick(new java.awt.Color(255, 51, 51));
-                            butOui.setColorOver(new java.awt.Color(255, 102, 102));
-
-                            design.Button butNon = new design.Button();
-                            butNon.setText("Non");
-
-                            butOui.addActionListener(e -> {
-                                System.out.println("Bouton Oui cliqué");
+                            MessageDialog obj = new MessageDialog(this);
+                            obj.showMessage("Archivage !", "Êtes-vous sur de vouloir archiver votre projet ?\nLa date de fin est inférieur à celle du jour il sera donc archivé");
+                            if (obj.getMessageType() == MessageDialog.MessageType.OK) {
                                 this.CsvFichier();
                                 csv.appendLineToCSV(filePathAll, this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText());
                                 dispose();
@@ -491,39 +481,17 @@ public class AjoutProj extends javax.swing.JFrame {
                                 mainFrame.populateTableTotal();
                                 mainFrame.setupCustomTableColumnTotal();
                                 mainFrame.setVisible(true);
-                            });
+                            } else {
+                            }
 
-                            butNon.addActionListener(e -> {
-                                System.out.println("Bouton Non cliqué");
-                                Container container = butNon.getParent();
-                                while (!(container instanceof JOptionPane) && container != null) {
-                                    container = container.getParent();
-                                }
-                                if (container instanceof JOptionPane) {
-                                    ((JOptionPane) container).setValue(JOptionPane.CLOSED_OPTION);
-                                }
-                            });
-
-                            Object[] options = {butOui, butNon};
-
-                            int option = JOptionPane.showOptionDialog(this,
-                                    "La date de fin est inférieure à la date du jour le projet sera donc archivé",
-                                    "Date de fin inférieure à la date du jour !",
-                                    JOptionPane.YES_NO_OPTION,
-                                    JOptionPane.QUESTION_MESSAGE,
-                                    null,
-                                    options,
-                                    options[1]);
                         }
                     } else {
-                        JOptionPane.showMessageDialog(this, "Veuillez remplir une date valide ou laisser le champ vide pour la date de fin !"
-                                + "\nLa date doit être au format jj-mm-aaaa", "Erreur date de fin !", JOptionPane.WARNING_MESSAGE);
-                        return;
+                        AlertDialog obj = new AlertDialog(this);
+                        obj.showMessage("Erreur date de fin !", "Veuillez remplir une date valide ou laisser le champ vide pour la date de fin !\nLa date doit être au format jj-mm-aaaa");
                     }
                 } else {
-                    JOptionPane.showMessageDialog(this, "Veuillez remplir une date valide ou laisser le champ vide pour la date de fin !"
-                            + "\nLa date doit être au format jj-mm-aaaa", "Erreur date de fin !", JOptionPane.WARNING_MESSAGE);
-                    return;
+                    AlertDialog obj = new AlertDialog(this);
+                    obj.showMessage("Erreur date de fin !", "Veuillez remplir une date valide ou laisser le champ vide pour la date de fin !\nLa date doit être au format jj-mm-aaaa");
                 }
             } else {
                 this.CsvFichier();
@@ -537,8 +505,8 @@ public class AjoutProj extends javax.swing.JFrame {
                 return;
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Veuillez remplir tous les champs obligatoires.");
-            return;
+            AlertDialog obj = new AlertDialog(this);
+            obj.showMessage("Champs vide !", "Veuillez remplir tous les champs obligatoires");
         }
 
     }//GEN-LAST:event_ValiderActionPerformed
@@ -581,9 +549,10 @@ public class AjoutProj extends javax.swing.JFrame {
                 && !NomC.getText().trim().isEmpty()
                 && !PrenomC.getText().trim().isEmpty()
                 && areSupplFieldsNotEmpty()
-                && (!(!nomS.getText().trim().isEmpty() && prenomS.getText().trim().isEmpty())
-                || !(nomS.getText().trim().isEmpty() && !prenomS.getText().trim().isEmpty()))
-                && !Descr.getText().trim().isEmpty();
+                && !((!nomS.getText().trim().isEmpty() && prenomS.getText().trim().isEmpty())
+                || (nomS.getText().trim().isEmpty() && !prenomS.getText().trim().isEmpty()))
+                && !Descr.getText().trim().isEmpty()
+                && !Txtdate.getText().trim().isEmpty();
     }
 
 // Méthode pour vérifier si les champs de suppléants ne sont pas vides

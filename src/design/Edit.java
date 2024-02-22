@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package design;
 
 import action.data.Csv;
@@ -10,7 +6,6 @@ import static action.data.DateDefinExtraction.getCurrentDateAsString;
 import action.data.Pair;
 import gestionproj.fenetreprincipal;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
@@ -19,6 +14,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import javaswingdev.message.AlertDialog;
+import javaswingdev.message.MessageDialog;
 import javax.swing.JOptionPane;
 
 /**
@@ -49,11 +46,10 @@ public class Edit extends javax.swing.JFrame {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                confirmerFermeture(Edit.this);
+                confirmerFermeture();
             }
         });
         mainFrame.setVisible(false);
-        String currentDate = getCurrentDateAsString("dd-MM-yyyy");
         initComponents();
         this.txtFin.setEnabled(true);
         this.txtFin.setEditable(true);
@@ -79,7 +75,7 @@ public class Edit extends javax.swing.JFrame {
         this.id = id;
         this.row = row;
         this.file = file;
-        this.filePath = "/Users/joseph/gestionProjet/ProjetCSV/" + id + ".csv";
+        this.filePath = "L:\\Gestion_Projet/ProjetCSV/" + id + ".csv";
         LectLine(filePath);
         int length = data2.length;
         this.Titre.setText(data2[1]);
@@ -92,7 +88,6 @@ public class Edit extends javax.swing.JFrame {
         this.Descr.setText(data2[length - 3]);
         this.Txtdate.setText(data2[length - 2]);
         this.txtFin.setText(data2[length - 1]);
-        //A modifier lors de l'ajout des dates
         for (int i = 4; i < length - 3; i++) {
             addSuppl(data2[i]);
         }
@@ -103,45 +98,14 @@ public class Edit extends javax.swing.JFrame {
 
     }
 
-    private void confirmerFermeture(Edit frame) {
-        design.Button butOui = new design.Button();
-        butOui.setText("Oui");
-        butOui.setBorderColor(new java.awt.Color(204, 0, 0));
-        butOui.setColorClick(new java.awt.Color(255, 51, 51));
-        butOui.setColorOver(new java.awt.Color(255, 102, 102));
-
-        design.Button butNon = new design.Button();
-        butNon.setText("Non");
-
-        butOui.addActionListener(e -> {
-            System.out.println("Bouton Oui cliqué");
-            frame.dispose();
-            mainFrame.setVisible(true);
-            mainFrame.repaint();
-            mainFrame.revalidate();
-        });
-
-        butNon.addActionListener(e -> {
-            System.out.println("Bouton Non cliqué");
-            Container container = butNon.getParent();
-            while (!(container instanceof JOptionPane) && container != null) {
-                container = container.getParent();
-            }
-            if (container instanceof JOptionPane) {
-                ((JOptionPane) container).setValue(JOptionPane.CLOSED_OPTION);
-            }
-        });
-
-        Object[] options = {butOui, butNon};
-
-        int option = JOptionPane.showOptionDialog(frame,
-                "Êtes-vous sûr vouloir quitter la fenêtre sans prendre en compte \n les éventuelles changements ?",
-                "Confirmation de fermeture",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[1]);
+    private void confirmerFermeture() {
+        MessageDialog obj = new MessageDialog(this);
+        obj.showMessage("Annuler l'édition ?", "Êtes-vous sur de vouloir annuler l'édition ?\nAucune informations ne sera sauvegardées !");
+        if (obj.getMessageType() == MessageDialog.MessageType.OK) {
+            this.dispose();
+            this.mainFrame.setVisible(true);
+        } else {
+        }
     }
 
     public static String[] enleverEspaces(String chaine) {
@@ -295,6 +259,7 @@ public class Edit extends javax.swing.JFrame {
                 Line2 += "," + one + " " + twice;
             }
             Line2 += "," + Descr.getText() + "," + Txtdate.getText() + "," + txtFin.getText();
+            System.out.println("Voici ma ligne modifié :"+Line2);
 
             line += "Description,Date de Début,Date de fin";
             // Utiliser BufferedWriter pour écrire dans le fichier
@@ -313,11 +278,13 @@ public class Edit extends javax.swing.JFrame {
     }
 
     private boolean TestDate() {
-        if (date.isDateFormatValid(Txtdate.getText())
-                && (date.compareDates(Txtdate.getText(), txtFin.getText()) || Txtdate.getText().equals(txtFin.getText()))
-                && (currentDate.equals(txtFin.getText()) || date.compareDates(currentDate, txtFin.getText()))) {
+        if (txtFin.getText() == " ") {
             return true;
         } else if (txtFin.getText().trim().isEmpty()) {
+            return true;
+        } else if (date.isDateFormatValid(Txtdate.getText())
+                && (date.compareDates(Txtdate.getText(), txtFin.getText()) || Txtdate.getText().equals(txtFin.getText()))
+                && (currentDate.equals(txtFin.getText()) || date.compareDates(currentDate, txtFin.getText()))) {
             return true;
         } else {
             return false;
@@ -326,17 +293,17 @@ public class Edit extends javax.swing.JFrame {
 
     private void AfficheErreur() {
         if (!date.isDateFormatValid(txtFin.getText())) {
-            JOptionPane.showMessageDialog(this, "La date de fin n'est pas au format jj-mm-aaaa", "Erreur de date", JOptionPane.WARNING_MESSAGE);
-            return;
+            AlertDialog obj = new AlertDialog(this);
+            obj.showMessage("Erreur de date !", "La date de fin n'est pas au format jj-mm-aaaa");
         } else if (!date.isDateFormatValid(Txtdate.getText())) {
-            JOptionPane.showMessageDialog(this, "La date de début n'est pas au format jj-mm-aaaa", "Erreur de date", JOptionPane.WARNING_MESSAGE);
-            return;
+             AlertDialog obj = new AlertDialog(this);
+            obj.showMessage("Erreur de date !", "La date de début n'est pas au format jj-mm-aaaa");
         } else if (!date.compareDates(Txtdate.getText(), txtFin.getText())) {
-            JOptionPane.showMessageDialog(this, "La date de fin est inférieur à la date de début", "Erreur de date", JOptionPane.WARNING_MESSAGE);
-            return;
+            AlertDialog obj = new AlertDialog(this);
+            obj.showMessage("Erreur de date !", "La date de fin est inférieur à la date de début");
         } else if (!currentDate.equals(txtFin.getText()) || !date.compareDates(currentDate, txtFin.getText())) {
-            JOptionPane.showMessageDialog(this, "La date de fin doit être supérieur ou égal à la date du jour", "Erreur de date", JOptionPane.WARNING_MESSAGE);
-            return;
+            AlertDialog obj = new AlertDialog(this);
+            obj.showMessage("Erreur de date !", "La date de fin doit être supérieur ou égal à la date du jour");
         }
     }
 
@@ -374,6 +341,8 @@ public class Edit extends javax.swing.JFrame {
         dateChooser2.setTextRefernce(txtFin);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(846, 635));
+        setResizable(false);
 
         Terminer.setText("Modifier");
         Terminer.addActionListener(new java.awt.event.ActionListener() {
@@ -392,11 +361,11 @@ public class Edit extends javax.swing.JFrame {
 
         Titre.setShadowColor(new java.awt.Color(0, 102, 255));
 
-        TitreLab.setText("Titre");
+        TitreLab.setText("Titre du projet");
 
         ChefLab.setText("Chef de projet");
 
-        SuppLab.setText("Suppléant");
+        SuppLab.setText("Suppléants");
 
         SuppC.setShadowColor(new java.awt.Color(255, 153, 0));
 
@@ -489,60 +458,61 @@ public class Edit extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 52, Short.MAX_VALUE)
+                        .addGap(0, 51, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(Titre, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Titre, javax.swing.GroupLayout.PREFERRED_SIZE, 732, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
+                                .addGap(9, 9, 9)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(DD)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addGap(332, 332, 332)
-                                        .addComponent(TitreLab))
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addGap(282, 282, 282)
-                                            .addComponent(DescrLab)
-                                            .addGap(213, 213, 213))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(ChefLab)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(SuppLab)
+                                                .addGap(22, 22, 22)))
+                                        .addGap(43, 43, 43)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                         .addGroup(layout.createSequentialGroup()
-                                                            .addGap(114, 114, 114)
-                                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                                .addComponent(SuppN, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addComponent(ChefN, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                            .addGroup(layout.createSequentialGroup()
-                                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                                    .addComponent(ChefLab)
-                                                                    .addComponent(SuppLab))
-                                                                .addGap(270, 270, 270)
-                                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                                    .addComponent(SuppC, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                    .addComponent(ChefP, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                .addComponent(ChefN, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addComponent(SuppN, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                            .addGap(71, 71, 71)
+                                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                .addComponent(ChefP, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addComponent(SuppC, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                            .addGap(32, 32, 32)))
                                                     .addGap(42, 42, 42))
                                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                     .addComponent(Add, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                     .addComponent(Remove, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                             .addGroup(layout.createSequentialGroup()
-                                                .addComponent(DD)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(Txtdate, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGap(18, 18, 18)
                                                 .addComponent(DF)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(txtFin, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                                .addGap(18, 18, 18)
-                                .addComponent(ActifArchiv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(48, 48, 48))))
+                                                .addComponent(txtFin, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(ActifArchiv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                        .addGap(54, 54, 54))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(Terminer1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(Terminer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(383, 383, 383)
+                .addComponent(TitreLab)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(DescrLab)
+                .addGap(365, 365, 365))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -550,25 +520,25 @@ public class Edit extends javax.swing.JFrame {
                 .addGap(13, 13, 13)
                 .addComponent(TitreLab)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Titre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Titre, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ChefLab)
-                    .addComponent(ChefP, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ChefN, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ChefP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ChefN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(22, 22, 22)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(SuppC, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(SuppN, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(SuppC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(SuppN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(SuppLab)
                     .addComponent(Add, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(38, 38, 38)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(30, 30, 30)
                         .addComponent(Remove, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ActifArchiv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Txtdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -579,7 +549,7 @@ public class Edit extends javax.swing.JFrame {
                 .addComponent(DescrLab)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Terminer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Terminer1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -589,6 +559,56 @@ public class Edit extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void ActifArchivActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ActifArchivActionPerformed
+
+    }//GEN-LAST:event_ActifArchivActionPerformed
+
+    private void Terminer1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Terminer1ActionPerformed
+        // TODO add your handling code here:
+        dispose();
+        mainFrame.setVisible(true);
+        mainFrame.repaint();
+        mainFrame.revalidate();
+    }//GEN-LAST:event_Terminer1ActionPerformed
+
+    private void txtFinKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFinKeyPressed
+        // TODO add your handling code here:
+        txtFin.setText(" ");
+    }//GEN-LAST:event_txtFinKeyPressed
+
+    private void txtFinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFinActionPerformed
+
+    }//GEN-LAST:event_txtFinActionPerformed
+
+    private void txtFinMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtFinMouseClicked
+
+    }//GEN-LAST:event_txtFinMouseClicked
+
+    private void TxtdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtdateActionPerformed
+
+    }//GEN-LAST:event_TxtdateActionPerformed
+
+    private void TxtdateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TxtdateMouseClicked
+
+    }//GEN-LAST:event_TxtdateMouseClicked
+
+    private void AddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddActionPerformed
+        // TODO add your handling code here:
+        addSupplWt();
+        this.Remove.setVisible(true);
+        this.jScrollPane2.setVisible(true);
+    }//GEN-LAST:event_AddActionPerformed
+
+    private void RemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveActionPerformed
+        // TODO add your handling code here:
+        RetirerSupll();
+        java.util.List<Pair<String, String>> suppPairs = getAllDataPairs();
+        if (suppPairs.isEmpty()) {
+            this.Remove.setVisible(false);
+            this.jScrollPane2.setVisible(false);
+        }
+    }//GEN-LAST:event_RemoveActionPerformed
 
     private void TerminerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TerminerActionPerformed
 
@@ -603,7 +623,7 @@ public class Edit extends javax.swing.JFrame {
                         System.out.println("Tout est bon, la case est coché et les champs respecte les contraintes ");
                         CsvFichier();
                         csv.deleteLineFromCsvTot(row + 1);
-                        String filePatH = "/Users/joseph/gestionProjet/gestion.csv";
+                        String filePatH = "L:\\Gestion_Projet/gestion.csv";
                         csv.appendLineToCSV(filePatH, id + "," + Titre.getText() + "," + ChefN.getText() + " " + ChefP.getText());
                         dispose();
                         mainFrame.repaint();
@@ -649,7 +669,7 @@ public class Edit extends javax.swing.JFrame {
                     System.out.println("La case n'est pas visible et tout les éléments sont bon");
                     CsvFichier();
                     csv.deleteLineFromCsv(row + 1);
-                    String filePatH = "/Users/joseph/gestionProjet/gestion.csv";
+                    String filePatH = "L:\\Gestion_Projet/gestion.csv";
                     csv.appendLineToCSV(filePatH, id + "," + Titre.getText() + "," + ChefN.getText() + " " + ChefP.getText());
                     dispose();
                     mainFrame.repaint();
@@ -662,59 +682,10 @@ public class Edit extends javax.swing.JFrame {
                 }
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Veuillez remplir tout les champs obligatoire !", "Erreur de date", JOptionPane.WARNING_MESSAGE);
+            AlertDialog obj = new AlertDialog(this);
+            obj.showMessage("Erreur de date", "Veuillez remplir tout les champs obligatoire !");
         }
     }//GEN-LAST:event_TerminerActionPerformed
-
-    private void RemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveActionPerformed
-        // TODO add your handling code here:
-        RetirerSupll();
-        java.util.List<Pair<String, String>> suppPairs = getAllDataPairs();
-        if (suppPairs.isEmpty()) {
-            this.Remove.setVisible(false);
-            this.jScrollPane2.setVisible(false);
-        }
-    }//GEN-LAST:event_RemoveActionPerformed
-
-    private void AddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddActionPerformed
-        // TODO add your handling code here:
-        addSupplWt();
-        this.Remove.setVisible(true);
-        this.jScrollPane2.setVisible(true);
-    }//GEN-LAST:event_AddActionPerformed
-
-    private void ActifArchivActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ActifArchivActionPerformed
-
-    }//GEN-LAST:event_ActifArchivActionPerformed
-
-    private void TxtdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtdateActionPerformed
-
-    }//GEN-LAST:event_TxtdateActionPerformed
-
-    private void txtFinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFinActionPerformed
-
-    }//GEN-LAST:event_txtFinActionPerformed
-
-    private void TxtdateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TxtdateMouseClicked
-
-    }//GEN-LAST:event_TxtdateMouseClicked
-
-    private void txtFinMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtFinMouseClicked
-
-    }//GEN-LAST:event_txtFinMouseClicked
-
-    private void Terminer1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Terminer1ActionPerformed
-        // TODO add your handling code here:
-        dispose();
-        mainFrame.setVisible(true);
-        mainFrame.repaint();
-        mainFrame.revalidate();
-    }//GEN-LAST:event_Terminer1ActionPerformed
-
-    private void txtFinKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFinKeyPressed
-        // TODO add your handling code here:
-        txtFin.setText(" ");
-    }//GEN-LAST:event_txtFinKeyPressed
 
     /**
      * @param args the command line arguments
@@ -759,8 +730,8 @@ public class Edit extends javax.swing.JFrame {
                 && !ChefN.getText().trim().isEmpty()
                 && !ChefP.getText().trim().isEmpty()
                 && areSupplFieldsNotEmpty()
-                && (!(!SuppN.getText().trim().isEmpty() && SuppC.getText().trim().isEmpty())
-                || !(SuppN.getText().trim().isEmpty() && !SuppC.getText().trim().isEmpty()))
+                && !((!SuppN.getText().trim().isEmpty() && SuppC.getText().trim().isEmpty())
+                || (SuppN.getText().trim().isEmpty() && !SuppC.getText().trim().isEmpty()))
                 && !Descr.getText().trim().isEmpty()
                 && !Txtdate.getText().trim().isEmpty();
     }

@@ -8,38 +8,20 @@ import action.cell.TableActionCellRender;
 import action.cell.TableActionCellRenderTotal;
 import action.data.Csv;
 import action.data.DateDefinExtraction;
-import static action.data.DateDefinExtraction.getCurrentDateAsString;
 import design.Edit;
 import design.ScrollBarCustom;
 import design.View;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
-import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+import javaswingdev.message.AlertDialog;
+import javaswingdev.message.MessageDialog;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -47,7 +29,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
@@ -68,34 +49,31 @@ public class fenetreprincipal extends javax.swing.JFrame {
     private int NbrC;
     private static String NbrCS;
     private ChefProjet CP;
-    private String dataAdd;
-    private javax.swing.JCheckBox[] checkBoxArray;
-    private ChefProjet Demander = new ChefProjet();
+    private String dataAdd = "";
     private DateDefinExtraction DateFin = new DateDefinExtraction();
-    private String currentDate = getCurrentDateAsString("dd-MM-yyyy");
 
     /**
      * Creates new form fenetreprincipal
      */
     public fenetreprincipal() {
+        //Chemin d'accès
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                confirmerFermeture(fenetreprincipal.this);
+                confirmerFermeture();
             }
         });
-        //Chemin d'accès
         System.out.println(DateFin.Datedefin);
         String Deplacer = "Les projets : ";
         Set<String> uniqueElements = new HashSet<>();
-        System.out.println("Les projets dépasser : " + DateFin.Depasser);
+        System.out.println("Les projets dépassés : " + DateFin.Depasser);
         if (DateFin.Depasser.size() > 0) {
             for (String element : DateFin.Depasser) {
                 if (uniqueElements.add(element)) {
                     Deplacer += element + ",";
                     try {
                         int intValue = Integer.parseInt(element);
-                        System.out.println("Valuer entré dans la fonction deleteLineModifDossier " + intValue);
+                        System.out.println("Valeur entré dans la fonction deleteLineModifDossier " + intValue);
                         csv.deleteLineModifDossier(intValue);
                     } catch (NumberFormatException e) {
                         System.err.println("Error parsing integer: " + e.getMessage());
@@ -104,12 +82,13 @@ public class fenetreprincipal extends javax.swing.JFrame {
             }
 
             if (!uniqueElements.isEmpty()) {
-                Deplacer += "sont déplacés dans les projets archivés car leur date butoire est arrivée.";
-                JOptionPane.showMessageDialog(null, Deplacer, "Attention fichier déplacé", JOptionPane.WARNING_MESSAGE);
+                Deplacer += " sont déplacés dans les projets archivés car leur date butoire est arrivée.";
+                AlertDialog obj = new AlertDialog(this);
+                obj.showMessage("Attention !", Deplacer);
             }
         }
-        this.filePath = "/Users/joseph/gestionProjet/gestion.csv";
-        this.filePathAll = "/Users/joseph/gestionProjet/AllProjects.csv";
+        this.filePath = "L:\\Gestion_Projet/gestion.csv";
+        this.filePathAll = "L:\\Gestion_Projet/AllProjects.csv";
         initComponents();
         populateTable();
         jScrollPane1.setVerticalScrollBar(new ScrollBarCustom());
@@ -143,46 +122,13 @@ public class fenetreprincipal extends javax.swing.JFrame {
         setupCustomTableColumn();
     }
 
-    private void confirmerFermeture(fenetreprincipal frame) {
-
-        design.Button butOui = new design.Button();
-        butOui.setText("Oui");
-        butOui.setBorderColor(new java.awt.Color(204, 0, 0));
-        butOui.setColorClick(new java.awt.Color(255, 51, 51));
-        butOui.setColorOver(new java.awt.Color(255, 102, 102));
-
-        design.Button butNon = new design.Button();
-        butNon.setText("Non");
-
-        butOui.addActionListener(e -> {
-            // Traitement lorsque le bouton "Oui" est cliqué
-            System.out.println("Bouton Oui cliqué");
-            frame.dispose();
-        });
-
-        butNon.addActionListener(e -> {
-            // Traitement lorsque le bouton "Non" est cliqué
-            System.out.println("Bouton Non cliqué");
-            Container container = butNon.getParent();
-            while (!(container instanceof JOptionPane) && container != null) {
-                container = container.getParent();
-            }
-            if (container instanceof JOptionPane) {
-                ((JOptionPane) container).setValue(JOptionPane.CLOSED_OPTION);
-            }
-        });
-
-        Object[] options = {butOui, butNon};
-
-        int option = JOptionPane.showOptionDialog(frame,
-                "Êtes-vous sûr de vouloir quitter l'application ?",
-                "Confirmation de fermeture",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[1]);
-
+    private void confirmerFermeture() {
+        MessageDialog obj = new MessageDialog(this);
+        obj.showMessage("Fermer l'application", "Êtes-vous sur de vouloir quitter l'application\nToutes informations non sauvegardées sera effacées");
+        if (obj.getMessageType() == MessageDialog.MessageType.OK) {
+            this.dispose();
+        } else {
+        }
     }
 
     //Button edit delet view table actif
@@ -199,27 +145,20 @@ public class fenetreprincipal extends javax.swing.JFrame {
                     jTable2.getCellEditor().stopCellEditing();
                 }
                 DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-
+                System.out.println(dataAdd);
                 Object rowData[] = new Object[model.getColumnCount()];
                 for (int i = 0; i < model.getColumnCount(); i++) {
-                    rowData[i] = model.getValueAt(row, i);
+                    Object value = model.getValueAt(row, i);
+                    rowData[i] = value;
+                    System.out.println(rowData[i]);
                     dataAdd += "," + rowData[i];
                 }
-                dataAdd = dataAdd.replaceFirst(",", "");
-                design.Button butOui = new design.Button();
-                butOui.setText("Oui");
-                butOui.setBorderColor(new java.awt.Color(204, 0, 0));
-                butOui.setColorClick(new java.awt.Color(255, 51, 51));
-                butOui.setColorOver(new java.awt.Color(255, 102, 102));
-
-                design.Button butNon = new design.Button();
-                butNon.setText("Non");
-
-                butOui.addActionListener(e -> {
-                    // Traitement lorsque le bouton "Oui" est cliqué
-                    SwingUtilities.getWindowAncestor(butOui).dispose();
-                    System.out.println("Bouton Oui cliqué");
+                MessageDialog obj = new MessageDialog(fenetreprincipal.this);
+                obj.showMessage("Le projet va être archivé", "Êtes-vous sur de vouloir archiver le projet ?");
+                if (obj.getMessageType() == MessageDialog.MessageType.OK) {
+                    dataAdd = dataAdd.replaceFirst(",", "");
                     csv.findId(row);
+                    System.out.println("Voici ma ligne : " + dataAdd);
                     csv.appendLineToCSV(filePathAll, dataAdd);
                     csv.deleteLineFromCsv(row + 1);
                     model.removeRow(row);
@@ -232,30 +171,10 @@ public class fenetreprincipal extends javax.swing.JFrame {
                     fenetreprincipal.this.carLayout1.card3.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/dossier.png")), "Nombre de projet total", NbrPTS, "12000"));
                     fenetreprincipal.this.carLayout1.card2.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/lumiere.png")), "Nombre de projet actif", NbrPAS, "12000"));
                     fenetreprincipal.this.carLayout1.card1.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/chef.png")), "Chef de projet", NbrCS, "12000"));
-                });
+                } else {
+                    obj.closeMessage();
+                }
 
-                butNon.addActionListener(e -> {
-                    // Traitement lorsque le bouton "Non" est cliqué
-                    System.out.println("Bouton Non cliqué");
-                    Container container = butNon.getParent();
-                    while (!(container instanceof JOptionPane) && container != null) {
-                        container = container.getParent();
-                    }
-                    if (container instanceof JOptionPane) {
-                        ((JOptionPane) container).setValue(JOptionPane.CLOSED_OPTION);
-                    }
-                });
-
-                Object[] options = {butOui, butNon};
-
-                int option = JOptionPane.showOptionDialog(fenetreprincipal.this,
-                        "Le projet vas être archiver et la date de fin de projet sera la date du jour .\n Êtes-vous sûr de vouloir continuer ?",
-                        "Archivage en cours",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE,
-                        null,
-                        options,
-                        options[1]);
             }
 
             @Override
@@ -281,52 +200,23 @@ public class fenetreprincipal extends javax.swing.JFrame {
                     jTable2.getCellEditor().stopCellEditing();
                 }
                 DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-                design.Button butOui = new design.Button();
-                butOui.setText("Oui");
-                butOui.setBorderColor(new java.awt.Color(204, 0, 0));
-                butOui.setColorClick(new java.awt.Color(255, 51, 51));
-                butOui.setColorOver(new java.awt.Color(255, 102, 102));
-
-                design.Button butNon = new design.Button();
-                butNon.setText("Non");
-
-                butOui.addActionListener(e -> {
-                    // Traitement lorsque le bouton "Oui" est cliqué
-                    SwingUtilities.getWindowAncestor(butOui).dispose();
+                MessageDialog obj = new MessageDialog(fenetreprincipal.this);
+                obj.showMessage("Le projet va être supprimé", "Êtes-vous sur de vouloir supprimer définitivement le projet ?");
+                if (obj.getMessageType() == MessageDialog.MessageType.OK) {
                     System.out.println("Bouton Oui cliqué");
                     csv.deleteLineFromCsvTotal(row + 1);
                     model.removeRow(row);
                     NbrPT = NbrPT - 1;
                     NbrPTS = String.valueOf(NbrPT);
-                    NbrC -= 1;
-                    NbrCS = String.valueOf(NbrCS);
+                    NbrC = NbrC - 1;
+                    NbrCS = String.valueOf(NbrC);
                     fenetreprincipal.this.carLayout1.card1.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/chef.png")), "Chef de projet", NbrCS, "12000"));
                     fenetreprincipal.this.carLayout1.card3.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/dossier.png")), "Nombre de projet total", NbrPTS, "12000"));
                     fenetreprincipal.this.carLayout1.card2.setData(new Model_Card(new ImageIcon(getClass().getResource("/gestionproj/asset/lumiere.png")), "Nombre de projet actif", NbrPAS, "12000"));
-                });
+                } else {
+                    obj.closeMessage();
+                }
 
-                butNon.addActionListener(e -> {
-                    // Traitement lorsque le bouton "Non" est cliqué
-                    System.out.println("Bouton Non cliqué");
-                    Container container = butNon.getParent();
-                    while (!(container instanceof JOptionPane) && container != null) {
-                        container = container.getParent();
-                    }
-                    if (container instanceof JOptionPane) {
-                        ((JOptionPane) container).setValue(JOptionPane.CLOSED_OPTION);
-                    }
-                });
-
-                Object[] options = {butOui, butNon};
-
-                int option = JOptionPane.showOptionDialog(fenetreprincipal.this,
-                        "Le projet vas être supprimer \n Êtes-vous sûr de vouloir continuer ?",
-                        "Suppression en cours",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE,
-                        null,
-                        options,
-                        options[1]);
             }
 
             @Override
@@ -502,26 +392,6 @@ public class fenetreprincipal extends javax.swing.JFrame {
         return model;
     }
 
-    //Table avec information du csv chef
-    private DefaultTableModel buildTableModelRc(String filePath) {
-        DefaultTableModel model = new DefaultTableModel();
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            // Lire la première ligne pour obtenir les noms de colonnes
-            String[] headers = reader.readLine().split(",");
-            model.setColumnIdentifiers(headers);
-            // Lire le reste des lignes
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                model.addRow(data);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return model;
-    }
-
     public static void rechercheAuto(JTable jt, JTextField jtf, JLabel jl) {
         DefaultTableModel dtm = (DefaultTableModel) jt.getModel();
         String mot = jtf.getText().trim().toLowerCase();
@@ -549,7 +419,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
             jl.setText("Un Projet trouvé");
         } else {
             jl.setForeground(new Color(0, 102, 0));
-            jl.setText("Retrouvé :" + nbr);
+            jl.setText("Retrouvés :" + nbr);
         }
     }
 
@@ -577,7 +447,8 @@ public class fenetreprincipal extends javax.swing.JFrame {
         resultat = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setBackground(new java.awt.Color(102, 102, 102));
+        setBackground(new java.awt.Color(255, 255, 255));
+        setResizable(false);
 
         jScrollPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jScrollPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -608,8 +479,6 @@ public class fenetreprincipal extends javax.swing.JFrame {
         jTable2.getColumnModel().getColumn(0).setPreferredWidth(5);
     }
 
-    carLayout1.setBackground(new java.awt.Color(255, 255, 255));
-
     Demande.setShadowColor(new java.awt.Color(255, 0, 0));
     Demande.addKeyListener(new java.awt.event.KeyAdapter() {
         public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -632,6 +501,8 @@ public class fenetreprincipal extends javax.swing.JFrame {
         }
     });
 
+    resultat.setBackground(new java.awt.Color(255, 255, 255));
+
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
@@ -639,19 +510,18 @@ public class fenetreprincipal extends javax.swing.JFrame {
         .addGroup(layout.createSequentialGroup()
             .addGap(20, 20, 20)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addComponent(carLayout1, javax.swing.GroupLayout.PREFERRED_SIZE, 1258, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE))
-                .addGroup(layout.createSequentialGroup()
-                    .addComponent(jScrollPane1)
-                    .addGap(20, 20, 20))
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                     .addComponent(Demande, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(18, 18, 18)
                     .addComponent(resultat, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 687, Short.MAX_VALUE)
                     .addComponent(ajouts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(28, 28, 28))))
+                    .addGap(28, 28, 28))
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(carLayout1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1))
+                    .addGap(20, 20, 20))))
     );
     layout.setVerticalGroup(
         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -665,8 +535,8 @@ public class fenetreprincipal extends javax.swing.JFrame {
                     .addComponent(Demande, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ajouts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 412, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addContainerGap())
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(16, 16, 16))
     );
 
     pack();
@@ -689,18 +559,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_DemandeKeyTyped
 
     private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
-        // TODO add your handling code here:
-        if (evt.getClickCount() == 2) {
-            // Double-clic détecté
-            System.out.println("Double-clic détecté");
-            // Ajoutez le traitement que vous souhaitez pour le double-clic ici
-        } else if (evt.getClickCount() == 1) {
-            // Clic simple détecté
-            System.out.println("Clic simple détecté");
-            if (jTable2.isEditing()) {
-                jTable2.getCellEditor().stopCellEditing();
-            }
-        }
+
     }//GEN-LAST:event_jTable2MouseClicked
 
     private void jTable2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable2KeyPressed
