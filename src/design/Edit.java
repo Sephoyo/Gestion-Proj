@@ -101,7 +101,7 @@ public class Edit extends javax.swing.JFrame {
 
     private void confirmerFermeture() {
         MessageDialog obj = new MessageDialog(this);
-        obj.showMessage("Annuler l'édition ?", "Êtes-vous sur de vouloir annuler l'édition ?\nAucune informations ne sera sauvegardées !");
+        obj.showMessage("Annuler l'édition ?", "Êtes-vous sur de vouloir annuler l'édition ?\nAucune information ne sera sauvegardée !");
         if (obj.getMessageType() == MessageDialog.MessageType.OK) {
             this.dispose();
             this.mainFrame.setVisible(true);

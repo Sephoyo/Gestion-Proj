@@ -124,7 +124,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
 
     private void confirmerFermeture() {
         MessageDialog obj = new MessageDialog(this);
-        obj.showMessage("Fermer l'application", "Êtes-vous sur de vouloir quitter l'application\nToutes informations non sauvegardées sera effacées");
+        obj.showMessage("Fermer l'application", "Êtes-vous sur de vouloir quitter l'application\nToutes informations non sauvegardées seront effacées");
         if (obj.getMessageType() == MessageDialog.MessageType.OK) {
             this.dispose();
         } else {

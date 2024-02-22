@@ -67,7 +67,7 @@ public class AjoutProj extends javax.swing.JFrame {
 
     private void confirmerFermeture() {
         MessageDialog obj = new MessageDialog(this);
-        obj.showMessage("Annuler l'ajout !", "Êtes-vous sur de vouloir annuler l'ajout ? \nAucune informations ne sera gardées !");
+        obj.showMessage("Annuler l'ajout !", "Êtes-vous sur de vouloir annuler l'ajout ? \nAucune information ne sera gardée !");
         if (obj.getMessageType() == MessageDialog.MessageType.OK) {
             this.dispose();
             this.mainFrame.setVisible(true);
