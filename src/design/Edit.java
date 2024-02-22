@@ -342,7 +342,6 @@ public class Edit extends javax.swing.JFrame {
         dateChooser2.setTextRefernce(txtFin);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(846, 635));
         setResizable(false);
 
         Terminer.setText("Modifier");
@@ -629,7 +628,7 @@ public class Edit extends javax.swing.JFrame {
                         System.out.println("Tout est bon, la case est coché et les champs respecte les contraintes ");
                         CsvFichier();
                         csv.deleteLineFromCsvTot(row + 1);
-                        String filePatH = "L:\\Gestion_Projet/gestion.csv";
+                        String filePatH = "L:\\Gestion_Projet/CSV/gestion.csv";
                         csv.appendLineToCSV(filePatH, id + "," + Titre.getText() + "," + ChefN.getText() + " " + ChefP.getText());
                         dispose();
                         mainFrame.repaint();
@@ -675,7 +674,7 @@ public class Edit extends javax.swing.JFrame {
                     System.out.println("La case n'est pas visible et tout les éléments sont bon");
                     CsvFichier();
                     csv.deleteLineFromCsv(row + 1);
-                    String filePatH = "L:\\Gestion_Projet/gestion.csv";
+                    String filePatH = "L:\\Gestion_Projet/CSV/gestion.csv";
                     csv.appendLineToCSV(filePatH, id + "," + Titre.getText() + "," + ChefN.getText() + " " + ChefP.getText());
                     dispose();
                     mainFrame.repaint();
@@ -689,7 +688,7 @@ public class Edit extends javax.swing.JFrame {
             }
         } else {
             AlertDialog obj = new AlertDialog(this);
-            obj.showMessage("Erreur de date", "Veuillez remplir tout les champs obligatoire !");
+            obj.showMessage("Erreur de champ !", "Veuillez remplir tout les champs obligatoire !");
         }
     }//GEN-LAST:event_TerminerActionPerformed
 

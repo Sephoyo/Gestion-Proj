@@ -57,9 +57,9 @@ public class AjoutProj extends javax.swing.JFrame {
         this.mainFrame = mainFrame;
         String chemin = System.getProperty("user.dir");
         System.out.println("Le répertoire de travail actuel est : " + chemin);
-        this.filePath = "L:\\Gestion_Projet/gestion.csv";
+        this.filePath = "L:\\Gestion_Projet/CSV/gestion.csv";
         this.filePathId = "L:\\Gestion_Projet/ProjetCSV/";
-        this.filePathAll = "L:\\Gestion_Projet/AllProjects.csv";
+        this.filePathAll = "L:\\Gestion_Projet/CSV/AllProjects.csv";
         CompareLastId(filePath, filePathAll);
         jScrollPane6.setVerticalScrollBar(new ScrollBarCustom());
         SuppListe.setVerticalScrollBar(new ScrollBarCustom());
@@ -325,10 +325,6 @@ public class AjoutProj extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(348, 348, 348)
-                .addComponent(jLabel4)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
@@ -378,7 +374,10 @@ public class AjoutProj extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(Remove, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(359, 359, 359)
+                                .addGap(348, 348, 348)
+                                .addComponent(jLabel4))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(371, 371, 371)
                                 .addComponent(jLabel5)))
                         .addGap(0, 54, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -512,7 +511,7 @@ public class AjoutProj extends javax.swing.JFrame {
             }
         } else {
             AlertDialog obj = new AlertDialog(this);
-            obj.showMessage("Champs vide !", "Veuillez remplir tous les champs obligatoires");
+            obj.showMessage("Champ vide !", "Veuillez remplir tous les champs obligatoires");
         }
 
     }//GEN-LAST:event_ValiderActionPerformed

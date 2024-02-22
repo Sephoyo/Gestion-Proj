@@ -164,7 +164,6 @@ public class View extends javax.swing.JFrame {
         DF = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(846, 635));
         setResizable(false);
 
         Terminer.setText("Terminer");
@@ -281,11 +280,11 @@ public class View extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(txtFin, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(380, 380, 380)
-                        .addComponent(TitreLab))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(357, 357, 357)
-                        .addComponent(DescrLab)))
+                        .addComponent(DescrLab))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(368, 368, 368)
+                        .addComponent(TitreLab)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(

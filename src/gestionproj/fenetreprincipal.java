@@ -87,8 +87,8 @@ public class fenetreprincipal extends javax.swing.JFrame {
                 obj.showMessage("Attention !", Deplacer);
             }
         }
-        this.filePath = "L:\\Gestion_Projet/gestion.csv";
-        this.filePathAll = "L:\\Gestion_Projet/AllProjects.csv";
+        this.filePath = "L:\\Gestion_Projet/CSV/gestion.csv";
+        this.filePathAll = "L:\\Gestion_Projet/CSV/AllProjects.csv";
         initComponents();
         populateTable();
         jScrollPane1.setVerticalScrollBar(new ScrollBarCustom());

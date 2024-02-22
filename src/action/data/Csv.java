@@ -36,8 +36,8 @@ public class Csv {
 
     public Csv(fenetreprincipal Frame) {
         this.frame = Frame;
-        this.filePath = "L:\\Gestion_Projet/gestion.csv";
-        this.filePathAll = "L:\\Gestion_Projet/AllProjects.csv";
+        this.filePath = "L:\\Gestion_Projet/CSV/gestion.csv";
+        this.filePathAll = "L:\\Gestion_Projet/CSV/AllProjects.csv";
         this.File = "L:\\Gestion_Projet/ProjetCSV/";
 
     }
