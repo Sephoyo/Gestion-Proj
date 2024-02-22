@@ -10,6 +10,7 @@ import static action.data.DateDefinExtraction.getCurrentDateAsString;
 import action.data.Pair;
 import gestionproj.fenetreprincipal;
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
@@ -239,6 +240,11 @@ public class AjoutProj extends javax.swing.JFrame {
         Descr.setLineWrap(true);
         Descr.setRows(5);
         Descr.setWrapStyleWord(true);
+        Descr.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                DescrKeyPressed(evt);
+            }
+        });
         jScrollPane6.setViewportView(Descr);
 
         SuppListe.setBorder(null);
@@ -510,6 +516,13 @@ public class AjoutProj extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_ValiderActionPerformed
+
+    private void DescrKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_DescrKeyPressed
+        // TODO add your handling code here:
+        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
+            evt.consume();
+        }
+    }//GEN-LAST:event_DescrKeyPressed
     private void CompareLastId(String filePath, String filePathAll) {
         LastId(filePath);
         LastId(filePathAll);
