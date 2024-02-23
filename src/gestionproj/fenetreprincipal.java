@@ -157,7 +157,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
                 MessageDialog obj = new MessageDialog(fenetreprincipal.this);
                 obj.showMessage("Le projet va être archivé", "Êtes-vous sur de vouloir archiver le projet ?");
                 if (obj.getMessageType() == MessageDialog.MessageType.OK) {
-                    dataAdd = dataAdd.replaceFirst(",", "");
+                    dataAdd = dataAdd.replaceFirst(";", "");
                     csv.findId(row);
                     System.out.println("Voici ma ligne : " + dataAdd);
                     csv.appendLineToCSV(filePathAll, dataAdd);
