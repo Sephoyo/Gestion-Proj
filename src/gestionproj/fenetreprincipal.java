@@ -254,7 +254,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
                     // Vérifier si c'est la ligne recherchée
                     if (currentRow == row + 1) {
                         // Diviser la ligne en colonnes (supposant une virgule comme séparateur)
-                        String[] columns = line.split(",");
+                        String[] columns = line.split(";");
                         // Assurez-vous que la ligne a suffisamment d'éléments
                         if (columns.length > 0) {
                             // Récupérer l'ID à partir de la première colonne (index 0)
@@ -287,7 +287,7 @@ public class fenetreprincipal extends javax.swing.JFrame {
                     // Vérifier si c'est la ligne recherchée
                     if (currentRow == row + 1) {
                         // Diviser la ligne en colonnes (supposant une virgule comme séparateur)
-                        String[] columns = line.split(",");
+                        String[] columns = line.split(";");
 
                         // Assurez-vous que la ligne a suffisamment d'éléments
                         if (columns.length > 0) {
@@ -355,12 +355,12 @@ public class fenetreprincipal extends javax.swing.JFrame {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             // Lire la première ligne pour obtenir les noms de colonnes
-            String[] headers = reader.readLine().split(",");
+            String[] headers = reader.readLine().split(";");
             model.setColumnIdentifiers(headers);
             // Lire le reste des lignes
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
+                String[] data = line.split(";");
                 model.addRow(data);
                 NbrPA = NbrPA + 1;
             }
@@ -377,12 +377,12 @@ public class fenetreprincipal extends javax.swing.JFrame {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             // Lire la première ligne pour obtenir les noms de colonnes
-            String[] headers = reader.readLine().split(",");
+            String[] headers = reader.readLine().split(";");
             model.setColumnIdentifiers(headers);
             // Lire le reste des lignes
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
+                String[] data = line.split(";");
                 model.addRow(data);
                 NbrPT = NbrPT + 1;
             }

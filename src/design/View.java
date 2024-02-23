@@ -49,12 +49,17 @@ public class View extends javax.swing.JFrame {
         System.out.println("L'id : " + id + " et le fichier : " + filePath);
         LectLine(filePath);
         int length = data2.length;
+        System.out.println(data2);
+        for(int i =0;i<length;i++){
+            System.out.println(data2[i]);
+        }
+        
         this.Titre.setText(data2[1]);
-        this.ChefN.setText(enleverEspaces(data2[2])[0]);
-        this.ChefP.setText(enleverEspaces(data2[2])[1]);
+        this.ChefN.setText(enleverEspaces(data2[2])[1]);
+        this.ChefP.setText(enleverEspaces(data2[2])[0]);
         if (!data2[3].trim().isEmpty()) {
-            this.SuppN.setText(enleverEspaces(data2[3])[0]);
-            this.SuppC.setText(enleverEspaces(data2[3])[1]);
+            this.SuppN.setText(enleverEspaces(data2[3])[1]);
+            this.SuppC.setText(enleverEspaces(data2[3])[0]);
         }else{
             this.SuppN.setVisible(false);
             this.SuppC.setVisible(false);
@@ -131,8 +136,8 @@ public class View extends javax.swing.JFrame {
             String deuxiemeLigne = br.readLine();
             if (deuxiemeLigne != null) {
                 // Séparez les données en utilisant la virgule comme séparateur
-                data = deuxiemeLigne.split(",");
-                data2 = premierLigne.split(",");
+                data = deuxiemeLigne.split(";");
+                data2 = premierLigne.split(";");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -187,7 +192,7 @@ public class View extends javax.swing.JFrame {
 
         TitreLab.setText("Titre du projet");
 
-        ChefLab.setText("Chef de projet");
+        ChefLab.setText("Référent SI");
 
         SuppLab.setText("Suppléants");
 

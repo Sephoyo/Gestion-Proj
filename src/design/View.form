@@ -176,7 +176,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="ChefLab">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Chef de projet"/>
+        <Property name="text" type="java.lang.String" value="R&#xe9;f&#xe9;rent SI"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="SuppLab">

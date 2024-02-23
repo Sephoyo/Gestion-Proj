@@ -61,7 +61,7 @@ public class Csv {
             int currentLineIndex = 0;
 
             while ((line = reader.readLine()) != null) {
-                String[] columns = line.split(",");
+                String[] columns = line.split(";");
                 if (columns.length > 0) {
                     String idInCurrentLine = columns[0];
                     if (idInCurrentLine.equals(Integer.toString(lineIndexToDelete))) {
@@ -168,7 +168,7 @@ public class Csv {
                     System.out.println(line);
                     writer.write(System.lineSeparator());
                 } else {
-                    String[] columns = line.split(",");
+                    String[] columns = line.split(";");
                     if (columns.length > 0) {
                         String id = columns[0];
                         System.out.println("ID to be deleted: " + id);
@@ -301,10 +301,10 @@ public class Csv {
 
             if (lineNumber >= 2) {
                 // Modifier le dernier élément de la deuxième ligne
-                String[] data = lines.get(1).split(",");
+                String[] data = lines.get(1).split(";");
                 if (data.length > 0) {
                     data[data.length - 1] = currentDate;
-                    lines.set(1, String.join(",", data));
+                    lines.set(1, String.join(";", data));
                 }
                 // Réécrire tout le contenu du fichier avec les modifications
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
@@ -333,7 +333,7 @@ public class Csv {
                     // Vérifier si c'est la ligne recherchée
                     if (currentRow == row + 1) {
                         // Diviser la ligne en colonnes (supposant une virgule comme séparateur)
-                        String[] columns = line.split(",");
+                        String[] columns = line.split(";");
                         // Assurez-vous que la ligne a suffisamment d'éléments
                         if (columns.length > 0) {
                             // Récupérer l'ID à partir de la première colonne (index 0)

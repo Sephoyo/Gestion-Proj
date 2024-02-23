@@ -183,8 +183,8 @@ public class Edit extends javax.swing.JFrame {
             String deuxiemeLigne = br.readLine();
             if (deuxiemeLigne != null) {
                 // Séparez les données en utilisant la virgule comme séparateur
-                data = deuxiemeLigne.split(",");
-                data2 = premierLigne.split(",");
+                data = deuxiemeLigne.split(";");
+                data2 = premierLigne.split(";");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -230,14 +230,14 @@ public class Edit extends javax.swing.JFrame {
     }
 
     private void CsvFichier() {
-        String line = "id,Projet,Chef de projet,Suppléant,";
+        String line = "id;Projet;Chef de projet;Suppléant;";
 
         String FileId = filePath;
         String Line2 = "";
         if (!this.SuppC.getText().trim().isEmpty() && !this.SuppN.getText().trim().isEmpty()) {
-            Line2 = this.id + "," + Titre.getText() + "," + ChefN.getText() + " " + ChefP.getText() + "," + SuppN.getText() + " " + SuppC.getText();
+            Line2 = this.id + ";" + Titre.getText() + ";" + ChefN.getText() + " " + ChefP.getText() + ";" + SuppN.getText() + " " + SuppC.getText();
         } else if (this.SuppC.getText().trim().isEmpty() && this.SuppN.getText().trim().isEmpty()) {
-            Line2 = this.id + "," + Titre.getText() + "," + ChefN.getText() + " " + ChefP.getText() + "," + " ";
+            Line2 = this.id + ";" + Titre.getText() + ";" + ChefN.getText() + " " + ChefP.getText() + ";" + " ";
         }
         try {
             // Vérifier si le fichier existe, sinon le créer
@@ -254,15 +254,15 @@ public class Edit extends javax.swing.JFrame {
 
             for (int i = 1; i <= nombreSupp; i++) {
                 Pair<String, String> Pair = supplList.get(i - 1);
-                line += "Suppléant" + String.valueOf(i) + ",";
+                line += "Suppléant" + String.valueOf(i) + ";";
                 String one = Pair.getFirst();
                 String twice = Pair.getSecond();
-                Line2 += "," + one + " " + twice;
+                Line2 += ";" + one + " " + twice;
             }
-            Line2 += "," + Descr.getText() + "," + Txtdate.getText() + "," + txtFin.getText();
+            Line2 += ";" + Descr.getText() + ";" + Txtdate.getText() + ";" + txtFin.getText();
             System.out.println("Voici ma ligne modifié :"+Line2);
 
-            line += "Description,Date de Début,Date de fin";
+            line += "Description;Date de Début;Date de fin";
             // Utiliser BufferedWriter pour écrire dans le fichier
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
                 writer.write(line);
@@ -274,7 +274,7 @@ public class Edit extends javax.swing.JFrame {
             System.err.println("Error appending line to CSV file: " + e.getMessage());
             e.printStackTrace();
         }
-        String gestion = this.id + "," + this.Titre.getText() + "," + this.ChefN.getText() + " " + this.ChefP.getText();
+        String gestion = this.id + ";" + this.Titre.getText() + ";" + this.ChefN.getText() + " " + this.ChefP.getText();
         csv.updateCsv(file, this.row + 1, gestion);
     }
 
@@ -368,19 +368,39 @@ public class Edit extends javax.swing.JFrame {
 
         TitreLab.setText("Titre du projet");
 
-        ChefLab.setText("Chef de projet");
+        ChefLab.setText("Référent SI");
 
-        SuppLab.setText("Suppléants");
+        SuppLab.setText("Référent MOA");
 
         SuppC.setShadowColor(new java.awt.Color(255, 153, 0));
+        SuppC.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                SuppCKeyTyped(evt);
+            }
+        });
 
         ChefP.setShadowColor(new java.awt.Color(255, 0, 0));
+        ChefP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                ChefPKeyTyped(evt);
+            }
+        });
 
         jScrollPane2.setBorder(null);
 
         ChefN.setShadowColor(new java.awt.Color(255, 0, 0));
+        ChefN.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                ChefNKeyTyped(evt);
+            }
+        });
 
         SuppN.setShadowColor(new java.awt.Color(255, 153, 0));
+        SuppN.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                SuppNKeyTyped(evt);
+            }
+        });
 
         Remove.setText("-");
         Remove.setBorderColor(new java.awt.Color(204, 0, 0));
@@ -463,7 +483,7 @@ public class Edit extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 51, Short.MAX_VALUE)
+                        .addGap(0, 34, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Titre, javax.swing.GroupLayout.PREFERRED_SIZE, 732, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -472,11 +492,10 @@ public class Edit extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(DD)
                                     .addGroup(layout.createSequentialGroup()
+                                        .addGap(22, 22, 22)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                             .addComponent(ChefLab)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(SuppLab)
-                                                .addGap(22, 22, 22)))
+                                            .addComponent(SuppLab))
                                         .addGap(43, 43, 43)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -629,7 +648,7 @@ public class Edit extends javax.swing.JFrame {
                         CsvFichier();
                         csv.deleteLineFromCsvTot(row + 1);
                         String filePatH = "L:\\Gestion_Projet/CSV/gestion.csv";
-                        csv.appendLineToCSV(filePatH, id + "," + Titre.getText() + "," + ChefN.getText() + " " + ChefP.getText());
+                        csv.appendLineToCSV(filePatH, id + ";" + Titre.getText() + ";" + ChefN.getText() + " " + ChefP.getText());
                         dispose();
                         mainFrame.repaint();
                         mainFrame.revalidate();
@@ -650,7 +669,7 @@ public class Edit extends javax.swing.JFrame {
                             System.out.println("Tout est bon, la case n'est pas coché et les champs respecte les contraintes ");
                             System.out.println("J'arrive la ou il faut pas ");
                             CsvFichier();
-                            csv.updateCsv(file, row + 1, id + "," + Titre.getText() + "," + ChefN.getText() + " " + ChefP.getText());
+                            csv.updateCsv(file, row + 1, id + ";" + Titre.getText() + ";" + ChefN.getText() + " " + ChefP.getText());
                             dispose();
                             mainFrame.repaint();
                             mainFrame.revalidate();
@@ -675,7 +694,7 @@ public class Edit extends javax.swing.JFrame {
                     CsvFichier();
                     csv.deleteLineFromCsv(row + 1);
                     String filePatH = "L:\\Gestion_Projet/CSV/gestion.csv";
-                    csv.appendLineToCSV(filePatH, id + "," + Titre.getText() + "," + ChefN.getText() + " " + ChefP.getText());
+                    csv.appendLineToCSV(filePatH, id + ";" + Titre.getText() + ";" + ChefN.getText() + " " + ChefP.getText());
                     dispose();
                     mainFrame.repaint();
                     mainFrame.revalidate();
@@ -698,6 +717,33 @@ public class Edit extends javax.swing.JFrame {
             evt.consume();
         }
     }//GEN-LAST:event_DescrKeyPressed
+
+    private void ChefNKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ChefNKeyTyped
+        // TODO add your handling code here:
+        if(evt.getKeyChar()== ' '){
+    evt.consume();
+}
+    }//GEN-LAST:event_ChefNKeyTyped
+
+    private void ChefPKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ChefPKeyTyped
+if(evt.getKeyChar()== ' '){
+    evt.consume();
+}
+    }//GEN-LAST:event_ChefPKeyTyped
+
+    private void SuppNKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SuppNKeyTyped
+        // TODO add your handling code here:
+        if(evt.getKeyChar()== ' '){
+    evt.consume();
+}
+    }//GEN-LAST:event_SuppNKeyTyped
+
+    private void SuppCKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SuppCKeyTyped
+        // TODO add your handling code here:
+        if(evt.getKeyChar()== ' '){
+    evt.consume();
+}
+    }//GEN-LAST:event_SuppCKeyTyped
 
     /**
      * @param args the command line arguments

@@ -77,13 +77,13 @@ public class AjoutProj extends javax.swing.JFrame {
 
     //Ajout du projet dans un fichier csv 
     private void CsvFichier() {
-        String line = "id,Projet,Chef de projet,Suppléant,";
+        String line = "id;Projet;Chef de projet;Suppléant;";
         String Line2 = "";
         String FileId = filePathId + this.LastId + ".csv";
         if (!this.nomS.getText().trim().isEmpty() && !this.prenomS.getText().trim().isEmpty()) {
-            Line2 = this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText() + "," + prenomS.getText() + " " + nomS.getText();
+            Line2 = this.LastId + ";" + Titre.getText() + ";" + NomC.getText() + " " + PrenomC.getText() + ";" + prenomS.getText() + " " + nomS.getText();
         } else if (this.nomS.getText().trim().isEmpty() && this.prenomS.getText().trim().isEmpty()) {
-            Line2 = this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText() + "," + " ";
+            Line2 = this.LastId + ";" + Titre.getText() + ";" + NomC.getText() + " " + PrenomC.getText() + ";" + " ";
         }
         try {
             // Vérifier si le fichier existe, sinon le créer
@@ -97,18 +97,18 @@ public class AjoutProj extends javax.swing.JFrame {
 
             for (int i = 1; i <= nombreSupp; i++) {
                 Pair<String, String> Pair = supplList.get(i - 1);
-                line += "Suppléant" + String.valueOf(i) + ",";
+                line += "Suppléant" + String.valueOf(i) + ";";
                 String one = Pair.getFirst();
                 String twice = Pair.getSecond();
-                Line2 += "," + one + " " + twice;
+                Line2 += ";" + one + " " + twice;
             }
             if (!txtFin.getText().trim().isEmpty() && txtFin.getText().matches("\\d{2}-\\d{2}-\\d{4}")) {
-                Line2 += "," + Descr.getText() + "," + Txtdate.getText() + "," + txtFin.getText();
+                Line2 += ";" + Descr.getText() + ";" + Txtdate.getText() + ";" + txtFin.getText();
             } else {
-                Line2 += "," + Descr.getText() + "," + Txtdate.getText() + ", ";
+                Line2 += ";" + Descr.getText() + ";" + Txtdate.getText() + "; ";
             }
 
-            line += "Description,Date de Début,Date de fin";
+            line += "Description;Date de Début;Date de fin";
             // Utiliser BufferedWriter pour écrire dans le fichier
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
                 writer.write(line);
@@ -249,9 +249,9 @@ public class AjoutProj extends javax.swing.JFrame {
 
         SuppListe.setBorder(null);
 
-        jLabel2.setText("Chef De Projet");
+        jLabel2.setText("Référent SI");
 
-        jLabel3.setText("Suppléants");
+        jLabel3.setText("Réferent MOA");
 
         jLabel4.setText("Description du Projet");
 
@@ -288,12 +288,35 @@ public class AjoutProj extends javax.swing.JFrame {
         });
 
         nomS.setShadowColor(new java.awt.Color(255, 153, 0));
+        nomS.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                nomSKeyTyped(evt);
+            }
+        });
 
         NomC.setShadowColor(new java.awt.Color(255, 0, 0));
+        NomC.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                NomCKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                NomCKeyTyped(evt);
+            }
+        });
 
         PrenomC.setShadowColor(new java.awt.Color(255, 0, 0));
+        PrenomC.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                PrenomCKeyTyped(evt);
+            }
+        });
 
         prenomS.setShadowColor(new java.awt.Color(255, 153, 0));
+        prenomS.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                prenomSKeyTyped(evt);
+            }
+        });
 
         Txtdate.setShadowColor(new java.awt.Color(102, 102, 255));
 
@@ -466,7 +489,7 @@ public class AjoutProj extends javax.swing.JFrame {
                     if (date.compareDates(Txtdate.getText(), txtFin.getText())) {
                         if (currentDate.equals(txtFin.getText()) || date.compareDates(currentDate, txtFin.getText())) {
                             this.CsvFichier();
-                            csv.appendLineToCSV(filePath, this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText());
+                            csv.appendLineToCSV(filePath, this.LastId + ";" + Titre.getText() + ";" + NomC.getText() + " " + PrenomC.getText());
                             dispose();
                             mainFrame.repaint();
                             mainFrame.revalidate();
@@ -479,7 +502,7 @@ public class AjoutProj extends javax.swing.JFrame {
                             obj.showMessage("Archivage !", "Êtes-vous sur de vouloir archiver votre projet ?\nLa date de fin est inférieur à celle du jour il sera donc archivé");
                             if (obj.getMessageType() == MessageDialog.MessageType.OK) {
                                 this.CsvFichier();
-                                csv.appendLineToCSV(filePathAll, this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText());
+                                csv.appendLineToCSV(filePathAll, this.LastId + ";" + Titre.getText() + ";" + NomC.getText() + " " + PrenomC.getText());
                                 dispose();
                                 mainFrame.repaint();
                                 mainFrame.revalidate();
@@ -500,7 +523,7 @@ public class AjoutProj extends javax.swing.JFrame {
                 }
             } else {
                 this.CsvFichier();
-                csv.appendLineToCSV(filePath, this.LastId + "," + Titre.getText() + "," + NomC.getText() + " " + PrenomC.getText());
+                csv.appendLineToCSV(filePath, this.LastId + ";" + Titre.getText() + ";" + NomC.getText() + " " + PrenomC.getText());
                 dispose();
                 mainFrame.repaint();
                 mainFrame.revalidate();
@@ -518,10 +541,40 @@ public class AjoutProj extends javax.swing.JFrame {
 
     private void DescrKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_DescrKeyPressed
         // TODO add your handling code here:
-        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             evt.consume();
         }
     }//GEN-LAST:event_DescrKeyPressed
+
+    private void NomCKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_NomCKeyTyped
+        if (evt.getKeyChar() == ' ') {
+            evt.consume();
+        }
+    }//GEN-LAST:event_NomCKeyTyped
+
+    private void NomCKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_NomCKeyPressed
+
+    }//GEN-LAST:event_NomCKeyPressed
+
+    private void PrenomCKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_PrenomCKeyTyped
+        if (evt.getKeyChar() == ' ') {
+            evt.consume();
+        }
+    }//GEN-LAST:event_PrenomCKeyTyped
+
+    private void nomSKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nomSKeyTyped
+        // TODO add your handling code here:
+        if (evt.getKeyChar() == ' ') {
+            evt.consume();
+        }
+    }//GEN-LAST:event_nomSKeyTyped
+
+    private void prenomSKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_prenomSKeyTyped
+        // TODO add your handling code here:
+        if (evt.getKeyChar() == ' ') {
+            evt.consume();
+        }
+    }//GEN-LAST:event_prenomSKeyTyped
     private void CompareLastId(String filePath, String filePathAll) {
         LastId(filePath);
         LastId(filePathAll);
@@ -539,7 +592,7 @@ public class AjoutProj extends javax.swing.JFrame {
                     firstLineSkipped = true;
                     continue;
                 }
-                String[] fields = line.split(",");
+                String[] fields = line.split(";");
                 if (fields.length > 0) {
                     int currentId = Integer.parseInt(fields[0]);
                     System.out.println("Currentid = " + currentId);

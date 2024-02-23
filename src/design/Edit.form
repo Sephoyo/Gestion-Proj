@@ -47,7 +47,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="0" pref="51" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="34" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="jScrollPane1" alignment="1" min="-2" pref="730" max="-2" attributes="0"/>
                           <Component id="Titre" min="-2" pref="732" max="-2" attributes="0"/>
@@ -56,12 +56,10 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="DD" min="-2" max="-2" attributes="0"/>
                                   <Group type="102" attributes="0">
+                                      <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="1" attributes="0">
                                           <Component id="ChefLab" min="-2" max="-2" attributes="0"/>
-                                          <Group type="102" alignment="1" attributes="0">
-                                              <Component id="SuppLab" min="-2" max="-2" attributes="0"/>
-                                              <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
-                                          </Group>
+                                          <Component id="SuppLab" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
@@ -223,12 +221,12 @@
     </Component>
     <Component class="javax.swing.JLabel" name="ChefLab">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Chef de projet"/>
+        <Property name="text" type="java.lang.String" value="R&#xe9;f&#xe9;rent SI"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="SuppLab">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Suppl&#xe9;ants"/>
+        <Property name="text" type="java.lang.String" value="R&#xe9;f&#xe9;rent MOA"/>
       </Properties>
     </Component>
     <Component class="design.TextField" name="SuppC">
@@ -237,6 +235,9 @@
           <Color blue="0" green="99" red="ff" type="rgb"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="SuppCKeyTyped"/>
+      </Events>
     </Component>
     <Component class="design.TextField" name="ChefP">
       <Properties>
@@ -244,6 +245,9 @@
           <Color blue="0" green="0" red="ff" type="rgb"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="ChefPKeyTyped"/>
+      </Events>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane2">
       <Properties>
@@ -260,6 +264,9 @@
           <Color blue="0" green="0" red="ff" type="rgb"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="ChefNKeyTyped"/>
+      </Events>
     </Component>
     <Component class="design.TextField" name="SuppN">
       <Properties>
@@ -267,6 +274,9 @@
           <Color blue="0" green="99" red="ff" type="rgb"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="SuppNKeyTyped"/>
+      </Events>
     </Component>
     <Component class="design.Button" name="Remove">
       <Properties>

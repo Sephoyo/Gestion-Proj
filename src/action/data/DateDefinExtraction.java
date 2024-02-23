@@ -41,7 +41,7 @@ public class DateDefinExtraction {
         try (BufferedReader reader = new BufferedReader(new FileReader(fichierCSV))) {
             // Lire la première ligne pour obtenir les en-têtes
             String ligne = reader.readLine();
-            String[] entetes = ligne.split(",");
+            String[] entetes = ligne.split(";");
 
             // Vérifier si le fichier CSV contient une colonne "Date de fin" et "ID du projet"
             int indiceDateDeFin = -1;
@@ -58,7 +58,7 @@ public class DateDefinExtraction {
             if (indiceDateDeFin != -1 && indiceIdProjet != -1) {
                 // Parcourir les lignes restantes et extraire l'ID du projet et sa date de fin
                 while ((ligne = reader.readLine()) != null) {
-                    StringTokenizer tokenizer = new StringTokenizer(ligne, ",");
+                    StringTokenizer tokenizer = new StringTokenizer(ligne, ";");
                     int colonneActuelle = 0;
                     String idProjet = "";
                     String dateDeFin = "";
@@ -102,7 +102,7 @@ public class DateDefinExtraction {
             if(!compareDates(currentDate, dateDeFin)){
                 Depasser.add(idProjet);
             }
-            System.out.println("ID du projet: " + idProjet + ", Date de fin: " + dateDeFin);
+            System.out.println("ID du projet: " + idProjet + "; Date de fin: " + dateDeFin);
         }
     }
 
@@ -135,7 +135,7 @@ public class DateDefinExtraction {
             try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
                 String line;
                 while ((line = br.readLine()) != null) {
-                    String[] columns = line.split(",");
+                    String[] columns = line.split(";");
                     if (columns.length > 0) {
                         idList.add(columns[0]);
                     } else {

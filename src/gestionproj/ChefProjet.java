@@ -15,7 +15,7 @@ public class ChefProjet {
             reader.readLine();
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
+                String[] parts = line.split(";");
                 if (parts.length >= 3) { // Vérifier si la ligne a suffisamment de colonnes 
                     String chefNom = parts[0].trim();
                     if (chefNom.equalsIgnoreCase(searchTerm)) {
@@ -31,10 +31,10 @@ public class ChefProjet {
             // Enregistrer les résultats dans un nouveau fichier CSV
             try (PrintWriter writer = new PrintWriter(new FileWriter(outputFilePath))) {
                 // Écrire l'entête
-                writer.println("id,projet,Chef de projet,Action"); // Assurez-vous de remplacer par les vrais noms de colonnes
+                writer.println("id;projet;Chef de projet;Action"); // Assurez-vous de remplacer par les vrais noms de colonnes
                 // Écrire les résultats de la recherche
                 for (String[] result : searchResults) {
-                    writer.println(String.join(",", result));
+                    writer.println(String.join(";", result));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -43,7 +43,7 @@ public class ChefProjet {
         } else {
             try (PrintWriter writer = new PrintWriter(new FileWriter(outputFilePath))) {
                 // Écrire l'entête
-                writer.println("id,projet,Chef de projet,Action");
+                writer.println("id;projet;Chef de projet;Action");
                 JOptionPane.showMessageDialog(frame, "L'id " + searchTerm + " n'existe pas ! ", "id INVALIDE", JOptionPane.WARNING_MESSAGE);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -60,7 +60,7 @@ public class ChefProjet {
             reader.readLine();
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
+                String[] parts = line.split(";");
                 if (parts.length >= 3) { // Vérifier si la ligne a suffisamment de colonnes 
                     String chefNom = parts[1].trim();
                     // Séparer les espaces dans le nom du chef de projet
@@ -82,10 +82,10 @@ public class ChefProjet {
             // Enregistrer les résultats dans un nouveau fichier CSV
             try (PrintWriter writer = new PrintWriter(new FileWriter(outputFilePath))) {
                 // Écrire l'entête
-                writer.println("id,projet,Chef de projet,Action"); // Assurez-vous de remplacer par les vrais noms de colonnes
+                writer.println("id;projet;Chef de projet;Action"); // Assurez-vous de remplacer par les vrais noms de colonnes
                 // Écrire les résultats de la recherche
                 for (String[] result : searchResults) {
-                    writer.println(String.join(",", result));
+                    writer.println(String.join(";", result));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -94,7 +94,7 @@ public class ChefProjet {
         } else {
             try (PrintWriter writer = new PrintWriter(new FileWriter(outputFilePath))) {
                 // Écrire l'entête
-                writer.println("id,projet,Chef de projet,Action");
+                writer.println("id;projet;Chef de projet;Action");
                 JOptionPane.showMessageDialog(frame, "Le nom de projet " + searchTerm + " n'existe pas ! ", "Nom de projet INVALIDE", JOptionPane.WARNING_MESSAGE);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -113,7 +113,7 @@ public class ChefProjet {
             String line;
             System.out.println("Search Term: " + searchTerm);
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
+                String[] parts = line.split("");
                 if (parts.length >= 3) { // Vérifier si la ligne a suffisamment de colonnes 
                     String chefNom = parts[2].trim();
                     // Séparer les espaces dans le nom du chef de projet
@@ -134,10 +134,10 @@ public class ChefProjet {
             // Enregistrer les résultats dans un nouveau fichier CSV
             try (PrintWriter writer = new PrintWriter(new FileWriter(outputFilePath))) {
                 // Écrire l'entête
-                writer.println("id,projet,Chef de projet,Action"); // Assurez-vous de remplacer par les vrais noms de colonnes
+                writer.println("id;projet;Chef de projet;Action"); // Assurez-vous de remplacer par les vrais noms de colonnes
                 // Écrire les résultats de la recherche
                 for (String[] result : searchResults) {
-                    writer.println(String.join(",", result));
+                    writer.println(String.join(";", result));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -146,7 +146,7 @@ public class ChefProjet {
         } else {
             try (PrintWriter writer = new PrintWriter(new FileWriter(outputFilePath))) {
                 // Écrire l'entête
-                writer.println("id,projet,Chef de projet,Action");
+                writer.println("id;projet;Chef de projet;Action");
                 JOptionPane.showMessageDialog(frame, "Le chef " + searchTerm + " n'existe pas ! ", "Chef INVALIDE", JOptionPane.WARNING_MESSAGE);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -163,7 +163,7 @@ public class ChefProjet {
             reader.readLine();
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
+                String[] parts = line.split(";");
                 if (parts.length >= 3) { // Vérifier si la ligne a suffisamment de colonnes 
                     uniqueChefNoms.add(parts[2]); // Ajouter le nom du chef de projet 
                 }
@@ -176,7 +176,7 @@ public class ChefProjet {
             reader.readLine();
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
+                String[] parts = line.split(";");
                 if (parts.length >= 3) { // Vérifier si la ligne a suffisamment de colonnes 
                     uniqueChefNoms.add(parts[2]); // Ajouter le nom du chef de projet 
                 }
